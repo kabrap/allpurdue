@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+body {
+    background-color: black;
+    font-family: 'Inter', sans-serif;
+}
+
+.card {
+    display: flex;
+    width: 50%;
+}
+
+.info-col {
+    width: 40%;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+#first-row {
+    display: flex;
+    align-items: center;
+}
+
+#second-row {
+    display: flex;
+    align-items: center;
+}
+
+.tag-box {
+    background-color: #DEDEDE;
+    color: #6C6C6C;
+    padding: 3%;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
