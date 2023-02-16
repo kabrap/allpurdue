@@ -1,7 +1,10 @@
+require('dotenv').config()
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -15,8 +18,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Basic Schema
 const schema = new mongoose.Schema({
-    email: String,
+    email: {
+        type: String,
+        unique: true
+    }, 
     password: String
+});
+
+schema.plugin(encrypt, { 
+    secret: process.env.SECRET,
+    encryptedFields: ['password']
 });
 
 // Simple User Collection
@@ -41,7 +52,7 @@ app.post('/register', function(req, res) {
     newUser.save(function(err) {
         if (err) {
             console.log(err);
-            res.sendStatus(500);
+            res.status(500).json({ error: 'email already exists' });
         } else {
             res.render("landing");
         }
