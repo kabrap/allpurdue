@@ -22,7 +22,7 @@ const schema = new mongoose.Schema({
 // Simple User Collection
 const User = new mongoose.model("User", schema);
 
-
+// GET Route for Homes
 app.get('/', function(req, res){
     res.render("home");
 });
@@ -31,6 +31,44 @@ app.get('/', function(req, res){
 app.get('/register', function(req, res) {
     res.render("register");
 })
+
+// POST Route for Register
+app.post('/register', function(req, res) {
+    const newUser = new User({
+        email: req.body.username,
+        password: req.body.password
+    });
+    newUser.save(function(err) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        } else {
+            res.render("landing");
+        }
+    });
+});
+
+// POST Route for Login
+app.post('/login', function(req, res) {
+    var username = req.body.username;
+    var userPass = req.body.password; 
+
+    User.findOne({email: username}, function(err, userExists) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (userExists) {
+                    if (userExists.password === userPass) {
+                        res.render("landing");
+                    } else {
+                        console.log("password mismatch");
+                        res.redirect("login");
+                    }
+                }
+            }
+        }
+    );
+});
 
 // GET Route for Login
 app.get('/login', function(req, res) {
