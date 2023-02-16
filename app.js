@@ -22,13 +22,24 @@ const schema = new mongoose.Schema({
 // Simple User Collection
 const User = new mongoose.model("User", schema);
 
-// Sample User for testing
-const yash = new User({ email: "abc@123.com", password: "abc"});
-
-//yash.save()
 
 app.get('/', function(req, res){
     res.render("home");
+});
+
+// GET Route for Register
+app.get('/register', function(req, res) {
+    res.render("register");
+})
+
+// GET Route for Login
+app.get('/login', function(req, res) {
+    res.render("login");
+})
+
+// GET Route for Landing
+app.get('/landing', function(req, res) {
+    res.render("landing");
 })
 
 app.listen(3000, function() {
