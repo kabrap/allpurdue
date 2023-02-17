@@ -1,9 +1,10 @@
 nav {
     display: flex;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
-    padding: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
@@ -13,7 +14,7 @@ nav {
   }
   
   nav ul li {
-    margin-right: 1rem;
+    margin-right: 2rem;
   }
   
   nav ul li:last-child {
@@ -21,13 +22,27 @@ nav {
   }
   
   nav ul li a {
-    color: #333;
+    color: white;
     text-decoration: none;
-    font-weight: 500;
   }
   
   nav ul li a:hover {
-    color: #000;
-    border-bottom: 2px solid #000;
+    color: #FFC632;
   }
   
+  nav span {
+    color: #FFC632;
+  }
+
+
+  .nav-buttons {
+    display: flex;
+  }
+
+  .login {
+    margin-left: 20px;
+    background-color: black;
+    color: #FFC632;
+  }
+
+

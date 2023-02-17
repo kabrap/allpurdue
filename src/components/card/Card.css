@@ -1,17 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-body {
-    background-color: black;
-    font-family: 'Inter', sans-serif;
-}
 
 .card {
     display: flex;
-    width: 50%;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    width: 750px;
+    height: 175px;
+}
+
+.picture-col {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+}
+
+#chipotle {
+    border-radius: 20px;
+    width: 175px;
+    height: 140px;
+    margin: auto;
+    display: block;
+    -webkit-filter: drop-shadow(5px 5px 5px #686868);
+    filter: drop-shadow(0px 1.5px 3px #686868);
 }
 
 .info-col {
-    width: 40%;
     flex-direction: column;
+    width: 50%;
 }
 
 .row {
@@ -24,16 +40,46 @@ body {
     align-items: center;
 }
 
+#place-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 20px;
+    
+}
+
+#rating {
+    font-size: 12px;
+    font-weight: bold;
+    color: #686868;
+    margin-left: 5px;
+}
+
+#full-star {
+    height: 20px;
+    width: 20px;
+}
+
 #second-row {
     display: flex;
     align-items: center;
 }
 
 .tag-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #DEDEDE;
     color: #6C6C6C;
-    padding: 3%;
+    padding: 2px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
+    width: 75px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+#review-header {
+    font-weight: bold;
+    color: #2C2C2C;
 }

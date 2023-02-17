@@ -1,12 +1,13 @@
 import React from 'react';
 import './Card.css'
 import Chipotle from '../../images/chipotle.jpg'
+import Star from '../../images/star.png'
 
 function Card() {
   return (
     <div className="card">
       {/* column containing the picture */}
-      <div className='picture-col'>
+      <div className='picture-col' >
         <img id="chipotle" src={Chipotle} alt="chip pic" />
       </div>
 
@@ -14,9 +15,13 @@ function Card() {
       <div className='info-col'>
         {/* title, stars, and rating */}
         <div className='row' id='first-row'>
-          <h2>Chipotle</h2>
-          <p>star</p>
-          <p>5.0</p>
+          <p id='place-name'>Chipotle</p>
+          <img id="full-star" src={Star} alt="rating star" />
+          <img id="full-star" src={Star} alt="rating star" />
+          <img id="full-star" src={Star} alt="rating star" />
+          <img id="full-star" src={Star} alt="rating star" />
+          <img id="full-star" src={Star} alt="rating star" />
+          <p id='rating'><span>&#40;</span>5.0<span>&#41;</span></p>
         </div>
 
         {/* tags */}
@@ -27,11 +32,9 @@ function Card() {
 
         {/* review header */}
         <div className='row'>
-          <h4>Review</h4>
-        </div>
+          <p id='review-header'>Review</p>
 
         {/* review */}
-        <div className='row'>
           <p>Very good restaurant</p>
         </div>
       </div>

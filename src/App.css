@@ -35,7 +35,6 @@ h1 {
   font-weight: normal;
   font-size: 20px;
 }
-
 #hero-image {
   display: flex;
   padding-top: 3%;
@@ -59,5 +58,4 @@ h1 {
 }
 
 .reviews {
-  background-color: white;
 }
