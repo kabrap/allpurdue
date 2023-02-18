@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 .app {
+  height: 100vh;
   background-color: black;
+  color: white;
   padding-left: 10%;
   padding-right: 10%;
   font-family: 'Inter', sans-serif;

@@ -1,0 +1,49 @@
+.browse {
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+}
+.browse h1 {
+    font-size: 65px;
+    text-align: center;
+}
+.categories-cards {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    row-gap: 25px;
+    justify-content: space-between;
+}
+
+.sorting-container {
+    display: flex;
+    justify-content: space-between;
+    color: #FFC632;
+    margin-bottom: 20px;
+    margin-top: 50px;
+}
+
+.filter-bar {
+    text-align: center;
+}
+
+.filter-button {
+    background-color: white;
+    color: black;
+    border-radius: 0;
+    border-right: black 1px solid;
+    height: 45px;
+    width: 155px;
+}
+
+#left-filter {
+    border-radius: 20px 0px 0px 20px;
+}
+
+#right-filter {
+    border-radius: 0px 20px 20px 0px;
+}
+
+.link-back {
+    color: #FFC632;
+}

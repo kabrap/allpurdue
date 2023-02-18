@@ -23,8 +23,8 @@ function Navbar() {
         <li><a href="/contact">Contact</a></li>
       </ul>
       <div className='nav-buttons'>
-        <Link to="/sign-up"><Button className="sign-up" text="Sign Up" onClick={handleSignUp}/></Link>
-        <Link to="/login"><Button className="login" text="Login" onClick={handleLogin}/></Link>
+        <Link to="/sign-up"><button className="sign-up" text="Sign Up" onClick={handleSignUp}>Sign Up</button></Link>
+        <Link to="/login"><button className="login" text="Login" onClick={handleLogin}>Login</button></Link>
       </div>
     </nav>
   );
