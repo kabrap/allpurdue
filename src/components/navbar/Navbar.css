@@ -1,11 +1,20 @@
+a {
+  text-decoration: none;
+  color: white;
+}
+
 nav {
     display: flex;
     font-weight: 500;
     font-size: 20px;
+    background-color: black;
     color: white;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  nav p {
+    font-weight: 500;
   }
   
   nav ul {
@@ -39,10 +48,32 @@ nav {
     display: flex;
   }
 
+  .sign-up,
   .login {
-    margin-left: 20px;
-    background-color: black;
-    color: #FFC632;
+    padding: 10px 20px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
+  
+  .sign-up:hover,
+  .login:hover {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .sign-up {
+    margin-right: 10px;
+  }
+  
+  .login {
+    background-color: #000;
+    color: #fff;
+  }
+  
 
 

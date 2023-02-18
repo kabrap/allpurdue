@@ -7,19 +7,23 @@
     width: 300px;
 }
 
-.inside {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.search-bar img {
+    height: 20px;
+    width: 20px;
     margin-left: 5%;
 }
 
-.inside img {
-    height: 25px;
-    width: 25px;
+.search-bar img:hover {
+    cursor: pointer;
 }
 
-.inside p {
-    color: #848484;
-    margin-left: 10px;
+.search-bar input {
+    border: none;
+    background-color: #DDDDDD;
+    font-size: 16px;
+    margin-left: 2%;
+}
+
+.search-bar input:focus {
+    outline: none;
 }

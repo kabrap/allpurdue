@@ -1,6 +1,7 @@
 import './Navbar.css';
 import React from 'react';
 import Button from '../button/Button';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
 
@@ -14,7 +15,7 @@ function Navbar() {
 
   return (
     <nav>
-      <p>All<span>Purdue</span></p>
+      <p><a href='/'>All<span>Purdue</span></a></p>
       <ul>
         <li><a href="/about">About</a></li>
         <li><a href="/categories">Categories</a></li>
@@ -22,8 +23,8 @@ function Navbar() {
         <li><a href="/contact">Contact</a></li>
       </ul>
       <div className='nav-buttons'>
-        <Button className="sign-up" text="Sign Up" onClick={handleSignUp}/>
-        <Button className="login" text="Login" onClick={handleLogin}/>
+        <Link to="/sign-up"><Button className="sign-up" text="Sign Up" onClick={handleSignUp}/></Link>
+        <Link to="/login"><Button className="login" text="Login" onClick={handleLogin}/></Link>
       </div>
     </nav>
   );

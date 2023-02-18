@@ -1,49 +1,34 @@
 import React from 'react';
-import './Card.css'
+import './Card.css';
 import Chipotle from '../../images/chipotle.jpg'
-import Star from '../../images/star.png'
 
-function Card() {
+const Card = () => {
   return (
     <div className="card">
-      {/* column containing the picture */}
-      <div className='picture-col' >
-        <img id="chipotle" src={Chipotle} alt="chip pic" />
+      <div className="card-image">
+        <img src={Chipotle} alt="restaurant" />
       </div>
-
-      {/* column containing all the information */}
-      <div className='info-col'>
-        {/* title, stars, and rating */}
-        <div className='row' id='first-row'>
-          <p id='place-name'>Chipotle</p>
-          <img id="full-star" src={Star} alt="rating star" />
-          <img id="full-star" src={Star} alt="rating star" />
-          <img id="full-star" src={Star} alt="rating star" />
-          <img id="full-star" src={Star} alt="rating star" />
-          <img id="full-star" src={Star} alt="rating star" />
-          <p id='rating'><span>&#40;</span>5.0<span>&#41;</span></p>
+      <div className="card-placeholder">&#128343; 54 mins ago</div>
+      <div className="card-content">
+        <div className="restaurant-header">
+          <h2 className="restaurant-name">Chipotle</h2>
+          <div className="rating">
+            <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span className="rating-number">&#40;5.0&#41;</span>
+          </div>
         </div>
-
-        {/* tags */}
-        <div className='row' id='second-row'>
-          <p className='tag-box'>Fast Food</p>
-          <p className='tag-box'>Mexican</p>
+        <div className='tags-container'>
+          <span id='tag'>Fast Food</span>
+          <span id='tag'>Mexican</span>
         </div>
-
-        {/* review header */}
-        <div className='row'>
-          <p id='review-header'>Review</p>
-
-        {/* review */}
-          <p>Very good restaurant</p>
+        <span id='review-word'>Review</span>
+        <span className="review-placeholder">A brief review created by the user here. I am just typing this now as a placeholder.</span>
+        <div className="card-button">
+          <button>All restaurants &#8594;</button>
         </div>
-      </div>
-      {/* column containing time and button */}
-      <div className='misc-col'>
-
       </div>
     </div>
   );
-}
+};
 
 export default Card;
