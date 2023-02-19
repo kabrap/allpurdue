@@ -107,6 +107,62 @@ const placeSchema = new Schema(
 
 /* ---------- [End] Models ---------- */
 
+
+// for getting a place
+app.get('/:id', (req, res) => {
+  Place.findById(req.params.id)
+  .then((place) => res.json(place))
+  .catch((err) => console.log(err));
+});
+
+// for adding a place
+app.post('/add', (req, res) => {
+  const name = req.body.name;
+  const description = req.body.description;
+  const type = req.body.placeType;
+  const tags = req.body.tags;
+  const loc = req.body.location;
+  const newPlace = new Place({
+    name,
+    id,
+    description,
+    type,
+    tags,
+    loc
+  })
+  newPlace.save()
+  .then(() => res.json('Place Added'))
+  .catch((err) => console.log(err));
+});
+
+// for modifying a place
+app.post('/modify/:id', (req, res) => {
+  Place.findById(req.params.id)
+  .then((place) =>{
+    place.name = req.body.name;
+    place.description = req.body.description;
+    place.placeType = req.body.placeType;
+    place.tags = req.body.tags;
+    place.location = req.body.location;
+    newPlace.save()
+    .then(() => res.json('Place Modified'))
+    .catch((err) => console.log(err));
+  })
+  .catch((err) => console.log(err));
+});
+
+// for removing a place
+app.delete('/:id', (req, res) => {
+  Place.findByIdAndDelete(req.params.id, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("landing");
+    }
+  });
+});
+
+
 // GET Route for Register
 app.get('/register', function(req, res) {
     res.render("register");
