@@ -1,37 +1,111 @@
 require('dotenv').config()
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const md5 = require('md5');
-
 const app = express();
 
 mongoose.set('strictQuery', false);
 mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 
-
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Basic Schema
-const schema = new mongoose.Schema({
-    email: {
-        type: String,
-        unique: true
-    }, 
-    password: String
-});
-
-// Simple User Collection
-const User = new mongoose.model("User", schema);
-
-// GET Route for Homes
+// TODO: Keep this in this file - change a little
+// GET Route for Home Page
 app.get('/', function(req, res){
     res.render("home");
 });
+
+// const { User } = require("./models/userModels.js"); 
+
+/* ---------- [Start] Models ---------- */
+
+const Schema = mongoose.Schema;
+
+// User Schema
+
+const userSchema = new Schema(
+    {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        lowercase: true,
+        unique: true,
+        validate: {
+          validator: validateEmail,
+          message: () => "Email address already registered.",
+        },
+        required: [true, "User email required"],
+      },
+      password: {
+        type: String,
+        required: true,
+      },
+    },
+    { timestamps: true }
+  );
+  
+  const User = new mongoose.model("User", userSchema);
+  
+async function validateEmail(email) {
+    const user = await User.findOne({ email });
+    if (user) {
+      if (User.id === user.id) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
+// Place Schema
+
+const placeSchema = new Schema(
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        required: true,
+      },
+      placeType: {
+        type: String,
+        required: true,
+      },
+      tags: [{
+        type: String
+      }],
+      location: { // Reference - https://mongoosejs.com/docs/geojson.html
+        type: {
+          type: String, 
+          enum: ['Point'], 
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      },
+      // TODO: Ratings, Average Rating and Reviews, and Similar Places (i think that is a FE issue)
+    },
+    { timestamps: true }
+  );
+  
+  const Place = new mongoose.model("Place", placeSchema);
+
+/* ---------- [End] Models ---------- */
 
 // GET Route for Register
 app.get('/register', function(req, res) {
