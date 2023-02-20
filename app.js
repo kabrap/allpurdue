@@ -6,6 +6,7 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 const md5 = require('md5');
 const session = require('express-session');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
-  secret: process.env.SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }));
@@ -125,6 +126,32 @@ app.post('/login', function(req, res) {
 
 app.get("/forgotPassword", function(req, res) {
   res.render("forgotPassword");
+});
+
+app.post("/forgotPassword", function(req, res) {
+  const userEmail = req.body.username;
+  User.findOne({email: userEmail}, function(err, userExists) {
+    if (err) {
+        console.log(err);
+        res.sendStatus(500);
+    } else {
+        if (userExists) {
+          const secret = process.env.JWT_SECRET + userExists.password;
+          const payload = {
+            email: userEmail,
+            id: userExists.id
+          };
+          const token = jwt.sign(payload, secret, {expiresIn: '15m'});
+          const link = `http://localhost:3000/reset-password/${userExists.id}/${token}`;
+          console.log(link);
+          return;         
+        } else {
+          console.log("User not found!");
+          res.redirect("/forgotPassword");
+        }
+    }
+}
+);
 });
 
 // GET Route for Login
