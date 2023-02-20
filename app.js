@@ -7,14 +7,22 @@ const mongoose = require("mongoose");
 const md5 = require('md5');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
-const mail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
 mongoose.set('strictQuery', false);
 mongoose.connect("mongodb://localhost:27017/allPurdueDB");
-mail.setApiKey(process.env.MAIL_KEY);
-
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'yashnarainagarwal@gmail.com',
+    pass: 'process.env.APP_PASS'
+  }
+});
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -152,19 +160,18 @@ app.post("/forgotPassword", function (req, res) {
         const link = `http://localhost:3000/reset-password/${userExists.id}/${token}`;
         console.log(userEmail);
         const msg = {
+          from: 'yashnarainagarwal@gmail.com',
           to: userEmail,
-          from: 'agarw236@purdue.edu',
           subject: 'AllPurdue Password Reset',
-          text: `Hello from AllPurdue! Boiler Up! Please click the link to reset your email:${link}. The link is only valid for 15 minutes.`
+          text: `Hello from AllPurdue! Boiler Up! Please click the link to reset your email:\n${link}.\n The link is only valid for 15 minutes.`
         }
-        mail
-          .send(msg)
-          .then(() => {
-            console.log('Email sent')
-          })
-          .catch((error) => {
-            console.error(error)
-          })
+        transporter.sendMail(msg, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
         res.send("Link Sent Successfuly! Check your inbox!");
       } else {
         console.log("User not found!");
