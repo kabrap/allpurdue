@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const md5 = require('md5');
+const session = require('express-session');
 
 const app = express();
 
@@ -15,9 +16,13 @@ mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
 
 // User Schema
-
 const schema = new mongoose.Schema(
     {
       name: {
@@ -37,8 +42,7 @@ const schema = new mongoose.Schema(
       password: {
         type: String,
         required: true,
-        minLength: 6,
-        maxLength: 12
+        minLength: 6
       }
     },
     { timestamps: true }
@@ -68,6 +72,15 @@ app.get('/register', function(req, res) {
     res.render("register");
 })
 
+// GET Route for Landing
+app.get('/landing', function(req, res) {
+  if (!req.session.user) {
+    res.render("login");
+  } else {
+    res.render("landing");
+  }
+})
+
 // POST Route for Register
 app.post('/register', function(req, res) {
     const newUser = new User({
@@ -81,7 +94,7 @@ app.post('/register', function(req, res) {
             res.sendStatus(500);
         } else {
             console.log("User Successfully Registered!");
-            res.render("landing");
+            res.render("login");
         }
     });
 });
@@ -98,7 +111,8 @@ app.post('/login', function(req, res) {
                 if (userExists) {
                     if (userExists.password === userPass) {
                         console.log("User Successfully Logged In!");
-                        res.render("landing");
+                        req.session.user = userExists;
+                        res.redirect("/landing");
                     } else {
                         console.log("Incorrect Password!");
                         res.redirect("login");
