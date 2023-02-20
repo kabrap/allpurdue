@@ -16,14 +16,44 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Basic Schema
-const schema = new mongoose.Schema({
-    email: {
+// User Schema
+
+const schema = new mongoose.Schema(
+    {
+      name: {
         type: String,
-        unique: true
-    }, 
-    password: String
-});
+        required: true,
+      },
+      email: {
+        type: String,
+        lowercase: true,
+        unique: true,
+        validate: {
+          validator: validateEmail,
+          message: () => "Email address already registered.",
+        },
+        required: [true, "User email required"],
+      },
+      password: {
+        type: String,
+        required: true,
+        minLength: 6,
+        maxLength: 12
+      }
+    },
+    { timestamps: true }
+  );
+  
+  async function validateEmail(email) {
+    const user = await User.findOne({ email });
+    if (user) {
+      if (User.id === user.id) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
 
 // Simple User Collection
 const User = new mongoose.model("User", schema);
@@ -41,14 +71,16 @@ app.get('/register', function(req, res) {
 // POST Route for Register
 app.post('/register', function(req, res) {
     const newUser = new User({
+        name: req.body.name,
         email: req.body.username,
         password: md5(req.body.password)
     });
     newUser.save(function(err) {
         if (err) {
             console.log(err);
-            res.status(500).json({ error: 'email already exists' });
+            res.sendStatus(500);
         } else {
+            console.log("User Successfully Registered!");
             res.render("landing");
         }
     });
@@ -65,9 +97,10 @@ app.post('/login', function(req, res) {
             } else {
                 if (userExists) {
                     if (userExists.password === userPass) {
+                        console.log("User Successfully Logged In!");
                         res.render("landing");
                     } else {
-                        console.log("password mismatch");
+                        console.log("Incorrect Password!");
                         res.redirect("login");
                     }
                 }
