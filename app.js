@@ -123,6 +123,10 @@ app.post('/login', function(req, res) {
     );
 });
 
+app.get("/forgotPassword", function(req, res) {
+  res.render("forgotPassword");
+});
+
 // GET Route for Login
 app.get('/login', function(req, res) {
     res.render("login");
