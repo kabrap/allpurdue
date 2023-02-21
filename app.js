@@ -172,7 +172,8 @@ app.post("/forgotPassword", function (req, res) {
             console.log('Email sent: ' + info.response);
           }
         });
-        res.send("Link Sent Successfuly! Check your inbox!");
+        console.log("Link Sent Successfuly! Check your inbox!");
+        res.redirect('/');
       } else {
         console.log("User not found!");
         res.redirect("/forgotPassword");
@@ -181,15 +182,15 @@ app.post("/forgotPassword", function (req, res) {
   });
 });
 
-app.get("/reset-password/:id/:token", function (req, res) {
+app.get("/reset-password/:id/:token", async function (req, res) {
   const { id, token } = req.params;
   if (id === global.resetUser.id) {
-    const secret = process.env.JWT_SECRET + global.resetUser.password;
+    const user = await User.findOne({email: global.resetUser.email});
+    const secret = process.env.JWT_SECRET + user.password;
     try {
       jwt.verify(token, secret);
       console.log("Verified");
-      //res.render("reset-password", {email: global.resetUser.email});
-      res.send("Verification Successful!");
+      res.render("reset-password", {email: global.resetUser.email});
     } catch (error) {
       console.log(error);
     }
@@ -197,6 +198,28 @@ app.get("/reset-password/:id/:token", function (req, res) {
     console.log("Verification Failed");
     res.sendStatus(500);
   }
+});
+
+app.post("/reset-password", function (req, res) {
+  const update = {
+    password: md5(req.body.password)
+  };
+  const filter = {
+    email: global.resetUser.email
+  }
+  User.findOneAndUpdate(filter, update, function(err) {
+    if(err) {
+      console.log(err)
+    } else {
+      console.log("Password Updated Successfully!");
+      res.redirect("/login");
+    }
+  })
+});
+
+app.get("/logout", function(req, res) {
+  req.session.user = null;
+  res.render("home");
 });
 
 // GET Route for Login
