@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  background-color: white;
+  border-radius: 20px;
+  width: 30%;
+  color: black;
+}
+  
+.title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+  
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+  
+.submit-button {
+  align-items: center;
+  margin-top: 1.25rem;
+  background-color: black;
+  color: white;
+  border: none;
+  width: 80%;
+  border-radius: 6px;
+}
+
+.submit-button:hover {
+  background-color: rgb(92, 92, 92);
+}
+  
+.switch-mode {
+  margin-top: 1rem;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+  
+.switch-button {
+  background-color: transparent;
+  width: fit-content;
+  padding: 4px;
+  color: black;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+  
+.switch-button:hover {
+  background-color: transparent;
+  color: rgb(92, 92, 92);
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
+.field-container span {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.field-container input {
+  border-radius: 8px;
+  padding: 8px;
+}
+
+input {
+  border: 2px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+input:focus {
+  border: 2px solid #666666;
+}
+
+#password-specifics {
+  font-size: 11px;
+  font-style: normal;
+  margin-top: 6px;
+  color: #8a8a8a;
+}
+
+#forgot-password {
+  font-size: 11px;
+  font-style: normal;
+  margin-top: 6px;
+  color: #8a8a8a;
+  width: fit-content;
+}
+
+#forgot-password:hover {
+  cursor: pointer;
+}

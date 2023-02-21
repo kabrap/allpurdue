@@ -6,8 +6,7 @@ import About from './pages/About'
 import Categories from './pages/categories/Categories';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
-import SignUp from './pages/SignUp';
-import Login from './pages/Login';
+import LoginSignup from './pages/LoginSignup';
 import Cafes from './pages/categories/Cafes'
 import Restaurants from './pages/categories/Restaurants'
 import Residence from './pages/categories/Residence'
@@ -24,8 +23,7 @@ function App() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/loginsignup" element={<LoginSignup />} />
           <Route path="/categories/cafes" element={<Cafes />} />
           <Route path="/categories/restaurants" element={<Restaurants />} />
           <Route path="/categories/residence-halls" element={<Residence />} />
