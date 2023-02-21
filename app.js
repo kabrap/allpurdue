@@ -21,8 +21,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'allpurdue2023@gmail.com',
-    pass: process.env.APP_PASS,
+    user: 'yashnarainagarwal@gmail.com',
+    pass: 'process.env.APP_PASS'
   }
 });
 
@@ -175,7 +175,7 @@ app.post("/forgotPassword", function (req, res) {
         const link = `http://localhost:3000/reset-password/${userExists.id}/${token}`;
         console.log(userEmail);
         const msg = {
-          from: '"Team AllPurdue" allpurdue2023@gmail.com',
+          from: 'yashnarainagarwal@gmail.com',
           to: userEmail,
           subject: 'AllPurdue Password Reset',
           text: `Hello from AllPurdue! Boiler Up! Please click the link to reset your email:\n${link}.\n The link is only valid for 15 minutes.`
