@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './LoginSignup.css';
+import axios from 'axios';
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,8 +29,41 @@ const LoginSignup = () => {
     e.preventDefault();
     if (isLogin) {
       // TODO: Implement login logic using email and password
+      axios.post('/login-endpoint-here', {
+        email: email,
+        password: password
+      })
+      .then(function (res) {
+        console.log("successful login")
+      })
+      .catch(function (err) {
+        console.log("unsuccessful login")
+      })
     } else {
       // TODO: Implement signup logic using email, password, firstName, and lastName
+      console.log(firstName + lastName + email + password)
+
+      // axios try catch POST to sign up endpoint
+      // axios.get('https://my-json-server.typicode.com/typicode/demo/posts')
+      //   .then(function (res) {
+      //     console.log(res);
+      //   })
+      //   .catch(function (err) {
+      //     console.log(err)
+      //   })
+
+      axios.post('/signup-endpoint-here', {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password
+      })
+      .then(function (res) {
+        console.log("successful user creation")
+      })
+      .catch(function (err) {
+        console.log("unsuccessful user creation")
+      })
     }
   };
 

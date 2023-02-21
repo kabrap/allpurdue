@@ -23,6 +23,10 @@
     margin-top: 50px;
 }
 
+.sorting-container span:hover {
+    cursor: pointer;
+}
+
 .filter-bar {
     text-align: center;
 }
