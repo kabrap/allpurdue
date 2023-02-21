@@ -8,6 +8,9 @@ const md5 = require('md5');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const passport = require("passport");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require('mongoose-findorcreate');
 
 const app = express();
 
@@ -33,6 +36,9 @@ app.use(session({
   saveUninitialized: true
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // User Schema
 const schema = new mongoose.Schema(
   {
@@ -52,12 +58,16 @@ const schema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minLength: 6
+    },
+    googleId: {
+      type: String
     }
   },
   { timestamps: true }
 );
+
+schema.plugin(findOrCreate);
 
 async function validateEmail(email) {
   const user = await User.findOne({ email });
@@ -73,10 +83,46 @@ async function validateEmail(email) {
 // Simple User Collection
 const User = new mongoose.model("User", schema);
 
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/google/allpurdue",
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ googleId: profile.id, name: profile.displayName, email: profile.emails[0].value }, function (err, user) {
+    if(err) {
+      console.log(err);
+    }
+    return cb(err, user);
+  });
+}
+));
+
 // GET Route for Homes
 app.get('/', function (req, res) {
   res.render("home");
 });
+
+app.get("/auth/google",
+  passport.authenticate('google', { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/allpurdue",
+  passport.authenticate('google', { failureRedirect: "/login" }),
+  function(req, res, err) {
+    res.redirect("/landing");
+  });
+
 
 // GET Route for Register
 app.get('/register', function (req, res) {
@@ -85,7 +131,7 @@ app.get('/register', function (req, res) {
 
 // GET Route for Landing
 app.get('/landing', function (req, res) {
-  if (!req.session.user) {
+  if (req.session.user || !req.isAuthenticated()) {
     res.render("login");
   } else {
     res.render("landing");
@@ -217,9 +263,12 @@ app.post("/reset-password", function (req, res) {
   })
 });
 
-app.get("/logout", function(req, res) {
+app.get("/logout", async function(req, res) {
   req.session.user = null;
-  res.render("home");
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 // GET Route for Login
