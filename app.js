@@ -176,8 +176,11 @@ app.post('/login', function (req, res) {
           res.redirect("/landing");
         } else {
           console.log("Incorrect Password!");
-          res.redirect("login");
+          res.redirect("/login");
         }
+      } else {
+        console.log("User not found!");
+        res.redirect("/login");
       }
     }
   }
