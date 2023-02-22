@@ -6,8 +6,7 @@ const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState('');
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -17,20 +16,16 @@ const LoginSignup = () => {
     setPassword(e.target.value);
   };
 
-  const handleFirstNameChange = (e) => {
-    setFirstName(e.target.value);
-  };
-
-  const handleLastNameChange = (e) => {
-    setLastName(e.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isLogin) {
       // TODO: Implement login logic using email and password
-      axios.post('/login-endpoint-here', {
-        email: email,
+      axios.post('http://localhost:3000/login', {
+        username: email,
         password: password
       })
       .then(function (res) {
@@ -41,21 +36,12 @@ const LoginSignup = () => {
       })
     } else {
       // TODO: Implement signup logic using email, password, firstName, and lastName
-      console.log(firstName + lastName + email + password)
+      console.log(name + email + password)
 
-      // axios try catch POST to sign up endpoint
-      // axios.get('https://my-json-server.typicode.com/typicode/demo/posts')
-      //   .then(function (res) {
-      //     console.log(res);
-      //   })
-      //   .catch(function (err) {
-      //     console.log(err)
-      //   })
-
-      axios.post('/signup-endpoint-here', {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
+      // Register
+      axios.post('http://localhost:3000/register', {
+        name: name,
+        username: email,
         password: password
       })
       .then(function (res) {
@@ -74,13 +60,8 @@ const LoginSignup = () => {
         {!isLogin && (
           <>
             <label className='field-container'>
-              <span>First Name</span>
-              <input type="text" value={firstName} onChange={handleFirstNameChange} placeholder="Enter your first name" required />
-            </label>
-            <br />
-            <label className='field-container'>
-              <span>Last Name</span>
-              <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Enter your last name" required />
+              <span>Name</span>
+              <input type="text" value={name} onChange={handleNameChange} placeholder="Enter your name" required />
             </label>
             <br />
           </>
