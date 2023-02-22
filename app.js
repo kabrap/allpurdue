@@ -182,9 +182,9 @@ const Review = new mongoose.model("Review", reviewSchema);
 
 
 // for getting a place
-app.get('/:id', (req, res) => {
+app.get('/place/:id', (req, res) => {
   Place.findById(req.params.id)
-  .then((place) => res.json(place))
+  .then((place) => res.render("views/place", place))
   .catch((err) => console.log(err));
 });
 
@@ -204,7 +204,7 @@ app.post('/add', (req, res) => {
     loc
   })
   newPlace.save()
-  .then(() => res.json('Place Added'))
+  .then(res.render("views/place", newPlace))
   .catch((err) => console.log(err));
 });
 
@@ -217,20 +217,20 @@ app.post('/modify/:id', (req, res) => {
     place.placeType = req.body.placeType;
     place.tags = req.body.tags;
     place.location = req.body.location;
-    newPlace.save()
-    .then(() => res.json('Place Modified'))
+    place.save()
+    .then(res.render("views/place", place))
     .catch((err) => console.log(err));
   })
   .catch((err) => console.log(err));
 });
 
 // for removing a place
-app.delete('/:id', (req, res) => {
+app.delete('/delete/:id', (req, res) => {
   Place.findByIdAndDelete(req.params.id, (err) => {
     if (err) {
       console.log(err);
     } else {
-      res.render("landing");
+      res.render("views/landing");
     }
   });
 });
