@@ -140,6 +140,10 @@ app.get('/landing', function (req, res) {
 
 // POST Route for Register
 app.post('/register', function (req, res) {
+  if(req.body.password.length < 6) {
+    console.log("Password length is less than 6!");
+    return res.redirect('/register');
+  }
   const newUser = new User({
     name: req.body.name,
     email: req.body.username,
