@@ -58,7 +58,6 @@ const schema = new mongoose.Schema(
     },
     password: {
       type: String,
-      minLength: 6
     },
     googleId: {
       type: String
