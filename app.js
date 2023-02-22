@@ -131,7 +131,7 @@ app.get('/register', function (req, res) {
 
 // GET Route for Landing
 app.get('/landing', function (req, res) {
-  if (req.session.user || !req.isAuthenticated()) {
+  if (!req.session.user && !req.isAuthenticated()) {
     res.render("login");
   } else {
     res.render("landing");
