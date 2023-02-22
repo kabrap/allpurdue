@@ -14,8 +14,17 @@ const findOrCreate = require('mongoose-findorcreate');
 
 const app = express();
 
+const cors=require("cors");
+const corsOptions ={
+   origin:'*',
+   credentials:true,
+   optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions));
+
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://localhost:27017/allPurdueDB");
+mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -30,6 +39,7 @@ const transporter = nodemailer.createTransport({
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -140,6 +150,7 @@ app.get('/landing', function (req, res) {
 
 // POST Route for Register
 app.post('/register', function (req, res) {
+  console.log(req.body);
   if(req.body.password.length < 6) {
     console.log("Password length is less than 6!");
     return res.redirect('/register');
