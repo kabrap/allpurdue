@@ -24,7 +24,7 @@ const corsOptions ={
 app.use(cors(corsOptions));
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
+mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -49,8 +49,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+/* ---------- [Start] Models ---------- */
+
+const Schema = mongoose.Schema;
+
 // User Schema
-const schema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -69,6 +73,10 @@ const schema = new mongoose.Schema(
     password: {
       type: String,
     },
+    postedReviews: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Review',
+    }],
     googleId: {
       type: String
     }
@@ -76,7 +84,7 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-schema.plugin(findOrCreate);
+userSchema.plugin(findOrCreate);
 
 async function validateEmail(email) {
   const user = await User.findOne({ email });
@@ -90,7 +98,100 @@ async function validateEmail(email) {
 }
 
 // Simple User Collection
-const User = new mongoose.model("User", schema);
+const User = new mongoose.model("User", userSchema);
+
+// Place Schema
+
+const placeSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    placeType: {
+      type: String,
+      required: true,
+    },
+    tags: [
+      {
+        type: String,
+      },
+    ],
+    location: {
+      // Reference - https://mongoosejs.com/docs/geojson.html
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review',
+    }]
+    // TODO: Ratings, Average Rating and Reviews, and Similar Places (i think that is a FE issue)
+  },
+  { timestamps: true }
+);
+
+const Place = new mongoose.model("Place", placeSchema);
+
+// Anpther virtual to find number of ratings for each place
+// Usage example -
+//      const doc = await Band.findOne({ name: 'Motley Crue' }).populate('numMembers');
+//      doc.numMembers; // 2
+
+placeSchema.virtual('numRatings', {
+    ref: 'Review',
+    localField: 'name',
+    foreignField: 'place',
+    count: true
+})
+
+// Reviews Schema
+
+const reviewSchema = new Schema(
+    {
+      rating: {
+        type: Number,
+        minimum: [1, "Minimum rating of 1 is required"],
+        maximum: [5, "Maximum rating of 5 is required"],
+        required: true,
+      },
+      review: {
+        type: String,
+      },
+      place: {
+        type: Schema.Types.ObjectId,
+        ref: 'Place',
+        required: true,
+      },
+      postedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      postLikeUsersList : [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      }]
+    },
+    { timestamps: true }
+  );
+
+const Review = new mongoose.model("Review", reviewSchema);
+
+/* ---------- [End] Models ---------- */
+
+/* ---------- [Start] Google Auth ---------- */
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -117,6 +218,105 @@ function(accessToken, refreshToken, profile, cb) {
 }
 ));
 
+/* ---------- [End] Google Auth ---------- */
+
+
+/* ---------- [Start] Place Routes ---------- */
+
+// // for getting a place
+// app.get('/:place_id', (req, res) => {
+//   Place.findById(req.params.id)
+//   .then((place) => res.json(place))
+//   .catch((err) => console.log(err));
+// });
+
+app.get('/add_place', (req, res) => {
+  res.render("add_place");
+});
+
+// for adding a place
+app.post('/add_place', async (req, res) => {
+  try {
+    const { name, description, placeType, latitude, longitude } = req.body;
+
+    // Create a new Place object
+    const place = new Place({
+      name,
+      description,
+      placeType,
+      location: {
+        type: 'Point',
+        coordinates: [latitude, longitude],
+      },
+    });
+
+    // Save the Place object to the database
+    await place.save();
+    res.render('landing')
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error adding place');
+  }
+});
+
+// GET route for displaying all places
+app.get('/places', (req, res) => {
+  // Use Mongoose to retrieve all places from the database
+  Place.find({}, (err, places) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/');
+    } else {
+      res.render('places', { places: places });
+    }
+  });
+});
+
+// GET route for displaying a single place by ID
+app.get('/places/:id', (req, res) => {
+  // Use Mongoose to retrieve a single place by its ID from the database
+  Place.findById(req.params.id).populate('reviews').exec((err, place) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/');
+    } else {
+      res.render('place-details', { place: place });
+    }
+  });
+});
+
+// // for modifying a place
+// app.post('/modify/:place_id', (req, res) => {
+//   Place.findById(req.params.id)
+//   .then((place) =>{
+//     place.name = req.body.name;
+//     place.description = req.body.description;
+//     place.placeType = req.body.placeType;
+//     place.tags = req.body.tags;
+//     place.location = req.body.location;
+//     newPlace.save()
+//     .then(() => res.json('Place Modified'))
+//     .catch((err) => console.log(err));
+//   })
+//   .catch((err) => console.log(err));
+// });
+
+// // for removing a place
+// app.delete('/:place_id', (req, res) => {
+//   Place.findByIdAndDelete(req.params.id, (err) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       res.render("landing");
+//     }
+//   });
+// });
+
+/* ---------- [End] Place Routes ---------- */
+
+/* ---------- [Start] Login/Register/Home Routes ---------- */
+
 // GET Route for Homes
 app.get('/', function (req, res) {
   res.render("home");
@@ -131,7 +331,6 @@ app.get("/auth/google/allpurdue",
   function(req, res, err) {
     res.redirect("/landing");
   });
-
 
 // GET Route for Register
 app.get('/register', function (req, res) {
@@ -301,3 +500,5 @@ app.get('/landing', function (req, res) {
 app.listen(3000, function () {
   console.log("Server started at Port 3000!");
 });
+
+/* ---------- [End] Login/Register/Home Routes ---------- */

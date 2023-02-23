@@ -1,0 +1,15 @@
+<h1><%= place.name %></h1>
+<p><%= place.description %></p>
+<p><%= place.placeType %></p>
+
+
+
+<h2>Reviews</h2>
+<ul>
+  <% place.reviews.forEach(function(review) { %>
+    <li>
+      <p><%= review.rating %> stars</p>
+      <p><%= review.content %></p>
+    </li>
+  <% }); %>
+</ul>
