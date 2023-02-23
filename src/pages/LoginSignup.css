@@ -20,6 +20,17 @@
   align-items: center;
   width: 100%;
 }
+
+#forgot-form {
+  margin-bottom: 15px;
+}
+
+#reset-msg {
+  margin: 0;
+  margin-top: 10px;
+  margin-left: 30px;
+  font-size: 16px;
+}
   
 .submit-button {
   align-items: center;

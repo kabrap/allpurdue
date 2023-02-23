@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './LoginSignup.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -29,7 +31,7 @@ const LoginSignup = () => {
         password: password
       })
       .then(function (res) {
-        console.log("successful login")
+        console.log("successful loginnn")
       })
       .catch(function (err) {
         console.log("unsuccessful login")
@@ -45,6 +47,7 @@ const LoginSignup = () => {
         password: password
       })
       .then(function (res) {
+        setIsLogin(true)
         console.log("successful user creation")
       })
       .catch(function (err) {
@@ -66,8 +69,8 @@ const LoginSignup = () => {
             <br />
           </>
         )}
-          <label className='field-container'>
-            <span>Email</span>
+        <label className='field-container'>
+          <span>Email</span>
           <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter your email" required />
         </label>
         <br />
@@ -78,7 +81,7 @@ const LoginSignup = () => {
         {isLogin && (
           <>
             <label className='field-container'>
-              <span id='forgot-password'>Forgot password</span>
+              <Link to='/forgot-password'><span id='forgot-password'>Forgot password</span></Link>
             </label>
           </>
         )}
