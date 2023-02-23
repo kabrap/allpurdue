@@ -31,9 +31,12 @@ const LoginSignup = () => {
         password: password
       })
       .then(function (res) {
-        console.log("successful loginnn")
+        console.log("successful login")
+        sessionStorage.setItem("isLogin", "true")
+        window.location.href = '/'
       })
       .catch(function (err) {
+        console.log(err)
         console.log("unsuccessful login")
       })
     } else {
