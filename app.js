@@ -15,6 +15,7 @@ const findOrCreate = require('mongoose-findorcreate');
 const app = express();
 
 const cors=require("cors");
+const { Router } = require('express');
 const corsOptions ={
    origin:'*',
    credentials:true,
@@ -223,13 +224,6 @@ function(accessToken, refreshToken, profile, cb) {
 
 /* ---------- [Start] Place Routes ---------- */
 
-// // for getting a place
-// app.get('/:place_id', (req, res) => {
-//   Place.findById(req.params.id)
-//   .then((place) => res.json(place))
-//   .catch((err) => console.log(err));
-// });
-
 app.get('/add_place', (req, res) => {
   res.render("add_place");
 });
@@ -268,7 +262,7 @@ app.get('/places', (req, res) => {
       console.log(err);
       res.redirect('/');
     } else {
-      res.render('places', { places: places });
+      res.render('all_places', { places: places });
     }
   });
 });
@@ -285,6 +279,18 @@ app.get('/places/:id', (req, res) => {
     }
   });
 });
+
+// // Add average rating functionality
+// app.get('/places/:id', async (req, res) => {
+//   try {
+//     const place = await Place.findById(req.params.id).populate('reviews');
+//     const reviewRatings = place.reviews.map(review => review.rating);
+//     const averageRating = reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length;
+//     res.render('place_details', { place, averageRating });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
 
 // // for modifying a place
 // app.post('/modify/:place_id', (req, res) => {
@@ -314,6 +320,10 @@ app.get('/places/:id', (req, res) => {
 // });
 
 /* ---------- [End] Place Routes ---------- */
+
+/* ---------- [Start] Ratings Routes ---------- */
+
+/* ---------- [End] Ratings Routes ---------- */
 
 /* ---------- [Start] Login/Register/Home Routes ---------- */
 
