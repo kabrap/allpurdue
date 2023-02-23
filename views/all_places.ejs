@@ -11,11 +11,13 @@
         <li>
           <h2><%= place.name %></h2>
           <p><%= place.description %></p>
+          <p><strong>Average Rating:</strong> <%= place.avgRating %></p>
+          <p><strong>Number of Reviews:</strong> <%= place.numReviews %></p>
           <p><strong>Type:</strong> <%= place.placeType %></p>
           <% if (place.tags.length > 0) { %>
             <p><strong>Tags:</strong> <%= place.tags.join(', ') %></p>
           <% } %>
-          <p><strong>Location:</strong> <%= place.location.coordinates[1] %>, <%= place.location.coordinates[0] %></p>
+          <p><strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=<%= place.location.coordinates[0] %>,<%= place.location.coordinates[1] %>"><%= place.name %> on Google Maps</a></p>
           <p><a href="/places/<%= place._id %>">View</a></p>
         </li>
       <% }); %>

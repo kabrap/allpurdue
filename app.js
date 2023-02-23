@@ -98,7 +98,6 @@ async function validateEmail(email) {
   return true;
 }
 
-// Simple User Collection
 const User = new mongoose.model("User", userSchema);
 
 // Place Schema
@@ -138,7 +137,6 @@ const placeSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Review',
     }]
-    // TODO: Ratings, Average Rating and Reviews, and Similar Places (i think that is a FE issue)
   },
   { timestamps: true }
 );
@@ -150,12 +148,12 @@ const Place = new mongoose.model("Place", placeSchema);
 //      const doc = await Band.findOne({ name: 'Motley Crue' }).populate('numMembers');
 //      doc.numMembers; // 2
 
-placeSchema.virtual('numRatings', {
-    ref: 'Review',
-    localField: 'name',
-    foreignField: 'place',
-    count: true
-})
+// placeSchema.virtual('numRatings', {
+//     ref: 'Review',
+//     localField: 'name',
+//     foreignField: 'place',
+//     count: true
+// })
 
 // Reviews Schema
 
@@ -167,7 +165,7 @@ const reviewSchema = new Schema(
         maximum: [5, "Maximum rating of 5 is required"],
         required: true,
       },
-      review: {
+      text: {
         type: String,
       },
       place: {
@@ -175,15 +173,15 @@ const reviewSchema = new Schema(
         ref: 'Place',
         required: true,
       },
-      postedBy: {
+      author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
       },
-      postLikeUsersList : [{
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      }]
+      // postLikeUsersList : [{
+      //   type: Schema.Types.ObjectId,
+      //   ref: 'User',
+      // }]
     },
     { timestamps: true }
   );
@@ -255,42 +253,38 @@ app.post('/add_place', async (req, res) => {
 });
 
 // GET route for displaying all places
-app.get('/places', (req, res) => {
-  // Use Mongoose to retrieve all places from the database
-  Place.find({}, (err, places) => {
-    if (err) {
-      console.log(err);
-      res.redirect('/');
-    } else {
-      res.render('all_places', { places: places });
-    }
-  });
+app.get('/places', async (req, res) => {
+  try {
+    const places = await Place.find({});
+    const placesWithAvgRating = await Promise.all(places.map(async (place) => {
+      // Add average rating functionality
+      const reviews = await Review.find({ place: place._id });
+      const totalRatings = reviews.reduce((acc, review) => acc + review.rating, 0);
+      const numReviews = reviews.length > 0 ? reviews.length : 0;
+      const avgRating = reviews.length > 0 ? totalRatings / reviews.length : 0;
+      return { ...place._doc, avgRating, numReviews };
+    }));
+    res.render('all_places', { places: placesWithAvgRating });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 // GET route for displaying a single place by ID
-app.get('/places/:id', (req, res) => {
-  // Use Mongoose to retrieve a single place by its ID from the database
-  Place.findById(req.params.id).populate('reviews').exec((err, place) => {
-    if (err) {
-      console.log(err);
-      res.redirect('/');
-    } else {
-      res.render('place-details', { place: place });
-    }
-  });
+app.get('/places/:id', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id).populate('reviews');
+    // Add average rating functionality
+    const reviewRatings = place.reviews.map(review => review.rating);
+    const averageRating = reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length;
+    res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
+  } catch (error) {
+    console.error(error);
+    res.redirect('/');
+  }
 });
-
-// // Add average rating functionality
-// app.get('/places/:id', async (req, res) => {
-//   try {
-//     const place = await Place.findById(req.params.id).populate('reviews');
-//     const reviewRatings = place.reviews.map(review => review.rating);
-//     const averageRating = reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length;
-//     res.render('place_details', { place, averageRating });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
 
 // // for modifying a place
 // app.post('/modify/:place_id', (req, res) => {
@@ -321,11 +315,7 @@ app.get('/places/:id', (req, res) => {
 
 /* ---------- [End] Place Routes ---------- */
 
-/* ---------- [Start] Ratings Routes ---------- */
-
-/* ---------- [End] Ratings Routes ---------- */
-
-/* ---------- [Start] Login/Register/Home Routes ---------- */
+/* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
 
 // GET Route for Homes
 app.get('/', function (req, res) {
@@ -511,4 +501,4 @@ app.listen(3000, function () {
   console.log("Server started at Port 3000!");
 });
 
-/* ---------- [End] Login/Register/Home Routes ---------- */
+/* ---------- [End] Login/Register/Home/Forgot Password Routes ---------- */

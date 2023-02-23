@@ -2,8 +2,11 @@
 <p><%= place.description %></p>
 <p><%= place.placeType %></p>
 
-<!-- <h3>Average Rating:</h3>
-<p><%= averageRating.toFixed(1) %></p> -->
+<h3>Average Rating:</h3>
+<p><%= averageRating.toFixed(1) %></p>
+
+<h3> Number of Ratings: </h3>
+<p><%= numRatings %></p>
 
 <h3>Location:</h3>
 <p><a href="https://www.google.com/maps/search/?api=1&query=<%= place.location.coordinates[0] %>,<%= place.location.coordinates[1] %>"><%= place.name %> on Google Maps</a></p>
@@ -13,7 +16,7 @@
   <% place.reviews.forEach(function(review) { %>
     <li>
       <p><%= review.rating %> stars</p>
-      <p><%= review.content %></p>
+      <p><%= review.text %></p>
     </li>
   <% }); %>
 </ul>
