@@ -1,22 +1,49 @@
 <h1><%= place.name %></h1>
-<p><%= place.description %></p>
-<p><%= place.placeType %></p>
 
-<h3>Average Rating:</h3>
-<p><%= averageRating.toFixed(1) %></p>
+<div>
+  <p><%= place.description %></p>
+  <p><%= place.placeType %></p>
+  <p><%= place.tags.join(', ') %></p>
+  <p><strong>Average Rating:</strong> <%= averageRating %></p>
+  <p><strong>Number of Reviews:</strong> <%= numRatings %></p>
+</div>
 
-<h3> Number of Ratings: </h3>
-<p><%= numRatings %></p>
-
-<h3>Location:</h3>
+<h2>Location:</h2>
 <p><a href="https://www.google.com/maps/search/?api=1&query=<%= place.location.coordinates[0] %>,<%= place.location.coordinates[1] %>"><%= place.name %> on Google Maps</a></p>
 
-<h3>Reviews</h3>
-<ul>
+<h2>Reviews:</h2>
+
+<% if (place.reviews.length === 0) { %>
+  <p>No reviews yet. Be the first to leave a review!</p>
+<% } else { %>
   <% place.reviews.forEach(function(review) { %>
-    <li>
-      <p><%= review.rating %> stars</p>
+    <div>
+      <p>Rating: <%= review.rating %></p>
       <p><%= review.text %></p>
-    </li>
+      <form action="/places/<%= place._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+        <button type="submit">Delete Review</button>
+      </form>
+      <a href="/places/<%= place._id %>/reviews/<%= review._id %>/edit">Edit Review</a>
+    </div>
   <% }); %>
-</ul>
+<% } %>
+
+<h2>Add a Review:</h2>
+
+<form action="/places/<%= place._id %>/reviews" method="POST">
+  <div>
+    <label for="rating">Rating:</label>
+    <select id="rating" name="rating">
+      <option value="1">1 star</option>
+      <option value="2">2 stars</option>
+      <option value="3">3 stars</option>
+      <option value="4">4 stars</option>
+      <option value="5">5 stars</option>
+    </select>
+  </div>
+  <div>
+    <label for="text">Review:</label>
+    <textarea id="text" name="text"></textarea>
+  </div>
+  <button type="submit">Submit Review</button>
+</form>

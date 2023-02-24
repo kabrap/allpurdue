@@ -11,6 +11,7 @@ const nodemailer = require('nodemailer');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -36,6 +37,8 @@ const transporter = nodemailer.createTransport({
     pass: process.env.APP_PASS,
   }
 });
+
+app.use(methodOverride('_method'));
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -178,10 +181,6 @@ const reviewSchema = new Schema(
         ref: 'User',
         required: true,
       },
-      // postLikeUsersList : [{
-      //   type: Schema.Types.ObjectId,
-      //   ref: 'User',
-      // }]
     },
     { timestamps: true }
   );
@@ -315,6 +314,145 @@ app.get('/places/:id', async (req, res) => {
 
 /* ---------- [End] Place Routes ---------- */
 
+/* ---------- [Start] Reviews Routes ---------- */
+
+// Add a review
+app.post('/places/:placeId/reviews', async (req, res) => {
+  const placeId = req.params.placeId;
+  const { rating, text } = req.body;
+  // const author = req.session.userId; // assuming user ID is stored in session
+
+  try {
+    const place = await Place.findById(placeId);
+
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+
+    const review = new Review({
+      rating,
+      text,
+      place: placeId,
+      author: mongoose.Types.ObjectId("63f7c45e51c4cfd2537c1b15"),
+    });
+
+    await review.save();
+
+    place.reviews.push(review);
+    await place.save();
+
+    res.redirect(`/places/${placeId}`);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// edit review
+app.get('/places/:place_id/reviews/:id/edit', async (req, res) => {
+  const reviewId = req.params.id;
+  const placeId = req.params.place_id;
+  // const userId = req.session.userId; // assuming user ID is stored in session
+
+  try {
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+
+    const place = await Place.findById(placeId);
+
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+
+    // if (review.author.toString() !== userId) {
+    //   return res.status(403).send('Unauthorized');
+    // }
+
+    res.render('edit-review', { review, place });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.put('/places/:place_id/reviews/:id', async (req, res) => {
+  const reviewId = req.params.id;
+  const placeId = req.params.place_id;
+  // const userId = req.session.userId; // assuming user ID is stored in session
+  const { rating, text } = req.body;
+
+  try {
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+
+    const place = await Place.findById(placeId);
+
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+
+    // if (review.author.toString() !== userId) {
+    //   return res.status(403).send('Unauthorized');
+    // }
+
+    review.rating = rating;
+    review.text = text;
+    await review.save();
+
+    res.redirect(`/places/${review.place}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// delete review
+app.delete('/places/:place_id/reviews/:id', async (req, res) => {
+  const reviewId = req.params.id;
+  // const userId = req.session.userId; // assuming user ID is stored in session
+  const placeId = req.params.place_id;
+  try {
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+
+    const place = await Place.findById(placeId);
+
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    
+    // if (review.author.toString() !== userId) {
+    //   return res.status(403).send('Unauthorized');
+    // }
+
+    await Review.findByIdAndDelete(reviewId);
+
+    await Place.findByIdAndUpdate(
+      placeId,
+      { $pull: { reviews: reviewId } },
+      { new: true }
+    );
+
+    res.redirect(`/places/${placeId}`);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+/* ---------- [End] Reviews Routes ---------- */
+
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
 
 // GET Route for Homes
@@ -381,6 +519,7 @@ app.post('/login', function (req, res) {
       if (userExists) {
         if (userExists.password === userPass) {
           console.log("User Successfully Logged In!");
+          // sessionStorage.setItem('userID', userExists._id);
           req.session.user = userExists;
           res.redirect("/landing");
         } else {
