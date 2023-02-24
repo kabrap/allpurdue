@@ -319,12 +319,19 @@ app.get('/places/:id', async (req, res) => {
 
 // GET Route
 
-app.get('/search', (req, res) => {
-  res.render('search');
+// Set up the search endpoint route to handle GET requests
+app.get('/search', async (req, res) => {
+  try {
+    const results = []; // No results to show yet
+    res.render('search', { results });
+  } catch (err) {
+    console.error(err);
+    res.render('error', { message: 'An error has occurred' });
+  }
 });
 
 // Set up the search endpoint to handle POST requests
-app.post('/search', async (req, res) => {
+app.post('/search'  , async (req, res) => {
   const query = req.body.query;
   const regexQuery = new RegExp(query, 'i');
   try {
@@ -335,10 +342,14 @@ app.post('/search', async (req, res) => {
         { tags: regexQuery },
       ]
     }).select('name description placeType');
-    res.render('search', { results });
+    if (req.xhr) {
+      res.json({ suggestions: results }); // Return JSON containing the autocomplete suggestions
+    } else {
+      res.render('search', { results }); // Render the search results page
+    }
   } catch (err) {
     console.error(err);
-    res.render('error', { message: 'An error occurred' });
+    res.render('error', { message: 'An error has occurred' });
   }
 });
 

@@ -3,13 +3,38 @@
   <head>
     <meta charset="UTF-8">
     <title>Search</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+    <script> // script block to handle AJAX requests
+      $(document).ready(function() {
+        $('#query').on('input', function() {
+          const query = $(this).val(); //
+          if (query.length > 2) { // Only perform the search if the query is at least 3 characters long
+            $.post('/search', { query: query }, function(data) {
+              const dropdown = $('#dropdown'); // Get the dropdown element
+              dropdown.empty();
+              data.forEach(function(place) {
+                dropdown.append(`<a href="/places/${place._id}" class="dropdown-item">${place.name}</a>`);
+              });
+              if (data.length > 0) {
+                dropdown.show();
+              } else {
+                dropdown.hide();
+              }
+            });
+          } else {
+            $('#dropdown').hide();
+          }
+        });
+      });
+    </script>
   </head>
   <body>
     <h1>Search Places</h1>
-    <form method="POST"  action="/search">
+    <form method="POST" action="/search">
       <label for="query">Search:</label>
       <input type="text" id="query" name="query" value="<%= query || '' %>" required>
       <button type="submit">Search</button>
+      <div id="dropdown" class="dropdown-menu" style="display: none;"></div> <!-- Add a div to hold the dropdown links -->
     </form>
     <% if (results) { %>
       <h2>Results:</h2>
