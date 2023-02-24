@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+  </head>
+  <body>
+    <h1>Search Places</h1>
+    <form method="post" action="/search">
+      <label for="query">Search:</label>
+      <input type="text" id="query" name="query" value="<%= query || '' %>" required>
+      <button type="submit">Search</button>
+    </form>
+    <% if (results) { %>
+      <h2>Results:</h2>
+      <% if (results.length > 0) { %>
+        <p>Search results:</p>
+        <ul>
+          <% results.forEach(place => { %>
+            <li>
+              <strong><%= place.name %></strong>
+              <br><%= place.description %>
+              <br>Place Type: <%= place.placeType %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No places found that match your search query.</p>
+      <% } %>
+    <% } %>
+  </body>
+</html>

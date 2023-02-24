@@ -315,6 +315,35 @@ app.get('/places/:id', async (req, res) => {
 
 /* ---------- [End] Place Routes ---------- */
 
+/* ---------- [Start] Search Routes ---------- */
+
+// GET Route
+
+app.get('/search', (req, res) => {
+  res.render('search');
+});
+
+// Set up the search endpoint to handle POST requests
+app.post('/search', async (req, res) => {
+  const query = req.body.query;
+  const regexQuery = new RegExp(query, 'i');
+  try {
+    const results = await Place.find({
+      $or: [
+        { name: regexQuery },
+        { placeType: regexQuery },
+        { tags: regexQuery },
+      ]
+    }).select('name description placeType');
+    res.render('search', { results });
+  } catch (err) {
+    console.error(err);
+    res.render('error', { message: 'An error occurred' });
+  }
+});
+
+/* ---------- [End] search Routes ---------- */
+
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
 
 // GET Route for Homes
