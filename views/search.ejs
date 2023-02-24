@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>Search Places</h1>
-    <form method="post" action="/search">
+    <form method="POST" action="/search">
       <label for="query">Search:</label>
       <input type="text" id="query" name="query" value="<%= query || '' %>" required>
       <button type="submit">Search</button>
