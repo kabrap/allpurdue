@@ -1,8 +1,17 @@
 import React from 'react'
 
 function Dashboard() {
+  const logout = () => {
+    sessionStorage.removeItem("isLogin")
+    window.location.href = '/'
+  }
+  
   return (
-    <div>Dashboard</div>
+    <div>
+      Dashboard
+      <button onClick={logout}>logout</button>
+    </div>
+    
   )
 }
 

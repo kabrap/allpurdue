@@ -2,6 +2,7 @@ import './Navbar.css';
 import React from 'react';
 import Button from '../button/Button';
 import { Link } from 'react-router-dom';
+import icon from '../../images/profile-icon.png'
 
 function Navbar() {
 
@@ -23,8 +24,17 @@ function Navbar() {
         <li><a href="/contact">Contact</a></li>
       </ul>
       <div className='nav-buttons'>
-        <Link to="/loginsignup"><button className="sign-up" text="Sign Up" onClick={handleSignUp}>Sign Up</button></Link>
-        <Link to="/loginsignup"><button className="login" text="Login" onClick={handleLogin}>Login</button></Link>
+        {sessionStorage.getItem('isLogin') === null && sessionStorage.getItem('isLogin') !== 'true' && 
+          <>
+            <Link to="/loginsignup"><button className="sign-up" text="Sign Up" onClick={handleSignUp}>Sign Up</button></Link>
+            <Link to="/loginsignup"><button className="login" text="Login" onClick={handleLogin}>Login</button></Link>
+          </>
+        }
+        {sessionStorage.getItem('isLogin') !== null && sessionStorage.getItem('isLogin') === 'true' && 
+          <>
+            <Link to="/dashboard"><img id='profile-icon-img' src={icon} alt="profile icon"></img></Link>
+          </>
+        }
       </div>
     </nav>
   );

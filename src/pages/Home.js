@@ -5,16 +5,6 @@ import Card from '../components/card/Card.js'
 import bellTower from '../images/bell-tower.gif'
 
 function Home() {
-  if (sessionStorage.getItem('isLogin') !== null && sessionStorage.getItem('isLogin') === 'true') {
-    console.log("logged in home")
-    const element = document.createElement('h1')
-    const text = document.createTextNode("test login thing")
-    // element.appendChild(document.createTextNode("test login thing"))
-    element.appendChild(text)
-    const element2 = document.getElementById('hero-desc')
-    element2.appendChild(element)
-  }
-
   return (
     <div>
         <div className='hero'>
