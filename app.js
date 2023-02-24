@@ -260,7 +260,7 @@ app.get('/places', async (req, res) => {
       const reviews = await Review.find({ place: place._id });
       const totalRatings = reviews.reduce((acc, review) => acc + review.rating, 0);
       const numReviews = reviews.length > 0 ? reviews.length : 0;
-      const avgRating = reviews.length > 0 ? totalRatings / reviews.length : 0;
+      const avgRating = reviews.length > 0 ? roundToNearestHalf(totalRatings / reviews.length) : 0;
       return { ...place._doc, avgRating, numReviews };
     }));
     res.render('all_places', { places: placesWithAvgRating });
@@ -277,7 +277,7 @@ app.get('/places/:id', async (req, res) => {
     const place = await Place.findById(req.params.id).populate('reviews');
     // Add average rating functionality
     const reviewRatings = place.reviews.map(review => review.rating);
-    const averageRating = reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length;
+    const averageRating = roundToNearestHalf(reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length);
     res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
     console.error(error);
@@ -641,3 +641,20 @@ app.listen(3000, function () {
 });
 
 /* ---------- [End] Login/Register/Home/Forgot Password Routes ---------- */
+
+/* ---------- [Start] Helper Functions ---------- */
+
+function roundToNearestHalf(num) {
+  // Check if the number is within the desired range
+  if (num < 0 || num > 5) {
+    throw new Error('Number is not within the range of 0 and 5');
+  }
+  
+  // Round to the nearest 0.5
+  const roundedNum = Math.round(num * 2) / 2;
+  
+  // Ensure the rounded number is within the range of 0 and 5
+  return Math.max(0, Math.min(5, roundedNum));
+}
+
+/* ---------- [End] Helper Functions ---------- */
