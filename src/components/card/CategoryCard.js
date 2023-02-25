@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Card = (props) => {
   return (
-    <Link key={props._id} to={`/places/${props.title}`}>
+    <Link key={props._id} to={`/places/${props._id}`}>
       <div className="card">
         <div className="card-image">
           <img src={Chipotle} alt="restaurant" />

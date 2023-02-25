@@ -1,12 +1,30 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import './Place.css'
 import Chipotle from '../images/chipotle.jpg'
 import AddImage from '../images/addimgicon.png'
 import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
 import Bookmark from '../images/bookmark.png'
+import { useParams } from 'react-router-dom';
+import axios from 'axios'
 
 function Place() {
+  const [place, setPlace] = useState({});
+  const { id } = useParams();
+
+  useEffect(() => {
+    async function fetchPlace() {
+      try {
+        const response = await axios.get(`http://localhost:3000/places/${id}`);
+        setPlace(response.data);
+        console.log(place)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlace();
+  }, [id]);
+
   return (
     <div className='place-container'>
         <div className='top-container'>
@@ -15,7 +33,7 @@ function Place() {
             </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <p className="place-name">Chipotle</p>
+                    <p className="place-name">{place.name}</p>
                     <div className='icons-container'>
                         <img className="share-icon" src={Share} alt="share icon"/>
                         <img className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
@@ -24,13 +42,14 @@ function Place() {
                 </div>
                 <div className="rating">
                     <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                    <span className="rating-number">57 Reviews</span>
+                    {/* <span className="rating-number">{place.reviews.length} Reviews</span> */}
                 </div>
                 <div className='tags-container'>
-                    <span id='tag'>Fast Food</span>
-                    <span id='tag'>Mexican</span>
+                    {/* {place.tags.map(tag => (
+                        <span id='tag'>{tag}</span>
+                    ))} */}
                 </div>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                <p>{place.description}</p>
             </div>
         </div>
         <div className='bottom-container'>
