@@ -1,3 +1,7 @@
+.place-container {
+    margin-top: 20px;
+}
+
 .top-container {
     display: flex;
     color: white;
@@ -10,6 +14,12 @@
     margin-right: 20px;
 }
 
+#place-img {
+    width: 500px;
+    height: 300px;
+    border-radius: 12px;
+}
+
 .info-container {
     display: flex;
     flex-direction: column;
@@ -19,6 +29,35 @@
 .info-first-row {
     display: flex;
     justify-content: space-between;
+}
+
+.place-name {
+    margin: 0px;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.icons-container {
+    display: flex;
+}
+
+.icons-container img {
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
+}
+
+.icons-container img:hover {
+    cursor: pointer;
+}
+
+.rating {
+    font-size: 24px;
+    margin: 0px;
+}
+
+.tags-container {
+    margin-top: 4px;
 }
 
 .bottom-container {
@@ -61,36 +100,80 @@
 }
 
 #account-name {
+    font-weight: bold;
     color: #FFC632;
 }
 
+.text-box-container {
+    display: inline-block;
+    position: relative;
+    
+}
 
-.add-review-container input {
+.text-box-container textarea {
     padding: 8px;
     background-color: transparent;
     width: 98%;
     overflow-x: hidden;
     overflow-y: scroll;
-    text-align: start;
     margin-top: 4px;
     border: 1px solid #8383834d;
     border-radius: 4px;
+    color: #bbbbbb;
+    overflow: hidden;
+    resize: none;
+    display: block;
+    height: 100px;
 }
+
+.text-box-container textarea:focus {
+    outline: none;
+}
+
+.text-box-container textarea:focus::placeholder {
+    color: transparent;
+}
+
+.add-image-icon {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    bottom: 4px;
+    left: 6px;
+    padding: 2px;
+}
+
+.add-image-icon:hover {
+    cursor: pointer;
+    background-color: #99999931;
+    border-radius: 4px;
+}
+
 
 .review-button {
     display: flex;
-    justify-content: end;
     margin-left: auto;
-    margin-top: 6px;
-    font-size: 14px;
+    font-size: 12px;
     background-color: #FFC632;
     color: #626262;
     width: fit-content;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    border-radius: 8px;
 }
 
-#sort-filter {
-    color: #FFC632;
+.review-button:hover {
+    background-color: white;
+    color: black;
+}
+
+.sorting {
+    margin-top: 12px;
+    margin-bottom: 12px;
     font-size: 14px;
+    color: #FFC632;
 }
 
 .review-container {
@@ -111,6 +194,11 @@
 
 #time-ago {
     color: #626262;
+}
+
+.review-stars {
+    margin-top: -6px;
+    color: #ffc107;
 }
 
 .individual-review p {

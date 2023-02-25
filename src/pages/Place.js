@@ -1,24 +1,27 @@
 import React from 'react'
 import './Place.css'
 import Chipotle from '../images/chipotle.jpg'
+import AddImage from '../images/addimgicon.png'
+import Share from '../images/shareicon.png'
+import Pinpoint from '../images/pinpoint.png'
+import Bookmark from '../images/bookmark.png'
 
 function Place() {
   return (
-    <div>
+    <div className='place-container'>
         <div className='top-container'>
             <div className="place-image">
-                <img src={Chipotle} alt="place" />
+                <img src={Chipotle} alt="place" id="place-img"/>
             </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <h2 className="place-name">Chipotle</h2>
-                    <div>
-                        <span>Share</span>
-                        <span>Directions</span>
-                        <span>Bookmark</span>
+                    <p className="place-name">Chipotle</p>
+                    <div className='icons-container'>
+                        <img className="share-icon" src={Share} alt="share icon"/>
+                        <img className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
+                        <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/>
                     </div>
                 </div>
-                <p>200 W State St, West Lafayette, IN 47906</p>
                 <div className="rating">
                     <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                     <span className="rating-number">57 Reviews</span>
@@ -36,36 +39,24 @@ function Place() {
                     <p id="add-review-title">Add a Review</p>
                     <p id="add-review-rating">Rating: &#9733;&#9733;&#9733;&#9733;&#9733;</p>
                     <p id="add-review-as">Add review as <span id="account-name">someuser123</span></p>
-                    <input type="text" placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."></input>
-                    <button className='review-button'>Post</button>
-                </div>
-                <p className="sort-filter">Sort By: <b>Recent</b> &#8595;</p>
-                <div className='review-container'>
-                    <span id="up-arrow">&#8679;</span>
-                    <div className='individual-review'>
-                        <p id="individual-review-name">johndoe <span id="time-ago">&#xB7; 9 hr. ago</span></p>
-                        <p id="individual-review-review">man chipotle is too good!</p>
+                    <div className='text-box-container'>
+                        <textarea type="text" placeholder="Let us know what you think about <place name>!"></textarea>
+                        <img className="add-image-icon" src={AddImage} alt="add icon"/>
+                        <button className='review-button'>Post</button>
                     </div>
                 </div>
+                <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>
                 <div className='review-container'>
                     <span id="up-arrow">&#8679;</span>
                     <div className='individual-review'>
                         <p id="individual-review-name">johndoe <span id="time-ago">&#xB7; 9 hr. ago</span></p>
-                        <p id="individual-review-review">man chipotle is too good!</p>
-                    </div>
-                </div>
-                <div className='review-container'>
-                    <span id="up-arrow">&#8679;</span>
-                    <div className='individual-review'>
-                        <p id="individual-review-name">johndoe <span id="time-ago">&#xB7; 9 hr. ago</span></p>
+                        <span className="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                         <p id="individual-review-review">man chipotle is too good!</p>
                     </div>
                 </div>
             </div>
             <div className='suggested-container'>
                 <h4>Suggested places</h4>
-                <p>Card for a suggested place</p>
-                <p>Card for a suggested place</p>
                 <p>Card for a suggested place</p>
                 <p>Card for a suggested place</p>
             </div>
