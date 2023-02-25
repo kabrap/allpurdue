@@ -317,8 +317,6 @@ app.get('/places/:id', async (req, res) => {
 
 /* ---------- [Start] Search Routes ---------- */
 
-// GET Route
-
 // Set up the search endpoint route to handle GET requests
 app.get('/search', async (req, res) => {
   try {
