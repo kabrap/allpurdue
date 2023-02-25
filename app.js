@@ -26,7 +26,13 @@ const corsOptions ={
 app.use(cors(corsOptions));
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://localhost:27017/allPurdueDB");
+
+// for mac
+// mongoose.connect("mongodb://localhost:27017/allPurdueDB");
+
+// for windows
+mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -263,7 +269,9 @@ app.get('/places', async (req, res) => {
       const avgRating = reviews.length > 0 ? roundToNearestHalf(totalRatings / reviews.length) : 0;
       return { ...place._doc, avgRating, numReviews };
     }));
-    res.render('all_places', { places: placesWithAvgRating });
+    // sending places as response
+    res.send(placesWithAvgRating)
+    // res.render('all_places', { places: placesWithAvgRating });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -278,7 +286,9 @@ app.get('/places/:id', async (req, res) => {
     // Add average rating functionality
     const reviewRatings = place.reviews.map(review => review.rating);
     const averageRating = roundToNearestHalf(reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length);
-    res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
+    // sending place as response
+    res.send(place)
+    //res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
     console.error(error);
     res.redirect('/');
