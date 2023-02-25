@@ -13,6 +13,7 @@ import Residence from './pages/categories/Residence'
 import Study from './pages/categories/Study'
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard'
+import Place from './pages/Place'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/categories/study-spots" element={<Study />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/place" element={<Place />} />
         </Routes>
       </Router>
     </div>

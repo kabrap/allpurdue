@@ -1,0 +1,125 @@
+.top-container {
+    display: flex;
+    color: white;
+    padding-bottom: 20px;
+    border-bottom: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+.place-image {
+    margin-right: 20px;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.info-first-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bottom-container {
+    display: flex;
+}
+
+.reviews-column-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+
+.add-review-container {
+    border: 2px solid #8383834d;
+    background-color: #8383831f;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5%;
+    width: 80%;
+}
+
+#add-review-title {
+    font-size: 20px;
+    margin: 0px;
+    font-weight: bold;
+}
+
+#add-review-rating {
+    font-size: 16px;
+    margin: 0px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+#add-review-as {
+    font-size: 12px;
+    margin: 0px;
+}
+
+#account-name {
+    color: #FFC632;
+}
+
+
+.add-review-container input {
+    padding: 8px;
+    background-color: transparent;
+    width: 98%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    text-align: start;
+    margin-top: 4px;
+    border: 1px solid #8383834d;
+    border-radius: 4px;
+}
+
+.review-button {
+    display: flex;
+    justify-content: end;
+    margin-left: auto;
+    margin-top: 6px;
+    font-size: 14px;
+    background-color: #FFC632;
+    color: #626262;
+    width: fit-content;
+}
+
+#sort-filter {
+    color: #FFC632;
+    font-size: 14px;
+}
+
+.review-container {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+#up-arrow {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.individual-review {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2px;
+}
+
+#time-ago {
+    color: #626262;
+}
+
+.individual-review p {
+    margin: 0px;
+    margin-bottom: 4px;
+}
+
+.suggested-container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
