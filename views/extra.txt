@@ -1,0 +1,43 @@
+<!-- <body>
+    <h1>Search Places</h1>
+    <form method="GET" action="/search">
+      <label for="query">Search:</label>
+      <input type="text" id="query" name="query" value="<%= query || '' %>" required>
+      <button type="submit">Search</button>
+      <div id="dropdown" class="dropdown-menu" style="display: none;"></div> <!-- Add a div to hold the dropdown links
+    </form>
+    <% if (results) { %>
+      <h2>Results:</h2>
+      <% if (results.length > 0) { %>
+        <p>Search results:</p>
+        <ul>
+          <% results.forEach(place => { %>
+            <li>
+              <strong><%= place.name %></strong>
+              <br><%= place.description %>
+              <br>Place Type: <%= place.placeType %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No places found that match your search query.</p>
+      <% } %>
+    <% } %> -->
+
+
+
+
+
+
+
+
+
+    <% if (results && results.places && results.places.length > 0) { %>
+        <ul>
+          <% results.places.forEach(function(place) { %>
+            <li><a href="/places/<%= place._id %>"><%= place.name %></a></li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No results found.</p>
+      <% } %>

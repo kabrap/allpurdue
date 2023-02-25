@@ -3,7 +3,31 @@
   <head>
     <meta charset="UTF-8">
     <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+  </head>
+  <body>
+    <header>
+      <h1>All Purdue</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/places">Places</a></li>
+          <li><a href="/search">Search</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Search</h2>
+      <form method="GET" action="/search">
+        <label for="query">Search:</label>
+        <input type="text" id="query" name="query" value="<%= query || '' %>" required>
+        <button type="submit">Search</button>
+        <div id="dropdown" class="dropdown-menu" style="display: none;"></div>
+      </form>
+      <div id="no-results"></div>
+    </main>
     <script> // script block to handle AJAX requests
       $(document).ready(function() {
         $('#query').on('input', function() {
@@ -12,46 +36,28 @@
             $.post('/search', { query: query }, function(data) {
               const dropdown = $('#dropdown'); // Get the dropdown element
               dropdown.empty();
-              data.forEach(function(place) {
-                dropdown.append(`<a href="/places/${place._id}" class="dropdown-item">${place.name}</a>`);
-              });
               if (data.length > 0) {
+                data.forEach(function(place) {
+                dropdown.append(`<a href="/places/${place._id}" class="dropdown-item">${place.name}</a>`);
+                });
                 dropdown.show();
+                $('#no-results').empty();
               } else {
                 dropdown.hide();
+                $('#no-results').text("No such place found.");
               }
             });
           } else {
             $('#dropdown').hide();
+            $('#no-results').empty();
           }
+        });
+        $(document).on('click', '.dropdown-item', function(e) {
+          e.preventDefault();
+          const placeId = $(this).attr('data-place-id');
+          window.location.href = `/places/${placeId}`;
         });
       });
     </script>
-  </head>
-  <body>
-    <h1>Search Places</h1>
-    <form method="POST" action="/search">
-      <label for="query">Search:</label>
-      <input type="text" id="query" name="query" value="<%= query || '' %>" required>
-      <button type="submit">Search</button>
-      <div id="dropdown" class="dropdown-menu" style="display: none;"></div> <!-- Add a div to hold the dropdown links -->
-    </form>
-    <% if (results) { %>
-      <h2>Results:</h2>
-      <% if (results.length > 0) { %>
-        <p>Search results:</p>
-        <ul>
-          <% results.forEach(place => { %>
-            <li>
-              <strong><%= place.name %></strong>
-              <br><%= place.description %>
-              <br>Place Type: <%= place.placeType %>
-            </li>
-          <% }) %>
-        </ul>
-      <% } else { %>
-        <p>No places found that match your search query.</p>
-      <% } %>
-    <% } %>
   </body>
 </html>

@@ -25,7 +25,7 @@ const corsOptions ={
 app.use(cors(corsOptions));
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://localhost:27017/allPurdueDB");
+mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -320,8 +320,10 @@ app.get('/places/:id', async (req, res) => {
 // Set up the search endpoint route to handle GET requests
 app.get('/search', async (req, res) => {
   try {
+    //const query = req.query.q || '';
     const results = []; // No results to show yet
-    res.render('search', { results });
+    //res.render('search', { results });
+    res.render('search', { results, query: null });
   } catch (err) {
     console.error(err);
     res.render('error', { message: 'An error has occurred' });
@@ -332,6 +334,7 @@ app.get('/search', async (req, res) => {
 app.post('/search'  , async (req, res) => {
   const query = req.body.query;
   const regexQuery = new RegExp(query, 'i');
+  console.log(regexQuery);
   try {
     const results = await Place.find({
       $or: [
@@ -339,11 +342,12 @@ app.post('/search'  , async (req, res) => {
         { placeType: regexQuery },
         { tags: regexQuery },
       ]
-    }).select('name description placeType');
+    }).select('name placeType tags');
+    console.log(results);
     if (req.xhr) {
-      res.json({ suggestions: results }); // Return JSON containing the autocomplete suggestions
+      res.json({results }); // Return JSON containing the autocomplete suggestions
     } else {
-      res.render('search', { results }); // Render the search results page
+      res.render('search', { results });
     }
   } catch (err) {
     console.error(err);
