@@ -1,11 +1,27 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import CategoryCard from '../../components/card/CategoryCard.js'
 import './Categories.css'
 import { Link } from 'react-router-dom';
+import axios from 'axios'
 
 function Categories() {
+  const [places, setPlaces] = useState([])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3000/places');
+        setPlaces(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <div>
+      {console.log(places)}
       <div className='browse'>
         <h1>Browse All Categories</h1>
       </div>
@@ -20,12 +36,16 @@ function Categories() {
         <span>Sort: <b>Recommended</b>&#8595;</span>
       </div>
       <div className='categories-cards'>
-        <CategoryCard />
-        <CategoryCard />
-        <CategoryCard />
-        <CategoryCard />
-        <CategoryCard />
-        <CategoryCard />
+        {places.map(place => (
+          <CategoryCard 
+            key={place._id}
+            title={place.name}
+            description={place.description}
+            tags={place.tags}
+            placeType={place.placeType}
+            avgRating={place.avgRating}
+          />
+        ))}
       </div>
     </div>
   )
