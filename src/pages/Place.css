@@ -171,6 +171,12 @@
     color: black;
 }
 
+.review-button:disabled {
+    cursor: not-allowed;
+    background-color: #FFC632;
+    color: #626262;
+  }
+
 .sorting {
     margin-top: 12px;
     margin-bottom: 12px;

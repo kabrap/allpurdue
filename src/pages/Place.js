@@ -16,13 +16,14 @@ function Place() {
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [users, setUsers] = useState([]);
+  const author = sessionStorage.getItem("currentUser");
+  const [currentUser, setCurrentUser] = useState("");
 
   useEffect(() => {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
         setPlace(response.data);
-        console.log(place);
       } catch (error) {
         console.error(error);
       }
@@ -35,30 +36,32 @@ function Place() {
   }, [place]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/users/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUsers(data);
+    axios.get('http://localhost:3000/users/')
+      .then(response => {
+        setUsers(response.data);
+        setCurrentUser(response.data.find(user => user._id === author)?.name);
       })
-      .catch((error) => console.log(error));
-  }, []);
+      .catch(error => console.log(error));
+  }, [author]);
 
   const handleSubmit = async (event) => {
-    console.log(review);
-    console.log(rating);
     event.preventDefault();
+  
     const newReview = {
-        rating,
-        review
-      };
+      rating,
+      review,
+      author
+    };
+  
+    console.log(author)
 
     try {
-        const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-
+      const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  
     setReview("");
     setRating(null);
   };
@@ -111,7 +114,12 @@ function Place() {
                             })}
                         </div>
                     </div>
-                    <p id="add-review-as">Add review as <span id="account-name">someuser123</span></p>
+                    <p id="add-review-as">  
+                        {currentUser ? (
+                            <>Add review as <span id="account-name">{currentUser}</span></>
+                        ) : (
+                            "Please log in to add a review"
+                        )}</p>
                     <div className='text-box-container'>
                         <textarea
                             placeholder="Let us know what you think about this place!"
@@ -120,7 +128,7 @@ function Place() {
                             onChange={(event) => setReview(event.target.value)}>
                         </textarea>
                         <img className="add-image-icon" src={AddImage} alt="add icon"/>
-                        <button className='review-button' type="submit" onClick={handleSubmit}>Post</button>
+                        <button className='review-button' type="submit" onClick={handleSubmit} disabled={!author} title={!author ? "Please log in to add a review" : ""}>Submit</button>
                     </div>
                 </div>
                 <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>
@@ -128,7 +136,6 @@ function Place() {
                     <div className='individual-review'>
                         {place && placesReviews.map((review) => {
                             const user = users.find(user => user._id === review.author);
-                            console.log(user)
                             const stars = [];
                             for (let i = 1; i <= 5; i++) {
                                 if (i <= review.rating) {
@@ -140,8 +147,9 @@ function Place() {
                             return (
                                 <div key={review._id}>
                                     <span id="up-arrow">&#8679;</span>
-                                    <p>{user.name}</p>
+                                    <p>{user?.name}</p>
                                     <p>review rating: {stars}</p>
+                                    <p>{review.text}</p>
                                 </div>
                             );
                         })}
