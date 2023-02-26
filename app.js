@@ -228,6 +228,21 @@ function(accessToken, refreshToken, profile, cb) {
 
 /* ---------- [End] Google Auth ---------- */
 
+/* ---------- [Start] User Routes ---------- */
+
+// GET route for retrieving all user data
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send( 'Error retrieving user data' );
+  }
+});
+
+/* ---------- [End] User Routes ---------- */
 
 /* ---------- [Start] Place Routes ---------- */
 
@@ -333,8 +348,9 @@ app.get('/places/:id', async (req, res) => {
 // Add a review
 app.post('/places/:placeId/reviews', async (req, res) => {
   const placeId = req.params.placeId;
-  const { rating, text } = req.body;
-  // const author = req.session.userId; // assuming user ID is stored in session
+  const rating = req.body.rating;
+  const text = req.body.review;
+  const author = req.body.author; // assuming user ID is stored in session
 
   try {
     const place = await Place.findById(placeId);
@@ -347,7 +363,7 @@ app.post('/places/:placeId/reviews', async (req, res) => {
       rating,
       text,
       place: placeId,
-      author: mongoose.Types.ObjectId("63f7c45e51c4cfd2537c1b15"),
+      author
     });
 
     await review.save();
@@ -355,7 +371,7 @@ app.post('/places/:placeId/reviews', async (req, res) => {
     place.reviews.push(review);
     await place.save();
 
-    res.redirect(`/places/${placeId}`);
+    res.status(201).json(review);
 
   } catch (error) {
     console.log(error);
