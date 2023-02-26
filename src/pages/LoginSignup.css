@@ -94,6 +94,18 @@ input:focus {
   border: 2px solid #666666;
 }
 
+select {
+  color: #8a8a8a;
+  border-radius: 6px;
+  border: 2px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+select:focus {
+  border: 2px solid #666666;
+}
+
 #password-specifics {
   font-size: 11px;
   font-style: normal;
