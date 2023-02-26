@@ -32,8 +32,18 @@ const LoginSignup = () => {
       })
       .then(function (res) {
         console.log("successful login")
-        sessionStorage.setItem("isLogin", "true")
-        window.location.href = '/'
+
+        // Get user ID using email
+        axios.get(`http://localhost:3000/users?${email}`)
+        .then(function (res) {
+          const userId = res.data[0]._id; // Assuming email is unique, get first user ID
+          sessionStorage.setItem("userId", userId);
+          sessionStorage.setItem("isLogin", "true")
+          window.location.href = '/'
+        })
+        .catch(function (err) {
+          console.log("Error getting user ID:", err);
+        });
       })
       .catch(function (err) {
         console.log(err)

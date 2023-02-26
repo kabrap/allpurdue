@@ -12,21 +12,36 @@ function Place() {
   const [place, setPlace] = useState({});
   const { id } = useParams();
   const [review, setReview] = useState("");
+  const [placesReviews, setPlacesReviews] = useState([])
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
         setPlace(response.data);
-        console.log(place)
+        console.log(place);
       } catch (error) {
         console.error(error);
       }
     }
     fetchPlace();
   }, [id]);
+
+  useEffect(() => {
+    setPlacesReviews(place.reviews || []);
+  }, [place]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/users/`)
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers(data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleSubmit = async (event) => {
     console.log(review);
@@ -65,7 +80,7 @@ function Place() {
                 </div>
                 <div className="rating">
                     <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                    {/* <span className="rating-number">{place.reviews.length} Reviews</span> */}
+                    {/* <span className="rating-number">{place.reviews.length} Reviews</span>  */}
                 </div>
                 <div className='tags-container'>
                     {/* {place.tags.map(tag => (
@@ -91,9 +106,7 @@ function Place() {
                                         onMouseEnter={() => setHover(ratingValue)}
                                         onMouseLeave={() => setHover(null)}
                                         onClick={() => setRating(ratingValue)}
-                                    >
-                                        &#9733;
-                                    </span>
+                                    >&#9733;</span>
                                 );
                             })}
                         </div>
@@ -112,11 +125,26 @@ function Place() {
                 </div>
                 <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>
                 <div className='review-container'>
-                    <span id="up-arrow">&#8679;</span>
                     <div className='individual-review'>
-                        <p id="individual-review-name">johndoe <span id="time-ago">&#xB7; 9 hr. ago</span></p>
-                        <span className="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                        <p id="individual-review-review">man chipotle is too good!</p>
+                        {place && placesReviews.map((review) => {
+                            const user = users.find(user => user._id === review.author);
+                            console.log(user)
+                            const stars = [];
+                            for (let i = 1; i <= 5; i++) {
+                                if (i <= review.rating) {
+                                    stars.push(<span key={i} className="review-stars">&#9733;</span>);
+                                } else {
+                                    stars.push(<span key={i} className="review-stars">&#9734;</span>);
+                                }
+                            }
+                            return (
+                                <div key={review._id}>
+                                    <span id="up-arrow">&#8679;</span>
+                                    <p>{user.name}</p>
+                                    <p>review rating: {stars}</p>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
