@@ -1,10 +1,27 @@
 import './Home.css'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Search from '../components/search/Search.js'
 import Card from '../components/card/Card.js'
 import bellTower from '../images/bell-tower.gif'
+import axios from 'axios'
 
 function Home() {
+  const [currentUser, setCurrentUser] = useState(null)
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await axios.get('http://localhost:3000/currentUser');
+        setCurrentUser(response.data);
+        console.log(response.data)
+        sessionStorage.setItem("currentUser", response.data._id)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchUser();
+  }, []);
+
   return (
     <div>
         <div className='hero'>

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './LoginSignup.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -32,18 +31,9 @@ const LoginSignup = () => {
       })
       .then(function (res) {
         console.log("successful login")
-
-        // Get user ID using email
-        axios.get(`http://localhost:3000/users?${email}`)
-        .then(function (res) {
-          const userId = res.data[0]._id; // Assuming email is unique, get first user ID
-          sessionStorage.setItem("userId", userId);
-          sessionStorage.setItem("isLogin", "true")
-          window.location.href = '/'
-        })
-        .catch(function (err) {
-          console.log("Error getting user ID:", err);
-        });
+        console.log(res.data)
+        sessionStorage.setItem("currentUser", res.data._id)
+        window.location.href = '/'
       })
       .catch(function (err) {
         console.log(err)
@@ -68,10 +58,25 @@ const LoginSignup = () => {
       })
     }
   };
+  
+  useEffect(() => {
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'http://localhost:3000') {
+        return;
+      }
+    }, false);
+  }, []);
+
+  const handleGoogleClick = async () => {
+    window.open('http://localhost:3000/auth/google/allpurdue', '_blank');
+  };
 
   return (
     <div className="container">
       <h2 className="title">{isLogin ? 'Welcome back' : 'Create an account'}</h2>
+
+      <button onClick={handleGoogleClick}>Log in with Google</button>
+
       <form className="form" onSubmit={handleSubmit}>
         {!isLogin && (
           <>
