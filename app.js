@@ -189,11 +189,34 @@ const reviewSchema = new Schema(
         ref: 'User',
         required: true,
       },
+      likes: { 
+        type: Number,
+        default: 0 
+      },
+      likes_by: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }]
     },
     { timestamps: true }
   );
 
 const Review = new mongoose.model("Review", reviewSchema);
+
+const reviewLikeSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  review: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review',
+    required: true
+  }
+});
+
+const ReviewLike = new mongoose.model("ReviewLike", reviewLikeSchema);
 
 /* ---------- [End] Models ---------- */
 
@@ -481,6 +504,67 @@ app.delete('/places/:place_id/reviews/:id', async (req, res) => {
   }
 });
 
+// Add a new endpoint to like a review
+app.post('/places/:place_id/reviews/:review_id/like', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.review_id);
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+    const existingLike = await Like.findOne({
+      review: req.params.review_id,
+      user: req.user._id
+    });
+
+    if (!existingLike) {
+    //  // If the user has already liked the review, unlike it
+    //  await existingLike.remove();
+    //  review.likes--;
+    //  review.likes_by.splice(review.likes_by.indexOf(req.user._id), 1);
+    //} else {
+      
+    // If the user has not liked the review yet, like it
+      const newLike = new Like({
+        review: req.params.review_id,
+        user: req.user._id
+      });
+      await newLike.save();
+      review.likes++;
+      review.likes_by.push(req.user._id);
+    }
+
+    await review.save();
+    res.redirect(`/places/${req.params.place_id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+ 
+// Add a new endpoint to unlike a review
+app.post('/places/:place_id/reviews/:review_id/unlike', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.review_id);
+    const existingLike = await Like.findOne({
+      review: req.params.review_id,
+      user: req.user._id
+    });
+
+    if (existingLike) {
+      // If the user has already liked the review, unlike it
+      await existingLike.remove();
+      review.likes--;
+      review.likes_by.splice(review.likes_by.indexOf(req.user._id), 1);
+      await review.save();
+    }
+
+    res.redirect(`/places/${req.params.place_id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+ 
 /* ---------- [End] Reviews Routes ---------- */
 
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */

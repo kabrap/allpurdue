@@ -7,6 +7,17 @@
     <div>
       <p>Rating: <%= review.rating %></p>
       <p><%= review.text %></p>
+      <p>Likes: <%= review.likes %> 
+        <% if (review.likes_by.includes(req.user._id)) { %>
+          <form action="/places/<%= place._id %>/reviews/<%= review._id %>/unlike" method="POST">
+            <button type="submit">Unlike</button>
+          </form>
+        <% } else { %>
+          <form action="/places/<%= place._id %>/reviews/<%= review._id %>/like" method="POST">
+            <button type="submit">Like</button>
+          </form>
+        <% } %>
+      </p>
     </div>
   <% }); %>
 <% } %>
