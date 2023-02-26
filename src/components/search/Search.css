@@ -26,4 +26,41 @@
 
 .search-bar input:focus {
     outline: none;
+    border: none;
+}
+
+.dropdown {
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 8px;
+    color: black;
+    width: 300px;
+}
+
+.dropdown a {
+    margin: 0;
+}
+
+.dropdown p {
+    color: black;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.search-result {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.search-result img {
+    height: 35px;
+    width: 40px;
+    margin-left: 10px;
+}
+
+.search-result:hover {
+    background-color: #DDDDDD;
 }
