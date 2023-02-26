@@ -334,7 +334,7 @@ app.get('/search', async (req, res) => {
 app.post('/search'  , async (req, res) => {
   const query = req.body.query;
   const regexQuery = new RegExp(query, 'i');
-  console.log(regexQuery);
+  // console.log(regexQuery);
   try {
     const results = await Place.find({
       $or: [
@@ -342,16 +342,17 @@ app.post('/search'  , async (req, res) => {
         { placeType: regexQuery },
         { tags: regexQuery },
       ]
-    }).select('name placeType tags');
+    }).select('name placeType tags').limit(3);
     console.log(results);
-    if (req.xhr) {
-      res.json({results }); // Return JSON containing the autocomplete suggestions
-    } else {
-      res.render('search', { results });
-    }
+    res.send(results)
+    // if (req.xhr) {
+    //   res.json({results }); // Return JSON containing the autocomplete suggestions
+    // } else {
+    //   res.render('search', { results });
+    // }
   } catch (err) {
     console.error(err);
-    res.render('error', { message: 'An error has occurred' });
+    // res.render('error', { message: 'An error has occurred' });
   }
 });
 
