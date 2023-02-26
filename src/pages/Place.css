@@ -86,11 +86,14 @@
     font-weight: bold;
 }
 
+#rating-container {
+    display: flex;
+}
+
 #add-review-rating {
     font-size: 16px;
     margin: 0px;
     margin-top: 4px;
-    margin-bottom: 12px;
     font-weight: bold;
 }
 
@@ -107,7 +110,6 @@
 .text-box-container {
     display: inline-block;
     position: relative;
-    
 }
 
 .text-box-container textarea {

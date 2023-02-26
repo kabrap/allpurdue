@@ -11,6 +11,9 @@ import axios from 'axios'
 function Place() {
   const [place, setPlace] = useState({});
   const { id } = useParams();
+  const [review, setReview] = useState("");
+  const [rating, setRating] = useState(null);
+  const [hover, setHover] = useState(null);
 
   useEffect(() => {
     async function fetchPlace() {
@@ -24,6 +27,26 @@ function Place() {
     }
     fetchPlace();
   }, [id]);
+
+  const handleSubmit = async (event) => {
+    console.log(review);
+    console.log(rating);
+    event.preventDefault();
+    const newReview = {
+        rating,
+        review
+      };
+
+    try {
+        const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+
+    setReview("");
+    setRating(null);
+  };
 
   return (
     <div className='place-container'>
@@ -56,12 +79,35 @@ function Place() {
             <div className='reviews-column-container'>
                 <div className='add-review-container'>
                     <p id="add-review-title">Add a Review</p>
-                    <p id="add-review-rating">Rating: &#9733;&#9733;&#9733;&#9733;&#9733;</p>
+                    <div className="rating-container">
+                        <p id="add-review-rating">Rating:</p>
+                        <div>
+                            {[...Array(5)].map((star, index) => {
+                                const ratingValue = index + 1;
+                                return (
+                                    <span 
+                                        key={ratingValue} 
+                                        style={{ cursor: "pointer", color: ratingValue <= (hover || rating) ? "#FFC632" : "#e4e5e9" }}
+                                        onMouseEnter={() => setHover(ratingValue)}
+                                        onMouseLeave={() => setHover(null)}
+                                        onClick={() => setRating(ratingValue)}
+                                    >
+                                        &#9733;
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
                     <p id="add-review-as">Add review as <span id="account-name">someuser123</span></p>
                     <div className='text-box-container'>
-                        <textarea type="text" placeholder="Let us know what you think about <place name>!"></textarea>
+                        <textarea
+                            placeholder="Let us know what you think about this place!"
+                            id="review"
+                            value={review}
+                            onChange={(event) => setReview(event.target.value)}>
+                        </textarea>
                         <img className="add-image-icon" src={AddImage} alt="add icon"/>
-                        <button className='review-button'>Post</button>
+                        <button className='review-button' type="submit" onClick={handleSubmit}>Post</button>
                     </div>
                 </div>
                 <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>

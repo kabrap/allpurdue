@@ -33,7 +33,6 @@ function App() {
           <Route path="/categories/study-spots" element={<Study />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/place" element={<Place />} />
           <Route exact path="/places/:id" element={<Place />} />
         </Routes>
       </Router>
