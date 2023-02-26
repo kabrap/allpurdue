@@ -2,7 +2,7 @@ import React from 'react'
 
 function Dashboard() {
   const logout = () => {
-    sessionStorage.removeItem("isLogin")
+    sessionStorage.removeItem("currentUser")
     window.location.href = '/'
   }
   

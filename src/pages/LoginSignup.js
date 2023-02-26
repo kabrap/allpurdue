@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './LoginSignup.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { GoogleLogin } from '@leecheuk/react-google-login'
-// import dotenv from 'dotenv'
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -33,7 +31,8 @@ const LoginSignup = () => {
       })
       .then(function (res) {
         console.log("successful login")
-        sessionStorage.setItem("isLogin", "true")
+        console.log(res.data)
+        sessionStorage.setItem("currentUser", res.data._id)
         window.location.href = '/'
       })
       .catch(function (err) {
@@ -59,23 +58,24 @@ const LoginSignup = () => {
       })
     }
   };
-
-  const handleGoogleLoginSuccess = (response) => {
-    console.log('Google login success:', response);
-    // Perform any additional actions here, such as sending the user's Google ID token to the server for verification
-  };
   
+  useEffect(() => {
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'http://localhost:3000') {
+        return;
+      }
+    }, false);
+  }, []);
+
+  const handleGoogleClick = async () => {
+    window.open('http://localhost:3000/auth/google/allpurdue', '_blank');
+  };
+
   return (
     <div className="container">
       <h2 className="title">{isLogin ? 'Welcome back' : 'Create an account'}</h2>
 
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-        clientSecret={process.env.REACT_APP_GOOGLE_CLIENT_SECRET}
-        buttonText="Login with Google"
-        onSuccess={handleGoogleLoginSuccess}
-        cookiePolicy={'single_host_origin'}
-      />
+      <button onClick={handleGoogleClick}>Log in with Google</button>
 
       <form className="form" onSubmit={handleSubmit}>
         {!isLogin && (
