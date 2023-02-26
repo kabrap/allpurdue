@@ -109,6 +109,8 @@ async function validateEmail(email) {
 
 const User = new mongoose.model("User", userSchema);
 
+let currentUser = null;
+
 // Place Schema
 
 const placeSchema = new Schema(
@@ -211,12 +213,14 @@ passport.use(new GoogleStrategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: "http://localhost:3000/auth/google/allpurdue",
+  scope: ['profile', 'email']
 },
 function(accessToken, refreshToken, profile, cb) {
   User.findOrCreate({ googleId: profile.id, name: profile.displayName, email: profile.emails[0].value }, function (err, user) {
     if(err) {
       console.log(err);
     }
+    currentUser = user;
     return cb(err, user);
   });
 }
@@ -475,9 +479,11 @@ app.get("/auth/google",
 );
 
 app.get("/auth/google/allpurdue",
-  passport.authenticate('google', { failureRedirect: "/login" }),
+  passport.authenticate('google', { failureRedirect: "http://localhost:3001/loginsignup" }),
   function(req, res, err) {
-    res.redirect("/landing");
+    console.log("google login")
+    console.log(res.data)
+    res.redirect("http://localhost:3001/");
   });
 
 // GET Route for Register
@@ -531,6 +537,7 @@ app.post('/login', function (req, res) {
           console.log("User Successfully Logged In!");
           // sessionStorage.setItem('userID', userExists._id);
           req.session.user = userExists;
+          currentUser = userExists;
           res.redirect("/landing");
         } else {
           console.log("Incorrect Password!");
@@ -543,6 +550,11 @@ app.post('/login', function (req, res) {
     }
   }
   );
+});
+
+// GET Route for currentUser
+app.get("/currentUser", function (req, res) {
+  res.send(currentUser);
 });
 
 // GET Route for /forgotPassword
