@@ -6,7 +6,7 @@ import axios from 'axios';
 function Contact() {
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
-    const [requestType, setRequestType] = useState('issue')
+    const [requestType, setRequestType] = useState('Add Place')
     const [name, setName] = useState('')
 
     const handleEmailChange = (e) => {
@@ -25,10 +25,22 @@ function Contact() {
       setName(e.target.value);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // submit request
+        await axios.post('http://localhost:3000/submit-request', {
+          requestType: requestType,
+          email: email,
+          message: message,
+          name: name
+        })
+        .then(function (res) {
+          console.log('successful submission')
+        })
+        .catch(function (err) {
+          console.log(err)
+        }) 
     }
 
     return (
@@ -43,13 +55,13 @@ function Contact() {
                 <label id='request-options' className='field-container'>
                   <span>Request Type</span>
                   <select value={requestType} onChange={handleTypeChange} required>
-                    <option value="add place">Add Place</option>
-                    <option value="issue">Report Issue</option>
+                    <option value="Add Place">Add Place</option>
+                    <option value="Report Issue">Report Issue</option>
                   </select>
                 </label>
 
                 {/* Display issue form */}
-                {requestType === 'issue' && 
+                {requestType === 'Report Issue' && 
                 <>
                   <label className='field-container'>
                     <span>Message</span>
@@ -59,7 +71,7 @@ function Contact() {
                 }
 
                 {/* Display add place form */}
-                {requestType === 'add place' && 
+                {requestType === 'Add Place' && 
                 <>
                   <label className='field-container'>
                     <span>Name of Place</span>
