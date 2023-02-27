@@ -219,3 +219,37 @@
     flex-direction: column;
     width: 30%;
 }
+
+.suggested-places {
+    display: flex;
+    flex-direction: column;
+}
+
+.suggested-card {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    align-items: center;
+    background-color: white;
+    border-radius: 1rem;
+    height: 100px;
+    width: 100%;
+}
+
+.suggested-card-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 3%;
+}
+
+.suggested-card p {
+    color: black;
+    margin: 0;
+}
+
+.suggested-card img {
+    height: 80px;
+    width: 120px;
+    margin-left: 3%;
+    border-radius: 1rem;
+}
