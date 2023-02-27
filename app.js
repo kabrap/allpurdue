@@ -656,6 +656,29 @@ app.post("/reset-password", function (req, res) {
   })
 });
 
+// edit password from user dashboard page
+app.post("/change-password", function (req, res) {
+  console.log(req.body.currentPassword)
+  User.findOne({ password: md5(req.body.currentPassword) }, function (err, user) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } else if (!user) {
+      console.log("Current password does not match");
+      res.status(400).send("Current password does not match");
+    } else {
+      User.findOneAndUpdate({ _id: user._id }, { password: md5(req.body.newPassword) }, function (err) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.status(201).send("success")
+        }
+      });
+    }
+  });
+});
+
 app.get("/logout", async function(req, res) {
   req.session.user = null;
   req.logout(function(err) {
