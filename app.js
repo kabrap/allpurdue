@@ -305,12 +305,24 @@ app.get('/places/:id', async (req, res) => {
     // Add average rating functionality
     const reviewRatings = place.reviews.map(review => review.rating);
     const averageRating = roundToNearestHalf(reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length);
-    // sending place as response
-    res.send(place)
+
+    // suggestions
+    const tags = place.tags;
+    const suggestedPlaces = await Place.find({tags:{$in:tags}, _id:{$ne: place._id}}).limit(5);
+    // if there aren't 5 places with matching tags then we check for matching placeType
+    if (suggestedPlaces.length < 5) {
+      const matchingPlaceTypes = await Place.find({placeType: place.placeType, _id:{$ne: place._id}}).limit(5 - suggestedPlaces.length);
+      suggestedPlaces.push(...matchingPlaceTypes);
+    }
+
+    // sending everything as response
+    const data = { place, reviewRatings, averageRating, suggestedPlaces };
+    res.send(data)
     //res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
     console.error(error);
-    res.redirect('/');
+    // res.redirect('/');
+    res.status(400).send("Error retrieving place data")
   }
 });
 
