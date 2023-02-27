@@ -503,7 +503,7 @@ app.delete('/places/:place_id/reviews/:id', async (req, res) => {
   }
 });
 
-// Like a review
+// Like and unlike a review
 app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
   const reviewId = req.params.reviewId;
   console.log(req.params.userId)
