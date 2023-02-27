@@ -39,9 +39,21 @@ function Dashboard() {
   }, []);
 
   const handleSubmit = () => {
-    // axios.get
-    //if (newPassword == confirmPassword)
-
+    if (newPassword === confirmPassword) {
+      axios.post('http://localhost:3000/change-password', {
+        currentPassword: currentPassword,
+        newPassword: newPassword
+      })
+      .then(function (res) {
+        console.log('password changed!')
+      })
+      .catch(function (err) {
+        console.log(err)
+        console.log("current password doesn't match")
+      })
+    } else {
+      console.log("passwords don't match")
+    }
   }
   
   return (
@@ -64,11 +76,11 @@ function Dashboard() {
       {changePassword && 
       <div className='change-password-container'>
         <label>Current Password:</label>
-        <input id="currentPassword" type="password" onChange={handleCurrentPasswordChange}></input>
+        <input id="currentPassword" type="password" onChange={handleCurrentPasswordChange} required></input>
         <label>New Password:</label>
-        <input id="newPassword" type="password" onChange={handleNewPasswordChange}></input>
+        <input id="newPassword" type="password" onChange={handleNewPasswordChange} required></input>
         <label>Confirm New Password:</label>
-        <input id="confirmPassword" type="password" onChange={handleConfirmPasswordChange}></input>
+        <input id="confirmPassword" type="password" onChange={handleConfirmPasswordChange} required></input>
         <button id="submitButton" onClick={handleSubmit}>Submit</button>
       </div>
       }
