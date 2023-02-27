@@ -1,0 +1,40 @@
+#fields {
+    display: table;
+}
+.field {
+    font-size: 20px;
+    display: table-row;
+}
+.field input {
+    margin: 10px;
+    padding: 7px;
+    border: none;
+    display: table-cell;
+}
+.field label {
+    display: table-cell;
+}
+.field p {
+    margin: 10px;
+}
+
+.change-password-container button {
+    width: 200px;
+}
+
+.change-password-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.change-password-container label {
+    font-size: 20px;
+}
+
+.change-password-container input {
+    border: none;
+    padding: 7px;
+    width: 300px;
+    margin: 10px;
+    margin-left: 0;
+}

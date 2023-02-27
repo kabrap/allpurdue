@@ -21,11 +21,11 @@ const LoginSignup = () => {
     setName(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
       // TODO: Implement login logic using email and password
-      axios.post('http://localhost:3000/login', {
+      await axios.post('http://localhost:3000/login', {
         username: email,
         password: password
       })
@@ -44,7 +44,7 @@ const LoginSignup = () => {
       console.log(name + email + password)
 
       // Register
-      axios.post('http://localhost:3000/register', {
+      await axios.post('http://localhost:3000/register', {
         name: name,
         username: email,
         password: password
