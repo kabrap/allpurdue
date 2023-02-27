@@ -20,6 +20,15 @@ function Place() {
   const [currentUser, setCurrentUser] = useState("");
 
   useEffect(() => {
+    axios.get(`http://localhost:3000/users/${author}`)
+      .then(response => {
+        setCurrentUser(response.data.name);
+        console.log(response.data);
+      })
+      .catch(error => console.log(error));
+  }, [author]);
+  
+  useEffect(() => {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
@@ -39,10 +48,9 @@ function Place() {
     axios.get('http://localhost:3000/users/')
       .then(response => {
         setUsers(response.data);
-        setCurrentUser(response.data.find(user => user._id === author)?.name);
       })
       .catch(error => console.log(error));
-  }, [author]);
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,8 +61,6 @@ function Place() {
       author
     };
   
-    console.log(author)
-
     try {
       const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
       console.log(response.data);
@@ -64,6 +70,15 @@ function Place() {
   
     setReview("");
     setRating(null);
+  };
+
+  const handleLike = async (reviewId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/reviews/${reviewId}/like/${author}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -131,7 +146,7 @@ function Place() {
                         <button className='review-button' type="submit" onClick={handleSubmit} disabled={!author} title={!author ? "Please log in to add a review" : ""}>Submit</button>
                     </div>
                 </div>
-                <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>
+                {/* <span className="sorting">Sort By: <b>Recent</b> &#8595;</span> */}
                 <div className='review-container'>
                     <div className='individual-review'>
                         {place && placesReviews.map((review) => {
@@ -144,13 +159,26 @@ function Place() {
                                     stars.push(<span key={i} className="review-stars">&#9734;</span>);
                                 }
                             }
+                            let arrowColor = 'white';
+
+                            if (review.likes_by.includes(author)) {
+                              arrowColor = 'yellow';
+                            }
+
                             return (
-                                <div key={review._id}>
-                                    <span id="up-arrow">&#8679;</span>
-                                    <p>{user?.name}</p>
-                                    <p>review rating: {stars}</p>
-                                    <p>{review.text}</p>
-                                </div>
+                              <div key={review._id}>
+                                  <button
+                                  id="up-arrow"
+                                  style={{ cursor: 'pointer', color: arrowColor }}
+                                  onClick={() => handleLike(review._id)}
+                                  disabled={!author} title={!author ? "Please log in to like" : ""}
+                                  >
+                                    &#8679; {review.likes}
+                                  </button>
+                                  <p>{user?.name}</p>
+                                  <p>review rating: {stars}</p>
+                                  <p>{review.text}</p>
+                              </div>
                             );
                         })}
                     </div>
