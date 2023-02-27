@@ -8,6 +8,9 @@ const LoginSignup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [showSignupError, setShowSignupError] = useState(false);
+  const [showLoginError, setShowLoginError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -36,8 +39,8 @@ const LoginSignup = () => {
         window.location.href = '/'
       })
       .catch(function (err) {
-        console.log(err)
-        console.log("unsuccessful login")
+        setErrorMsg(err.response.data)
+        setShowLoginError(true);
       })
     } else {
       // TODO: Implement signup logic using email, password, firstName, and lastName
@@ -54,10 +57,18 @@ const LoginSignup = () => {
         console.log("successful user creation")
       })
       .catch(function (err) {
+        setErrorMsg(err.response.data)
+        setShowSignupError(true);
         console.log("unsuccessful user creation")
       })
     }
   };
+
+  const toggleForm = () => {
+    setShowSignupError(false)
+    setShowLoginError(false)
+    setIsLogin(!isLogin)
+  }
   
   useEffect(() => {
     window.addEventListener('message', (event) => {
@@ -106,9 +117,17 @@ const LoginSignup = () => {
         {!isLogin && (
           <>
             <label className='field-container'>
-              <span id='password-specifics'>Must be at least 8 characters.</span>
+              <span id='password-specifics'>Must be at least 6 characters.</span>
             </label>
           </>
+        )}
+
+        {showSignupError && (
+          <p className='error-msg'>{errorMsg}</p>
+        )}
+
+        {showLoginError && (
+          <p className='error-msg'>{errorMsg}</p>
         )}
         <button type="submit" className="submit-button">
           {isLogin ? 'Log In' : 'Create account'}
@@ -116,7 +135,7 @@ const LoginSignup = () => {
       </form>
       <p className="switch-mode">
         {isLogin ? "Don't have an account?" : 'Already have an account?'}
-        <button onClick={() => setIsLogin(!isLogin)} className="switch-button">
+        <button onClick={toggleForm} className="switch-button">
           {isLogin ? 'Sign Up' : 'Log in'}
         </button>
       </p>

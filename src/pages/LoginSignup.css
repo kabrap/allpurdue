@@ -34,7 +34,7 @@
   
 .submit-button {
   align-items: center;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   background-color: black;
   color: white;
   border: none;
@@ -123,4 +123,10 @@ select:focus {
 
 #forgot-password:hover {
   cursor: pointer;
+}
+
+.error-msg {
+  color: red;
+  margin: 0;
+  margin-top: 5px;
 }
