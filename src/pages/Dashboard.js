@@ -10,8 +10,8 @@ function Dashboard() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [changePassword, setChangePassword] = useState(false);
-  const userId = sessionStorage.getItem("userId");
-  const [currentUser, setCurrentUser] = useState({});
+  const userId = sessionStorage.getItem("currentUser");
+  const [user, setUser] = useState({});
 
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value);
@@ -33,29 +33,27 @@ function Dashboard() {
   useEffect(() => {
     axios.get('http://localhost:3000/users/')
       .then(response => {
-        setCurrentUser(response.data.find(user => user._id === '63fb8ebd4e62a46447f35853'));
-        console.log(response.data)
+        setUser(response.data.find(user => user._id === userId));
       })
       .catch(error => console.log(error));
-  }, );
+  }, []);
 
   const handleSubmit = () => {
     // axios.get
     //if (newPassword == confirmPassword)
 
-    
   }
   
   return (
     <div>
       <div id = "fields">
         <div class="field">
-          <label for="username">Username:</label>
-          <p id="username">Test username</p>
+          <label for="username">Name:</label>
+          <p id="username">{user.name}</p>
         </div>
         <div class="field">
           <label for="email">Email:</label>
-          <p id="email">Test email</p>
+          <p id="email">{user.email}</p>
         </div>
         <div class="field" id="passwordField">
           <label for="password">Password:</label>
