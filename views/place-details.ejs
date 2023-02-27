@@ -1,5 +1,14 @@
 <h1><%= place.name %></h1>
 
+<!-- add images section -->
+<% if (place.images.length > 0) { %>
+  <div class="images">
+    <% place.images.forEach(function(image) { %>
+      <img src="<%= image %>" alt="Image for <%= place.name %>">
+    <% }); %>
+  </div>
+<% } %>
+
 <div>
   <p><%= place.description %></p>
   <p><%= place.placeType %></p>

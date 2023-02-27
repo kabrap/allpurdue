@@ -9,6 +9,9 @@
     <ul>
       <% places.forEach(function(place) { %>
         <li>
+          <% if (place.imageURL) { %>
+            <img src="<%= place.imageURL %>" alt="<%= place.name %> image">
+          <% } %>
           <h2><%= place.name %></h2>
           <p><%= place.description %></p>
           <p><strong>Average Rating:</strong> <%= place.avgRating %></p>

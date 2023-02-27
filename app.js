@@ -147,7 +147,12 @@ const placeSchema = new Schema(
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review',
-    }]
+    }],
+    images: [
+      {
+        type: String,
+      }
+    ],
   },
   { timestamps: true }
 );
@@ -311,9 +316,14 @@ app.get('/places', async (req, res) => {
       const avgRating = reviews.length > 0 ? roundToNearestHalf(totalRatings / reviews.length) : 0;
       return { ...place._doc, avgRating, numReviews };
     }));
-    // sending places as response
-    res.send(placesWithAvgRating)
-    // res.render('all_places', { places: placesWithAvgRating });
+    // sending places as response with imageURL property
+    const placesWithImages = await Promise.all(placesWithAvgRating.map(async (place) => {
+      const image = await Image.findOne({ place: place._id });
+      const imageURL = image ? image.url : null;
+      return { ...place, imageURL };
+    }));
+    res.render('all_places', { places: placesWithImages });
+    // res.send(placesWithImages);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -334,6 +344,18 @@ app.get('/places/:id', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.redirect('/');
+  }
+});
+
+app.post('/:id/images', upload.single('image'), async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    place.images.push(req.file.path);
+    await place.save();
+    res.redirect('/places/${place._id}');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/places');
   }
 });
 
