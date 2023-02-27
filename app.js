@@ -521,7 +521,7 @@ app.post('/register', function (req, res) {
   console.log(req.body);
   if(req.body.password.length < 6) {
     console.log("Password length is less than 6!");
-    return res.redirect('/register');
+    res.status(500).send('Password length is less than 6!');
   }
   const newUser = new User({
     name: req.body.name,
@@ -531,7 +531,7 @@ app.post('/register', function (req, res) {
   newUser.save(function (err) {
     if (err) {
       console.log(err);
-      res.sendStatus(500);
+      res.status(500).send('Unsuccessful registration');
     } else {
       console.log("User Successfully Registered!");
       res.render("login");
@@ -547,6 +547,7 @@ app.post('/login', function (req, res) {
   User.findOne({ email: username }, function (err, userExists) {
     if (err) {
       console.log(err);
+      res.status(500).send('User not found')
     } else {
       if (userExists) {
         if (userExists.password === userPass) {
@@ -557,11 +558,11 @@ app.post('/login', function (req, res) {
           res.redirect("/landing");
         } else {
           console.log("Incorrect Password!");
-          res.status(500).send("Incorrect Password!")
+          res.status(500).send("Incorrect Password")
         }
       } else {
         console.log("User not found!");
-        res.redirect("/login");
+        res.status(500).send('Email does not exist')
       }
     }
   }
