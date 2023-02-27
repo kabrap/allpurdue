@@ -658,7 +658,6 @@ app.post("/reset-password", function (req, res) {
 
 // edit password from user dashboard page
 app.post("/change-password", function (req, res) {
-  console.log(req.body.currentPassword)
   User.findOne({ password: md5(req.body.currentPassword) }, function (err, user) {
     if (err) {
       console.log(err);
@@ -719,3 +718,23 @@ function roundToNearestHalf(num) {
 }
 
 /* ---------- [End] Helper Functions ---------- */
+
+// contact page submission
+app.post("/submit-request", function (req, res) {
+  console.log("getting here")
+  const msg = {
+    from: '"Team AllPurdue" allpurdue2023@gmail.com',
+    to: '"Team AllPurdue" allpurdue2023@gmail.com',
+    subject: req.body.requestType + ' request from ' + req.body.email,
+    text: req.body.requestType === 'Add Place' ? req.body.name + '\n' + req.body.message : 'Report Issue' + '\n' + req.body.message
+  }
+  transporter.sendMail(msg, function(err){
+    if (err) {
+      console.log(err);
+      res.status(500).send("error submitting request")
+    } else {
+      console.log("successful request submission");
+      res.status(200).send("success")
+    }
+  });
+});
