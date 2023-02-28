@@ -5,6 +5,7 @@ import AddImage from '../images/addimgicon.png'
 import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
 import Bookmark from '../images/bookmark.png'
+import Delete from '../images/delete.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
@@ -14,7 +15,9 @@ function Place() {
   const { id } = useParams();
   const [review, setReview] = useState("");
   const [placesReviews, setPlacesReviews] = useState([])
+  const [placesTags, setPlacesTags] = useState([])
   const [rating, setRating] = useState(null);
+  const [averageRating, setAverageRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [users, setUsers] = useState([]);
   const author = sessionStorage.getItem("currentUser");
@@ -22,12 +25,21 @@ function Place() {
   const [suggestedPlaces, setSuggestedPlaces] = useState([])
 
   useEffect(() => {
+    axios.get(`http://localhost:3000/users/${author}`)
+      .then(response => {
+        setCurrentUser(response.data.name);
+        console.log(currentUser)
+      })
+      .catch(error => console.log(error));
+  }, [author]);
+  
+  useEffect(() => {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
-        console.log(response.data)
         setPlace(response.data.place);
-        setSuggestedPlaces(response.data.suggestedPlaces)
+        setSuggestedPlaces(response.data.suggestedPlaces);
+        setAverageRating(response.data.averageRating);
       } catch (error) {
         console.error(error);
       }
@@ -37,16 +49,16 @@ function Place() {
 
   useEffect(() => {
     setPlacesReviews(place.reviews || []);
+    setPlacesTags(place.tags || []);
   }, [place]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/users/')
       .then(response => {
         setUsers(response.data);
-        setCurrentUser(response.data.find(user => user._id === author)?.name);
       })
       .catch(error => console.log(error));
-  }, [author]);
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,8 +69,6 @@ function Place() {
       author
     };
   
-    console.log(author)
-
     try {
       const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
       console.log(response.data);
@@ -68,6 +78,25 @@ function Place() {
   
     setReview("");
     setRating(null);
+  };
+
+  const handleLike = async (reviewId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/reviews/${reviewId}/like/${author}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (reviewId) => {
+    console.log(reviewId)
+    try {
+      const response = await axios.delete(`http://localhost:3000/places/${id}/reviews/${reviewId}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -87,12 +116,13 @@ function Place() {
                 </div>
                 <div className="rating">
                     <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                    {/* <span className="rating-number">{place.reviews.length} Reviews</span>  */}
+                    <span className="rating-number">{averageRating} Rating | </span> 
+                    <span className="rating-number">{placesReviews.length} Reviews</span> 
                 </div>
                 <div className='tags-container'>
-                    {/* {place.tags.map(tag => (
+                    {placesTags.map(tag => (
                         <span id='tag'>{tag}</span>
-                    ))} */}
+                    ))}
                 </div>
                 <p>{place.description}</p>
             </div>
@@ -135,7 +165,7 @@ function Place() {
                         <button className='review-button' type="submit" onClick={handleSubmit} disabled={!author} title={!author ? "Please log in to add a review" : ""}>Submit</button>
                     </div>
                 </div>
-                <span className="sorting">Sort By: <b>Recent</b> &#8595;</span>
+                {/* <span className="sorting">Sort By: <b>Recent</b> &#8595;</span> */}
                 <div className='review-container'>
                     <div className='individual-review'>
                         {place && placesReviews.map((review) => {
@@ -148,13 +178,43 @@ function Place() {
                                     stars.push(<span key={i} className="review-stars">&#9734;</span>);
                                 }
                             }
+                            let arrowColor = 'white';
+
+                            if (review.likes_by.includes(author)) {
+                              arrowColor = '#FFC632';
+                            }
+
                             return (
-                                <div key={review._id}>
-                                    <span id="up-arrow">&#8679;</span>
-                                    <p>{user?.name}</p>
-                                    <p>review rating: {stars}</p>
-                                    <p>{review.text}</p>
+                              <div key={review._id} className="individual-review-container">
+                                <button
+                                  
+                                  id="up-arrow"
+                                  style={{
+                                    cursor: "pointer",
+                                    color: arrowColor,
+                                    pointerEvents: author ? "auto" : "none",
+                                    opacity: author ? 1 : 0.5,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
+                                  onClick={() => handleLike(review._id)}
+                                  disabled={!author}
+                                  title={!author ? "Please log in to like" : ""}
+                                >
+                                  <span>&#8679;</span>
+                                  <span id="review-likes">{review.likes}</span>
+                                  <span className="delete-icon-container">
+                                    {review.author === author &&
+                                      <img className="delete-icon" src={Delete} alt="delete icon" onClick={() => handleDelete(review._id)}/>
+                                    }
+                                  </span>
+                                </button>
+                                <div className='individual-review-container-info'>
+                                  <p id='review-name'>{user?.name}</p>
+                                  <p id='review-stars'>{stars}</p>
+                                  <p id='review-text'>{review.text}</p>
                                 </div>
+                              </div>
                             );
                         })}
                     </div>
