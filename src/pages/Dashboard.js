@@ -27,8 +27,8 @@ function Dashboard() {
   };
 
   const logout = () => {
-    sessionStorage.removeItem("currentUser")
-    setPurdueVerified(false)
+    sessionStorage.removeItem('currentUser')
+    axios.get('http://localhost:3000/logout')
     window.location.href = '/'
   }
 

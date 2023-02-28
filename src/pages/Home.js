@@ -7,6 +7,7 @@ import axios from 'axios'
 
 function Home() {
   const [currentUser, setCurrentUser] = useState(null)
+  const [recentReviews, setRecentReviews] = useState([])
 
   useEffect(() => {
     async function fetchUser() {
@@ -20,6 +21,14 @@ function Home() {
       }
     }
     fetchUser();
+
+    axios.get('http://localhost:3000/recent-reviews')
+      .then(response => {
+        console.log(response.data)
+
+        setRecentReviews(response.data)
+      })
+      .catch(error => console.log(error));
   }, []);
 
   return (
@@ -45,8 +54,17 @@ function Home() {
       <div className='reviews'>
         <h1>Recent Reviews</h1>
         <div className='reviews-container'>
-          <Card />
-          <Card />
+          {recentReviews.map(review => (
+            <Card 
+              key={review._id}
+              placeId={review.place._id} 
+              text={review.text} 
+              name={review.place.name} 
+              tags={review.place.tags}
+              rating={review.rating}
+              placeType={review.place.placeType}
+            />
+          ))}
         </div>
       </div>
     </div>
