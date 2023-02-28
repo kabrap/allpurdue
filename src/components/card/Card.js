@@ -1,33 +1,52 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Card.css';
 import Chipotle from '../../images/chipotle.jpg'
+import { Link } from 'react-router-dom';
 
-const Card = () => {
+const Card = (props) => {
+  const placeTypeMap = {
+    'Food': 'restaurants',
+    'Study': 'study spots',
+    'Living': 'residence halls',
+    'Cafe': 'cafes'
+  }
+  const defaultPlaceType = placeTypeMap[props.placeType] || ''
+
+  const [placeType, setPlaceType] = useState(defaultPlaceType)
+
+  let stars = [];
+  for (let i = 0; i < props.rating; i++) {
+    stars.push(<span key={i}>&#9733;</span>);
+  }
+
   return (
-    <div className="card">
-      <div className="card-image">
-        <img src={Chipotle} alt="restaurant" />
-      </div>
-      <div className="card-placeholder">&#128343; 54 mins ago</div>
-      <div className="card-content">
-        <div className="restaurant-header">
-          <h2 className="restaurant-name">Chipotle</h2>
-          <div className="rating">
-            <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <span className="rating-number">&#40;5.0&#41;</span>
+    <Link key={props.placeId} to={`/places/${props.placeId}`}>
+      <div className="card">
+        <div className="card-image">
+          <img src={Chipotle} alt="place img" />
+        </div>
+        <div className="card-placeholder">&#128343; 54 mins ago</div>
+        <div className="card-content">
+          <div className="place-header-card">
+            <h2 className="place-name-card">{props.name}</h2>
+            <div className="rating">
+              <span className="stars">{stars}</span>
+              <span className="rating-number">&#40;{props.rating}&#41;</span>
+            </div>
+          </div>
+          <div className='tags-container'>
+            {props.tags.map(tag => (
+              <span id='tag-recent'>{tag}</span>
+            ))}
+          </div>
+          <span id='review-word'>Review</span>
+          <span className="review-placeholder">{props.text}</span>
+          <div className="card-button">
+            <button>All {placeType} &#8594;</button>
           </div>
         </div>
-        <div className='tags-container'>
-          <span id='tag'>Fast Food</span>
-          <span id='tag'>Mexican</span>
-        </div>
-        <span id='review-word'>Review</span>
-        <span className="review-placeholder">A brief review created by the user here. I am just typing this now as a placeholder.</span>
-        <div className="card-button">
-          <button>All restaurants &#8594;</button>
-        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

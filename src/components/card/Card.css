@@ -28,13 +28,18 @@
   padding: 20px;
 }
   
-.restaurant-header {
+.place-header-card {
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-bottom: 10px;
 }
   
-.restaurant-name {
+.place-name-card {
+  display: inline-block;
+  vertical-align: top;
   margin: 0;
   font-size: 24px;
   flex-grow: 1;
@@ -65,12 +70,13 @@
   width: 250px;
 }
 
-#tag {
+#tag-recent {
   display: flex;
   background-color: #DEDEDE;
   color: #6C6C6C;
   border-radius: 12px;
-  width: 75px;
+  padding-left: 10px;
+  padding-right: 10px;
   height: 20px;
   font-size: 12px;
   font-weight: bold;
@@ -134,7 +140,7 @@
   border-radius: 16px;
 }
   
-.restaurant-header {
+.place-header-card {
   width: 66.66%;
 }
   
