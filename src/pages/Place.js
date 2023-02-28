@@ -7,6 +7,7 @@ import Pinpoint from '../images/pinpoint.png'
 import Bookmark from '../images/bookmark.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function Place() {
   const [place, setPlace] = useState({});
@@ -18,6 +19,7 @@ function Place() {
   const [users, setUsers] = useState([]);
   const author = sessionStorage.getItem("currentUser");
   const [currentUser, setCurrentUser] = useState("");
+  const [suggestedPlaces, setSuggestedPlaces] = useState([])
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -32,7 +34,9 @@ function Place() {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
-        setPlace(response.data);
+        console.log(response.data)
+        setPlace(response.data.place);
+        setSuggestedPlaces(response.data.suggestedPlaces)
       } catch (error) {
         console.error(error);
       }
@@ -186,8 +190,19 @@ function Place() {
             </div>
             <div className='suggested-container'>
                 <h4>Suggested places</h4>
-                <p>Card for a suggested place</p>
-                <p>Card for a suggested place</p>
+                <div className='suggested-places'>
+                    {suggestedPlaces.map(place => (
+                        <Link key={place._id} to={`/places/${place._id}`}>
+                            <div className='suggested-card'>
+                                <img src={Chipotle} alt="place img"></img>
+                                <div className='suggested-card-info'>
+                                    <p>{place.name}</p>
+                                    {/* ADD RATING COUNT AND OTHER THINGS TO THE CARD */}
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     </div>

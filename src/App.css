@@ -2,6 +2,7 @@
 
 .app {
   height: 100vh;
+  width: 80vw;
   background-color: black;
   color: white;
   padding-left: 10%;

@@ -12,6 +12,7 @@ function Dashboard() {
   const [changePassword, setChangePassword] = useState(false);
   const userId = sessionStorage.getItem("currentUser");
   const [user, setUser] = useState({});
+  const [purdueVerified, setPurdueVerified] = useState(false)
 
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value);
@@ -27,6 +28,7 @@ function Dashboard() {
 
   const logout = () => {
     sessionStorage.removeItem("currentUser")
+    setPurdueVerified(false)
     window.location.href = '/'
   }
 
@@ -34,6 +36,11 @@ function Dashboard() {
     axios.get('http://localhost:3000/users/')
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
+        if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
+          console.log(user.email)
+          setPurdueVerified(true)
+          console.log(purdueVerified)
+        }
       })
       .catch(error => console.log(error));
   }, []);
@@ -61,7 +68,7 @@ function Dashboard() {
       <div id = "fields">
         <div class="field">
           <label for="username">Name:</label>
-          <p id="username">{user.name}</p>
+          <p id="username">{user.name}{purdueVerified && <img alt='Verified Purdue User' src="https://img.icons8.com/windows/32/FAB005/instagram-check-mark.png"/>}</p>
         </div>
         <div class="field">
           <label for="email">Email:</label>
