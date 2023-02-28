@@ -89,11 +89,7 @@ const userSchema = new Schema(
     }],
     googleId: {
       type: String
-    },
-    likedReviews: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Review',
-    }]
+    }
   },
   { timestamps: true }
 );
@@ -173,37 +169,37 @@ const Place = new mongoose.model("Place", placeSchema);
 // Reviews Schema
 
 const reviewSchema = new Schema(
-  {
-    rating: {
-      type: Number,
-      minimum: [1, "Minimum rating of 1 is required"],
-      maximum: [5, "Maximum rating of 5 is required"],
-      required: true,
+    {
+      rating: {
+        type: Number,
+        minimum: [1, "Minimum rating of 1 is required"],
+        maximum: [5, "Maximum rating of 5 is required"],
+        required: true,
+      },
+      text: {
+        type: String,
+      },
+      place: {
+        type: Schema.Types.ObjectId,
+        ref: 'Place',
+        required: true,
+      },
+      author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      likes: {
+        type: Number,
+        default: 0,
+      },
+      likes_by: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }]
     },
-    text: {
-      type: String,
-    },
-    place: {
-      type: Schema.Types.ObjectId,
-      ref: 'Place',
-      required: true,
-    },
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    likes_by: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-  },
-  { timestamps: true }
-);
+    { timestamps: true }
+  );
 
 const Review = new mongoose.model("Review", reviewSchema);
 
@@ -251,16 +247,6 @@ app.get('/users', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send( 'Error retrieving user data' );
-  }
-});
-
-// GET route for getting specific user
-app.get('/users/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.send(user)
-  } catch (error) {
-    console.error(error);
   }
 });
 
@@ -480,7 +466,6 @@ app.put('/places/:place_id/reviews/:id', async (req, res) => {
 // delete review
 app.delete('/places/:place_id/reviews/:id', async (req, res) => {
   const reviewId = req.params.id;
-  // const userId = req.session.userId; // assuming user ID is stored in session
   const placeId = req.params.place_id;
   try {
     const review = await Review.findById(reviewId);
@@ -494,10 +479,6 @@ app.delete('/places/:place_id/reviews/:id', async (req, res) => {
     if (!place) {
       return res.status(404).send('Place not found');
     }
-    
-    // if (review.author.toString() !== userId) {
-    //   return res.status(403).send('Unauthorized');
-    // }
 
     await Review.findByIdAndDelete(reviewId);
 
@@ -518,9 +499,7 @@ app.delete('/places/:place_id/reviews/:id', async (req, res) => {
 // Like and unlike a review
 app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
   const reviewId = req.params.reviewId;
-  console.log(req.params.userId)
   const user = await User.findById(req.params.userId);
-  console.log(user)
 
   try {
     const review = await Review.findById(reviewId);
@@ -530,18 +509,15 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
     }
 
     const hasLiked = review.likes_by.includes(user._id);
-    console.log(hasLiked)
 
     if (hasLiked) {
       review.likes = review.likes - 1;
       review.likes_by.pop(user._id);
-      user.likedReviews.pop(review._id);
+      // user.likedReviews.pop(review._id);
     } else {
       review.likes = review.likes + 1;
       review.likes_by.push(user._id);
-      console.log(user.likedReviews);
-      user.likedReviews.push(review._id);
-      console.log(user.likedReviews);
+      // user.likedReviews.push(review._id);
     }
 
     // Save the changes to the review and user documents
@@ -733,7 +709,6 @@ app.post("/reset-password", function (req, res) {
 
 // edit password from user dashboard page
 app.post("/change-password", function (req, res) {
-  console.log(req.body.currentPassword)
   User.findOne({ password: md5(req.body.currentPassword) }, function (err, user) {
     if (err) {
       console.log(err);
@@ -756,7 +731,6 @@ app.post("/change-password", function (req, res) {
 
 app.get("/logout", async function(req, res) {
   req.session.user = null;
-  currentUser = null;
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
@@ -795,3 +769,23 @@ function roundToNearestHalf(num) {
 }
 
 /* ---------- [End] Helper Functions ---------- */
+
+// contact page submission
+app.post("/submit-request", function (req, res) {
+  console.log("getting here")
+  const msg = {
+    from: '"Team AllPurdue" allpurdue2023@gmail.com',
+    to: '"Team AllPurdue" allpurdue2023@gmail.com',
+    subject: req.body.requestType + ' request from ' + req.body.email,
+    text: req.body.requestType === 'Add Place' ? req.body.name + '\n' + req.body.message : 'Report Issue' + '\n' + req.body.message
+  }
+  transporter.sendMail(msg, function(err){
+    if (err) {
+      console.log(err);
+      res.status(500).send("error submitting request")
+    } else {
+      console.log("successful request submission");
+      res.status(200).send("success")
+    }
+  });
+});
