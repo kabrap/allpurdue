@@ -357,6 +357,22 @@ app.get('/places/:id', async (req, res) => {
 
 /* ---------- [Start] Reviews Routes ---------- */
 
+// getting recent reviews
+app.get('/recent-reviews', async (req, res) => {
+  try {
+    const recentReviews = await Review.find({})
+      .populate('place', 'name tags placeType')
+      .sort({ updatedAt: -1 })
+      .exec()
+    
+    // sending recentReviews as response
+    res.send(recentReviews)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+})
+
 // Add a review
 app.post('/places/:placeId/reviews', async (req, res) => {
   const placeId = req.params.placeId;
