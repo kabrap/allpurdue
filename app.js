@@ -147,7 +147,12 @@ const placeSchema = new Schema(
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review',
-    }]
+    }],
+    images: [
+      {
+        type: String,
+    },
+  ],
   },
   { timestamps: true }
 );
