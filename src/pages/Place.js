@@ -5,6 +5,7 @@ import AddImage from '../images/addimgicon.png'
 import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
 import Bookmark from '../images/bookmark.png'
+import Delete from '../images/delete.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
@@ -25,7 +26,7 @@ function Place() {
     axios.get(`http://localhost:3000/users/${author}`)
       .then(response => {
         setCurrentUser(response.data.name);
-        console.log(response.data);
+        console.log(currentUser)
       })
       .catch(error => console.log(error));
   }, [author]);
@@ -34,7 +35,6 @@ function Place() {
     async function fetchPlace() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
-        console.log(response.data)
         setPlace(response.data.place);
         setSuggestedPlaces(response.data.suggestedPlaces)
       } catch (error) {
@@ -79,6 +79,16 @@ function Place() {
   const handleLike = async (reviewId) => {
     try {
       const response = await axios.post(`http://localhost:3000/reviews/${reviewId}/like/${author}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (reviewId) => {
+    console.log(reviewId)
+    try {
+      const response = await axios.delete(`http://localhost:3000/places/${id}/reviews/${reviewId}`);
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -166,22 +176,39 @@ function Place() {
                             let arrowColor = 'white';
 
                             if (review.likes_by.includes(author)) {
-                              arrowColor = 'yellow';
+                              arrowColor = '#FFC632';
                             }
 
                             return (
-                              <div key={review._id}>
-                                  <button
+                              <div key={review._id} className="individual-review-container">
+                                <button
+                                  
                                   id="up-arrow"
-                                  style={{ cursor: 'pointer', color: arrowColor }}
+                                  style={{
+                                    cursor: "pointer",
+                                    color: arrowColor,
+                                    pointerEvents: author ? "auto" : "none",
+                                    opacity: author ? 1 : 0.5,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
                                   onClick={() => handleLike(review._id)}
-                                  disabled={!author} title={!author ? "Please log in to like" : ""}
-                                  >
-                                    &#8679; {review.likes}
-                                  </button>
-                                  <p>{user?.name}</p>
-                                  <p>review rating: {stars}</p>
-                                  <p>{review.text}</p>
+                                  disabled={!author}
+                                  title={!author ? "Please log in to like" : ""}
+                                >
+                                  <span>&#8679;</span>
+                                  <span id="review-likes">{review.likes}</span>
+                                  <span className="delete-icon-container">
+                                    {review.author === author &&
+                                      <img className="delete-icon" src={Delete} alt="delete icon" onClick={() => handleDelete(review._id)}/>
+                                    }
+                                  </span>
+                                </button>
+                                <div className='individual-review-container-info'>
+                                  <p id='review-name'>{user?.name}</p>
+                                  <p id='review-stars'>{stars}</p>
+                                  <p id='review-text'>{review.text}</p>
+                                </div>
                               </div>
                             );
                         })}

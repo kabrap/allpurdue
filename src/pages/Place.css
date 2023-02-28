@@ -152,7 +152,6 @@
     border-radius: 4px;
 }
 
-
 .review-button {
     display: flex;
     margin-left: auto;
@@ -190,14 +189,54 @@
 }
 
 #up-arrow {
-    font-size: 20px;
-    margin-right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    margin: 0px;
+    background-color: transparent;
+    padding: 0px;
+}
+
+#review-likes {
+    font-size: 14px;
+}
+
+.delete-icon-container {
+    margin-top: 2px;
+}
+
+.delete-icon {
+    width: 16px;
 }
 
 .individual-review-container {
     display: flex;
+    margin-top: 12px;
+
+}
+
+.individual-review-container-info {
+    display: flex;
     flex-direction: column;
+    color: #B4B4B4;
     padding-top: 2px;
+    padding-left: 6px;
+}
+
+#review-name {
+    font-size: 16px;
+    margin: 0px;
+}
+
+#review-stars {
+    font-size: 16px;
+    margin: 0px;
+}
+
+#review-text {
+    font-size: 14px;
+    margin: 0px;
 }
 
 #time-ago {
