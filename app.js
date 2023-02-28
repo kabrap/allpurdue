@@ -363,6 +363,49 @@ app.get('/places/:id', async (req, res) => {
 
 /* ---------- [End] Place Routes ---------- */
 
+/* ---------- [Start] Search Routes ---------- */
+
+// Set up the search endpoint route to handle GET requests
+app.get('/search', async (req, res) => {
+  try {
+    //const query = req.query.q || '';
+    const results = []; // No results to show yet
+    //res.render('search', { results });
+    res.render('search', { results, query: null });
+  } catch (err) {
+    console.error(err);
+    res.render('error', { message: 'An error has occurred' });
+  }
+});
+
+// Set up the search endpoint to handle POST requests
+app.post('/search'  , async (req, res) => {
+  const query = req.body.query;
+  const regexQuery = new RegExp(query, 'i');
+  // console.log(regexQuery);
+  try {
+    const results = await Place.find({
+      $or: [
+        { name: regexQuery },
+        { placeType: regexQuery },
+        { tags: regexQuery },
+      ]
+    }).select('name placeType tags').limit(3);
+    console.log(results);
+    res.send(results)
+    // if (req.xhr) {
+    //   res.json({results }); // Return JSON containing the autocomplete suggestions
+    // } else {
+    //   res.render('search', { results });
+    // }
+  } catch (err) {
+    console.error(err);
+    // res.render('error', { message: 'An error has occurred' });
+  }
+});
+
+/* ---------- [End] search Routes ---------- */
+
 /* ---------- [Start] Reviews Routes ---------- */
 
 // Add a review
