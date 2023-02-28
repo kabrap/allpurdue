@@ -151,8 +151,8 @@ const placeSchema = new Schema(
     images: [
       {
         type: String,
-    },
-  ],
+      },
+    ]
   },
   { timestamps: true }
 );
