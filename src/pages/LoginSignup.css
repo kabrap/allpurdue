@@ -5,8 +5,13 @@
   margin: auto;
   background-color: white;
   border-radius: 20px;
-  width: 30%;
+  width: 400px;
   color: black;
+}
+@media only screen and (max-width: 750px) {
+  .container {
+    width: 40%;
+  }   
 }
   
 .title {
