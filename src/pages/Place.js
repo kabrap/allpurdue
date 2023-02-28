@@ -15,7 +15,9 @@ function Place() {
   const { id } = useParams();
   const [review, setReview] = useState("");
   const [placesReviews, setPlacesReviews] = useState([])
+  const [placesTags, setPlacesTags] = useState([])
   const [rating, setRating] = useState(null);
+  const [averageRating, setAverageRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [users, setUsers] = useState([]);
   const author = sessionStorage.getItem("currentUser");
@@ -36,7 +38,8 @@ function Place() {
       try {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
         setPlace(response.data.place);
-        setSuggestedPlaces(response.data.suggestedPlaces)
+        setSuggestedPlaces(response.data.suggestedPlaces);
+        setAverageRating(response.data.averageRating);
       } catch (error) {
         console.error(error);
       }
@@ -46,6 +49,7 @@ function Place() {
 
   useEffect(() => {
     setPlacesReviews(place.reviews || []);
+    setPlacesTags(place.tags || []);
   }, [place]);
 
   useEffect(() => {
@@ -112,12 +116,13 @@ function Place() {
                 </div>
                 <div className="rating">
                     <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                    {/* <span className="rating-number">{place.reviews.length} Reviews</span>  */}
+                    <span className="rating-number">{averageRating} Rating | </span> 
+                    <span className="rating-number">{placesReviews.length} Reviews</span> 
                 </div>
                 <div className='tags-container'>
-                    {/* {place.tags.map(tag => (
+                    {placesTags.map(tag => (
                         <span id='tag'>{tag}</span>
-                    ))} */}
+                    ))}
                 </div>
                 <p>{place.description}</p>
             </div>

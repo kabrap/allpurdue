@@ -54,6 +54,13 @@
 .rating {
     font-size: 24px;
     margin: 0px;
+    justify-content: space-evenly;
+    width: fit-content;
+}
+
+.rating-number {
+    display: flex;
+    margin-right: 4px;
 }
 
 .tags-container {
