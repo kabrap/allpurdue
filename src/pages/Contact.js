@@ -8,6 +8,7 @@ function Contact() {
     const [message, setMessage] = useState('')
     const [requestType, setRequestType] = useState('Add Place')
     const [name, setName] = useState('')
+    const [showSuccessMsg, setShowSuccessMsg] = useState(false)
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -19,6 +20,7 @@ function Contact() {
 
     const handleTypeChange = (e) => {
       setRequestType(e.target.value);
+      setShowSuccessMsg(false)
     }
 
     const handleNameChange = (e) => {
@@ -37,6 +39,7 @@ function Contact() {
         })
         .then(function (res) {
           console.log('successful submission')
+          setShowSuccessMsg(true)
         })
         .catch(function (err) {
           console.log(err)
@@ -83,6 +86,9 @@ function Contact() {
                   </label>
                 </>
                 }
+
+                {/* Displaing success message when they submit */}
+                {showSuccessMsg && <p className='success-msg'>Message successfully sent!</p>}
 
                 <button type="submit" className="submit-button">
                     Submit

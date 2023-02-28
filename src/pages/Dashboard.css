@@ -38,3 +38,15 @@
     margin: 10px;
     margin-left: 0;
 }
+
+#username {
+    display: flex;
+    align-items: center;
+}
+
+#username img {
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 22px;
+    height: 22px;
+}
