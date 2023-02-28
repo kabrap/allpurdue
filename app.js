@@ -693,6 +693,7 @@ app.post("/change-password", function (req, res) {
 
 app.get("/logout", async function(req, res) {
   req.session.user = null;
+  currentUser = null;
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
