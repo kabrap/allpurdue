@@ -11,6 +11,7 @@ function Categories() {
     async function fetchData() {
       try {
         const response = await axios.get('http://localhost:3000/places');
+        console.log(response.data)
         setPlaces(response.data);
       } catch (error) {
         console.error(error);
@@ -33,7 +34,7 @@ function Categories() {
       </div>
       <div className='sorting-container'>
         <span id='all-places'>All Places</span>
-        <span>Sort: <b>Recommended</b>&#8595;</span>
+        {/* <span>Sort: <b>Recommended</b>&#8595;</span> */}
       </div>
       <div className='categories-cards'>
         {places.map(place => (

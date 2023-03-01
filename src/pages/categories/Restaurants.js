@@ -33,7 +33,7 @@ function Restaurants() {
           </div>
           <div className='sorting-container'>
             <span id='all-places'><a className='link-back' href='/categories'>All Places</a> {'>'} Restaurants</span>
-            <span>Sort: <b>Recommended</b>&#8595;</span>
+            {/* <span>Sort: <b>Recommended</b>&#8595;</span> */}
           </div>
           <div className='categories-cards'>
             {places.map(place => (

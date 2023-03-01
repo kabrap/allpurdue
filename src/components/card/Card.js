@@ -25,7 +25,7 @@ const Card = (props) => {
         <div className="card-image">
           <img src={Chipotle} alt="place img" />
         </div>
-        <div className="card-placeholder">&#128343; 54 mins ago</div>
+        {/* <div className="card-placeholder">&#128343; 54 mins ago</div> */}
         <div className="card-content">
           <div className="place-header-card">
             <h2 className="place-name-card">{props.name}</h2>

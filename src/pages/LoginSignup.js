@@ -54,6 +54,7 @@ const LoginSignup = () => {
       })
       .then(function (res) {
         setIsLogin(true)
+        setShowSignupError(false)
         console.log("successful user creation")
       })
       .catch(function (err) {

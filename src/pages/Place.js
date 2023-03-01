@@ -115,7 +115,14 @@ function Place() {
                     </div>
                 </div>
                 <div className="rating">
-                    <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                    <span className="stars">
+                        {Array.from({length: Math.floor(averageRating)}, (_, index) => (
+                            <span key={index}>&#9733;</span>
+                        ))}
+                        {averageRating % 1 !== 0 ? (
+                            <span>&#9734;</span>
+                        ) : null}
+                    </span>
                     <span className="rating-number">{averageRating} Rating | </span> 
                     <span className="rating-number">{placesReviews.length} Reviews</span> 
                 </div>
@@ -180,9 +187,9 @@ function Place() {
                             }
                             let arrowColor = 'white';
 
-                            if (review.likes_by.includes(author)) {
-                              arrowColor = '#FFC632';
-                            }
+                            // if (review.likes_by.includes(author)) {
+                            //   arrowColor = '#FFC632';
+                            // }
 
                             return (
                               <div key={review._id} className="individual-review-container">
