@@ -44,6 +44,7 @@ function Residence() {
                 tags={place.tags}
                 placeType={place.placeType}
                 avgRating={place.avgRating}
+                _id={place._id}
               />
             ))}
           </div>

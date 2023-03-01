@@ -18,17 +18,18 @@ import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(localStorage.getItem('currentUser'));
+  const [currentUser, setCurrentUser] = useState('undefined');
 
   useEffect(() => {
     async function fetchUser() {
       try {
         const response = await axios.get('http://localhost:3000/currentUser');
-        setCurrentUser(response.data);
         console.log(response.data)
         if (response.data === 'undefined') {
+          setCurrentUser(undefined);
           localStorage.removeItem("currentUser")
         } else {
+          setCurrentUser(response.data);
           localStorage.setItem("currentUser", response.data._id)
         }
       } catch (error) {
@@ -36,13 +37,12 @@ function App() {
       }
     }
     fetchUser();
-  }, [localStorage.getItem('currentUser')])
+  }, [])
   
   return (
     <div className='app'>
       <Router>
-        {currentUser === 'undefined' && <Navbar />}
-        {currentUser !== 'undefined' && <LoggedInNavbar />}
+        {currentUser === 'undefined' ? <Navbar /> : <LoggedInNavbar />}
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
