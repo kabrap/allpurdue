@@ -793,7 +793,7 @@ app.post("/change-password", function (req, res) {
       console.log("Current password does not match");
       res.status(400).send("Current password does not match");
     } else {
-      User.findOneAndUpdate({ _id: user._id }, { password: md5(req.body.newPassword) }, function (err) {
+      User.findOneAndUpdate({ _id: req.body.userId }, { password: md5(req.body.newPassword) }, function (err) {
         if (err) {
           console.log(err);
           res.sendStatus(500);
@@ -807,6 +807,7 @@ app.post("/change-password", function (req, res) {
 
 app.get("/logout", async function(req, res) {
   req.session.user = null;
+  currentUser = null
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
