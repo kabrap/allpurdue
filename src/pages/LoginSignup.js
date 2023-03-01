@@ -35,7 +35,7 @@ const LoginSignup = () => {
       .then(function (res) {
         console.log("successful login")
         console.log(res.data)
-        sessionStorage.setItem("currentUser", res.data._id)
+        localStorage.setItem("currentUser", res.data._id)
         window.location.href = '/'
       })
       .catch(function (err) {

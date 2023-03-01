@@ -10,7 +10,7 @@ function Dashboard() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [changePassword, setChangePassword] = useState(false);
-  const userId = sessionStorage.getItem("currentUser");
+  const userId = localStorage.getItem("currentUser");
   const [user, setUser] = useState({});
   const [purdueVerified, setPurdueVerified] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -28,7 +28,7 @@ function Dashboard() {
   };
 
   const logout = () => {
-    sessionStorage.removeItem('currentUser')
+    localStorage.removeItem('currentUser')
     axios.get('http://localhost:3000/logout')
     window.location.href = '/'
   }
@@ -53,7 +53,7 @@ function Dashboard() {
       axios.post('http://localhost:3000/change-password', {
         currentPassword: currentPassword,
         newPassword: newPassword,
-        userId: sessionStorage.getItem("currentUser")
+        userId: localStorage.getItem("currentUser")
       })
       .then(function (res) {
         console.log('password changed!')
