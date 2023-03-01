@@ -216,7 +216,7 @@ function Place() {
                             onChange={(event) => setReview(event.target.value)}>
                         </textarea>
                         {/* <img className="add-image-icon" src={AddImage} alt="add icon"/> */}
-                        <button className='review-button' type="submit" onClick={handleSubmit} disabled={!author} title={!author ? "Please log in to add a review" : ""}>Submit</button>
+                        <button className='review-button' type="submit" onClick={handleSubmit} disabled={!currentUser} title={!currentUser ? "Please log in to add a review" : ""}>Submit</button>
                     </div>
                 </div>
                 {/* <span className="sorting">Sort By: <b>Recent</b> &#8595;</span> */}
