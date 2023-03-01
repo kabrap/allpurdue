@@ -15,7 +15,7 @@ function Home() {
         const response = await axios.get('http://localhost:3000/currentUser');
         setCurrentUser(response.data);
         console.log(response.data)
-        if (typeof response.data === 'undefined') {
+        if (response.data === 'undefined') {
           localStorage.removeItem("currentUser")
         } else {
           localStorage.setItem("currentUser", response.data._id)

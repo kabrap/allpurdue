@@ -1,6 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar'
+import LoggedInNavbar from './components/navbar/LoggedInNavbar';
+import React, {useEffect, useState} from 'react'
 import Home from './pages/Home'
 import About from './pages/About'
 import Categories from './pages/categories/Categories';
@@ -16,10 +18,31 @@ import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(localStorage.getItem('currentUser'));
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await axios.get('http://localhost:3000/currentUser');
+        setCurrentUser(response.data);
+        console.log(response.data)
+        if (response.data === 'undefined') {
+          localStorage.removeItem("currentUser")
+        } else {
+          localStorage.setItem("currentUser", response.data._id)
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchUser();
+  }, [localStorage.getItem('currentUser')])
+  
   return (
     <div className='app'>
       <Router>
-        <Navbar />
+        {currentUser === 'undefined' && <Navbar />}
+        {currentUser !== 'undefined' && <LoggedInNavbar />}
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
