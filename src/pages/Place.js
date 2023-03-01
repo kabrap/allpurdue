@@ -20,7 +20,7 @@ function Place() {
   const [averageRating, setAverageRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [users, setUsers] = useState([]);
-  const author = sessionStorage.getItem("currentUser");
+  const author = localStorage.getItem("currentUser");
   const [currentUser, setCurrentUser] = useState("");
   const [suggestedPlaces, setSuggestedPlaces] = useState([])
   const [website, setWebsite] = useState("");
@@ -31,7 +31,6 @@ function Place() {
     axios.get(`http://localhost:3000/users/${author}`)
       .then(response => {
         setCurrentUser(response.data.name);
-        console.log(currentUser)
       })
       .catch(error => console.log(error));
   }, [author]);
@@ -45,8 +44,6 @@ function Place() {
         setAverageRating(response.data.averageRating);
         setWebsite(response.data.website);
         setGoogleMap(response.data.googleMap);
-        console.log(response.data.googleMap)
-        console.log(googleMap)
       } catch (error) {
         console.error(error);
       }
@@ -233,9 +230,9 @@ function Place() {
                             }
                             let arrowColor = 'white';
 
-                            // if (review.likes_by.includes(author)) {
-                            //   arrowColor = '#FFC632';
-                            // }
+                            if (review.likes_by.includes(author)) {
+                              arrowColor = '#FFC632';
+                            }
 
                             return (
                               <div key={review._id} className="individual-review-container">
