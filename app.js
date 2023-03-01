@@ -340,8 +340,12 @@ app.get('/places/:id', async (req, res) => {
       suggestedPlaces.push(...matchingPlaceTypes);
     }
 
+    const website = place.website;
+    const address = place.address;
+    const googleMap = place.googleMap;
+
     // sending everything as response
-    const data = { place, reviewRatings, averageRating, suggestedPlaces };
+    const data = { place, reviewRatings, averageRating, suggestedPlaces, website, address, googleMap };
     res.send(data)
     //res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
