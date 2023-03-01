@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import './Place.css'
-import Chipotle from '../images/chipotle.jpg'
 import AddImage from '../images/addimgicon.png'
 import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
@@ -16,6 +15,7 @@ function Place() {
   const [review, setReview] = useState("");
   const [placesReviews, setPlacesReviews] = useState([])
   const [placesTags, setPlacesTags] = useState([])
+  const [placesImages, setPlacesImages] = useState([])
   const [rating, setRating] = useState(null);
   const [averageRating, setAverageRating] = useState(null);
   const [hover, setHover] = useState(null);
@@ -23,6 +23,9 @@ function Place() {
   const author = sessionStorage.getItem("currentUser");
   const [currentUser, setCurrentUser] = useState("");
   const [suggestedPlaces, setSuggestedPlaces] = useState([])
+  const [website, setWebsite] = useState("");
+  const [googleMap, setGoogleMap] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -40,6 +43,10 @@ function Place() {
         setPlace(response.data.place);
         setSuggestedPlaces(response.data.suggestedPlaces);
         setAverageRating(response.data.averageRating);
+        setWebsite(response.data.website);
+        setGoogleMap(response.data.googleMap);
+        console.log(response.data.googleMap)
+        console.log(googleMap)
       } catch (error) {
         console.error(error);
       }
@@ -50,6 +57,7 @@ function Place() {
   useEffect(() => {
     setPlacesReviews(place.reviews || []);
     setPlacesTags(place.tags || []);
+    setPlacesImages(place.images || []);
   }, [place]);
 
   useEffect(() => {
@@ -99,38 +107,76 @@ function Place() {
     }
   };
 
+  const handlePrevClick = () => {
+    setCurrentImageIndex(
+      currentImageIndex === 0 ? placesImages.length - 1 : currentImageIndex - 1
+    );
+  };
+
+  const handleNextClick = () => {
+    setCurrentImageIndex(
+      currentImageIndex === placesImages.length - 1 ? 0 : currentImageIndex + 1
+    );
+  };
+
+  const handleWebsiteClick = () => {
+    window.open(website, "_blank");
+  };
+
+  const handlePinpointClick = () => {
+    window.open(googleMap, "_blank");
+  };
+
   return (
     <div className='place-container'>
         <div className='top-container'>
+          <div className="image-carousel">
             <div className="place-image">
-                <img src={Chipotle} alt="place" id="place-img"/>
+              <img src={placesImages[currentImageIndex]} alt="place" id="place-img" />
+              <button className="prev" onClick={handlePrevClick}>
+                &#8249;
+              </button>
+              <button className="next" onClick={handleNextClick}>
+                &#8250;
+              </button>
             </div>
+          </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <p className="place-name">{place.name}</p>
+                    <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
                     <div className='icons-container'>
-                        <img className="share-icon" src={Share} alt="share icon"/>
-                        <img className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
+                        {/* <img className="share-icon" src={Share} alt="share icon"/> */}
+                        <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
                         <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/>
                     </div>
                 </div>
                 <div className="rating">
-                    <span className="stars">
-                        {Array.from({length: Math.floor(averageRating)}, (_, index) => (
-                            <span key={index}>&#9733;</span>
-                        ))}
-                        {averageRating % 1 !== 0 ? (
-                            <span>&#9734;</span>
-                        ) : null}
-                    </span>
-                    <span className="rating-number">{averageRating} Rating | </span> 
-                    <span className="rating-number">{placesReviews.length} Reviews</span> 
+                  <span className="stars">
+                    {Array.from({ length: Math.floor(averageRating) }, (_, index) => (
+                      <span key={index}>&#9733;</span>
+                    ))}
+                    {averageRating % 1 !== 0 ? <span>&#9734;</span> : null}
+                    {Array.from(
+                      { length: Math.floor(5 - averageRating) },
+                      (_, index) => (
+                        <span key={index}>&#9734;</span>
+                      )
+                    )}
+                  </span>
+                  {averageRating ?
+                    <div>
+                      <span className="rating-number">{averageRating} Rating | </span> 
+                      <span className="rating-number">{placesReviews.length} Reviews</span> 
+                    </div>
+                  : <span className="rating-number">{placesReviews.length} Reviews</span> 
+                  }
                 </div>
                 <div className='tags-container'>
                     {placesTags.map(tag => (
                         <span id='tag'>{tag}</span>
                     ))}
                 </div>
+                <span>{place.address}</span>
                 <p>{place.description}</p>
             </div>
         </div>
@@ -168,7 +214,7 @@ function Place() {
                             value={review}
                             onChange={(event) => setReview(event.target.value)}>
                         </textarea>
-                        <img className="add-image-icon" src={AddImage} alt="add icon"/>
+                        {/* <img className="add-image-icon" src={AddImage} alt="add icon"/> */}
                         <button className='review-button' type="submit" onClick={handleSubmit} disabled={!author} title={!author ? "Please log in to add a review" : ""}>Submit</button>
                     </div>
                 </div>
@@ -194,7 +240,6 @@ function Place() {
                             return (
                               <div key={review._id} className="individual-review-container">
                                 <button
-                                  
                                   id="up-arrow"
                                   style={{
                                     cursor: "pointer",
@@ -230,17 +275,20 @@ function Place() {
             <div className='suggested-container'>
                 <h4>Suggested places</h4>
                 <div className='suggested-places'>
-                    {suggestedPlaces.map(place => (
-                        <Link key={place._id} to={`/places/${place._id}`}>
-                            <div className='suggested-card'>
-                                <img src={Chipotle} alt="place img"></img>
-                                <div className='suggested-card-info'>
-                                    <p>{place.name}</p>
-                                    {/* ADD RATING COUNT AND OTHER THINGS TO THE CARD */}
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
+                {suggestedPlaces
+                  .filter(place => place._id !== id) // filter out current place
+                  .filter((place, index, arr) => arr.findIndex(p => p._id === place._id) === index) // filter out duplicates
+                  .map(place => (
+                    <Link key={place._id} to={`/places/${place._id}`}>
+                      <div className='suggested-card'>
+                        <img src={place.images[0]} alt="place img"></img>
+                        <div className='suggested-card-info'>
+                          <p>{place.name}</p>
+                          {/* ADD RATING COUNT AND OTHER THINGS TO THE CARD */}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
             </div>
         </div>

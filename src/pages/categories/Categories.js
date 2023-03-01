@@ -45,6 +45,7 @@ function Categories() {
             tags={place.tags}
             placeType={place.placeType}
             avgRating={place.avgRating}
+            image={place.images[0]}
             _id={place._id}
           />
         ))}
