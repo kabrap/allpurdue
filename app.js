@@ -407,7 +407,7 @@ app.post('/search'  , async (req, res) => {
         { placeType: regexQuery },
         { tags: regexQuery },
       ]
-    }).select('name placeType tags').limit(3);
+    }).select('name placeType tags images').limit(3);
     console.log(results);
     res.send(results)
     // if (req.xhr) {
@@ -429,7 +429,7 @@ app.post('/search'  , async (req, res) => {
 app.get('/recent-reviews', async (req, res) => {
   try {
     const recentReviews = await Review.find({})
-      .populate('place', 'name tags placeType')
+      .populate('place', 'name tags placeType images')
       .sort({ updatedAt: -1 })
       .exec()
     
