@@ -32,7 +32,7 @@ const Card = (props) => {
             </div>
           </div>
           <div className='tags-container'>
-            {props.tags.map(tag => (
+            {props.tags.slice(0, 3).map(tag => (
               <span id='tag'>{tag}</span>
             ))}
           </div>

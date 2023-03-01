@@ -14,6 +14,7 @@ function Dashboard() {
   const [user, setUser] = useState({});
   const [purdueVerified, setPurdueVerified] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
 
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value);
@@ -49,6 +50,7 @@ function Dashboard() {
   const handleSubmit = () => {
     if (newPassword.length < 6 || confirmPassword.length < 6) {
       setErrorMsg('Password needs to be at least 6 characters!')
+      setSuccessMsg("")
     } else if (newPassword === confirmPassword) {
       axios.post('http://localhost:3000/change-password', {
         currentPassword: currentPassword,
@@ -57,16 +59,19 @@ function Dashboard() {
       })
       .then(function (res) {
         console.log('password changed!')
+        setSuccessMsg("Password changed!")
         setErrorMsg("")
       })
       .catch(function (err) {
         console.log(err)
         console.log("current password doesn't match")
         setErrorMsg("Current password doesn't match!")
+        setSuccessMsg("")
       })
     } else {
       console.log("passwords don't match")
       setErrorMsg("Passwords don't match!")
+      setSuccessMsg("")
     }
   }
   
@@ -96,6 +101,7 @@ function Dashboard() {
         <label>Confirm New Password:</label>
         <input id="confirmPassword" type="password" onChange={handleConfirmPasswordChange} required></input>
         {errorMsg !== '' && <p className='error-msg'>{errorMsg}</p>}
+        {successMsg !== '' && <p className='success-msg'>{successMsg}</p>}
         <button id="submitButton" onClick={handleSubmit}>Submit</button>
       </div>
       }

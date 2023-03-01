@@ -26,6 +26,7 @@ function Place() {
   const [website, setWebsite] = useState("");
   const [googleMap, setGoogleMap] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -77,11 +78,13 @@ function Place() {
     try {
       const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
       console.log(response.data);
+      setErrorMsg('')
+      setReview("");
     } catch (error) {
-      console.error(error);
+      console.log(error.response.data)
+      setErrorMsg(error.response.data)
     }
   
-    setReview("");
     setRating(null);
   };
 
@@ -204,6 +207,7 @@ function Place() {
                         ) : (
                             "Please log in to add a review"
                         )}</p>
+                    {errorMsg !== '' && <p className='error-msg'>{errorMsg}</p>}
                     <div className='text-box-container'>
                         <textarea
                             placeholder="Let us know what you think about this place!"

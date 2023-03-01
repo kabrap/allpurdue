@@ -22,7 +22,7 @@ const Card = (props) => {
   return (
       <div className="card">
         <div className="card-image">
-          <img src={Chipotle} alt="place img" />
+          <img src={props.imageUrl} alt="place img" />
         </div>
         {/* <div className="card-placeholder">&#128343; 54 mins ago</div> */}
         <div className="card-content">

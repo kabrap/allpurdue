@@ -59,7 +59,7 @@ function Home() {
       <div className='reviews'>
         <h1>Recent Reviews</h1>
         <div className='reviews-container'>
-          {recentReviews.map(review => (
+          {recentReviews.slice(0, 6).map(review => (
             <Link key={review._id} to={`/places/${review.place._id}`} >
               <Card 
                 text={review.text} 
@@ -67,6 +67,7 @@ function Home() {
                 tags={review.place.tags}
                 rating={review.rating}
                 placeType={review.place.placeType}
+                imageUrl={review.place.images[0]}
               />
             </Link>
           ))}

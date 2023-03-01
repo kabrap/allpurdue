@@ -16,6 +16,7 @@ import Study from './pages/categories/Study'
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
+import axios from 'axios';
 
 function App() {
   const [currentUser, setCurrentUser] = useState('undefined');
@@ -24,6 +25,7 @@ function App() {
     async function fetchUser() {
       try {
         const response = await axios.get('http://localhost:3000/currentUser');
+        console.log("res")
         console.log(response.data)
         if (response.data === 'undefined') {
           setCurrentUser(undefined);
@@ -42,7 +44,7 @@ function App() {
   return (
     <div className='app'>
       <Router>
-        {currentUser === 'undefined' ? <Navbar /> : <LoggedInNavbar />}
+        {currentUser ? <LoggedInNavbar /> : <Navbar />}
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
