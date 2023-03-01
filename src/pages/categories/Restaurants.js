@@ -45,6 +45,7 @@ function Restaurants() {
                 placeType={place.placeType}
                 avgRating={place.avgRating}
                 _id={place._id}
+                image={place.images[0]}
               />
             ))}
           </div>

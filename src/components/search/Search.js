@@ -48,7 +48,7 @@ function Search(props) {
           {searchResults.map(result => (
             <Link key={result._id} to={`/places/${result._id}`}>
               <div className='search-result'>
-                  <img src={Chipotle} alt='place img'></img>
+                  <img src={result.images[0]} alt='place img'></img>
                   <p>{result.name}</p>
                   <p>({result.placeType})</p>
               </div>
