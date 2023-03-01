@@ -152,7 +152,19 @@ const placeSchema = new Schema(
       {
         type: String,
       },
-    ]
+    ],
+    address: {
+      type: String,
+      required: true,
+    },
+    googleMap: {
+      type: String,
+      required: true,
+    },
+    website: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );
