@@ -78,6 +78,7 @@ function Place() {
     try {
       const response = await axios.post(`http://localhost:3000/places/${id}/reviews`, newReview);
       console.log(response.data);
+      setPlacesReviews([...placesReviews, response.data])
       setErrorMsg('')
       setReview("");
     } catch (error) {
@@ -99,11 +100,13 @@ function Place() {
 
   const handleDelete = async (reviewId) => {
     console.log(reviewId)
+    const updatedReviews = placesReviews.filter((review) => review._id !== reviewId);
+    setPlacesReviews(updatedReviews)
     try {
       const response = await axios.delete(`http://localhost:3000/places/${id}/reviews/${reviewId}`);
-      console.log(response.data);
+      console.log(response.data.review);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
