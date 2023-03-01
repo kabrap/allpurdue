@@ -35,27 +35,22 @@ function Search(props) {
     }
   };
 
-  const handleBlur = () => {
-    setShowResults(false);
-    setSearchQuery('');
-  }
-
   return (
     <>
       <form onSubmit={handleSubmit} className='search-bar'>
         <img src={search} alt="search icon" onClick={handleSubmit}/>
-        <input type="text" value={searchQuery} onChange={handleInputChange} placeholder="Chinese food..." onBlur={handleBlur} />
+        <input type="text" value={searchQuery} onChange={handleInputChange} placeholder="Chinese food..."/>
       </form>
 
       {/* Dropdown */}
       {showResults && searchQuery.length >= 1 && (
         <div className='dropdown'>
-          {searchResults.map(place => (
-            <Link key={place._id} to={`/places/${place._id}`}>
+          {searchResults.map(result => (
+            <Link key={result._id} to={`/places/${result._id}`}>
               <div className='search-result'>
                   <img src={Chipotle} alt='place img'></img>
-                  <p>{place.name}</p>
-                  <p>({place.placeType})</p>
+                  <p>{result.name}</p>
+                  <p>({result.placeType})</p>
               </div>
             </Link>
           ))}
