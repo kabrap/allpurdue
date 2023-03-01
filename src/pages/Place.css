@@ -11,7 +11,28 @@
 }
 
 .place-image {
+    position: relative;
     margin-right: 20px;
+  }
+  
+.prev,
+.next {
+    position: absolute;
+    top: 80%;
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
+}
+  
+.prev {
+    left: 20px;
+}
+  
+.next {
+    right: 20px;
 }
 
 #place-img {
@@ -35,6 +56,7 @@
     margin: 0px;
     font-size: 36px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .icons-container {

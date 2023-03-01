@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CategoryCard.css';
-import Chipotle from '../../images/chipotle.jpg'
 import { Link } from 'react-router-dom';
 
 const Card = (props) => {
+  const [averageRating, setAverageRating] = useState(null);
+
   console.log(props._id)
   return (
     <Link key={props._id} to={`/places/${props._id}`}>
       <div className="card">
         <div className="card-image">
-          <img src={Chipotle} alt="restaurant" />
+          <img src={props.image} alt="restaurant" />
         </div>
         <div className="card-content">
           <div className="restaurant-header">
             <h2 className="restaurant-name">{props.title}</h2>
             <div className="rating">
-              <span className="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span className="stars">
+                {Array.from({ length: Math.floor(averageRating) }, (_, index) => (
+                  <span key={index}>&#9733;</span>
+                ))}
+                {averageRating % 1 !== 0 ? <span>&#9734;</span> : null}
+                {Array.from(
+                  { length: Math.floor(5 - averageRating) },
+                  (_, index) => (
+                    <span key={index}>&#9734;</span>
+                  )
+                )}
+              </span>
               <span className="rating-number">&#40;{props.avgRating}&#41;</span>
             </div>
           </div>
