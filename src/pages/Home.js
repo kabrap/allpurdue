@@ -4,6 +4,7 @@ import Search from '../components/search/Search.js'
 import Card from '../components/card/Card.js'
 import bellTower from '../images/bell-tower.gif'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function Home() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -59,15 +60,15 @@ function Home() {
         <h1>Recent Reviews</h1>
         <div className='reviews-container'>
           {recentReviews.map(review => (
-            <Card 
-              key={review._id}
-              placeId={review.place._id} 
-              text={review.text} 
-              name={review.place.name} 
-              tags={review.place.tags}
-              rating={review.rating}
-              placeType={review.place.placeType}
-            />
+            <Link key={review._id} to={`/places/${review.place._id}`} >
+              <Card 
+                text={review.text} 
+                name={review.place.name} 
+                tags={review.place.tags}
+                rating={review.rating}
+                placeType={review.place.placeType}
+              />
+            </Link>
           ))}
         </div>
       </div>

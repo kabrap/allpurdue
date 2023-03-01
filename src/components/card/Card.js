@@ -20,7 +20,6 @@ const Card = (props) => {
   }
 
   return (
-    <Link key={props.placeId} to={`/places/${props.placeId}`}>
       <div className="card">
         <div className="card-image">
           <img src={Chipotle} alt="place img" />
@@ -29,13 +28,13 @@ const Card = (props) => {
         <div className="card-content">
           <div className="place-header-card">
             <h2 className="place-name-card">{props.name}</h2>
-            <div className="rating">
+            <div className="rating-recent-review">
               <span className="stars">{stars}</span>
-              <span className="rating-number">&#40;{props.rating}&#41;</span>
+              <span className="rating-number-recent-review">&#40;{props.rating}&#41;</span>
             </div>
           </div>
           <div className='tags-container'>
-            {props.tags.map(tag => (
+            {props.tags.slice(0, 3).map(tag => (
               <span id='tag-recent'>{tag}</span>
             ))}
           </div>
@@ -46,7 +45,6 @@ const Card = (props) => {
           </div>
         </div>
       </div>
-    </Link>
   );
 };
 
