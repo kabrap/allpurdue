@@ -52,7 +52,8 @@ function Dashboard() {
     } else if (newPassword === confirmPassword) {
       axios.post('http://localhost:3000/change-password', {
         currentPassword: currentPassword,
-        newPassword: newPassword
+        newPassword: newPassword,
+        userId: sessionStorage.getItem("currentUser")
       })
       .then(function (res) {
         console.log('password changed!')

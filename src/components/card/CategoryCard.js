@@ -4,6 +4,7 @@ import Chipotle from '../../images/chipotle.jpg'
 import { Link } from 'react-router-dom';
 
 const Card = (props) => {
+  console.log(props._id)
   return (
     <Link key={props._id} to={`/places/${props._id}`}>
       <div className="card">

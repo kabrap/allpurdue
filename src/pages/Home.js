@@ -15,8 +15,10 @@ function Home() {
         const response = await axios.get('http://localhost:3000/currentUser');
         setCurrentUser(response.data);
         console.log(response.data)
-        if (currentUser !== null) {
+        if (response.data !== null) {
           sessionStorage.setItem("currentUser", response.data._id)
+        } else {
+          sessionStorage.removeItem("currentUser")
         }
       } catch (error) {
         console.error(error);
