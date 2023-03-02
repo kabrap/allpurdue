@@ -359,13 +359,14 @@ app.get('/places/:id', async (req, res) => {
     }
 
     const hours = place.hours;
-    const phone = place.phone;
+    const phone = place.phone;  
     const website = place.website;
     const address = place.address;
     const googleMap = place.googleMap;
+    const reviews = place.reviews;
 
     // sending everything as response
-    const data = { place, reviewRatings, averageRating, suggestedPlaces, hours, phone, website, address, googleMap };
+    const data = { place, reviewRatings, averageRating, suggestedPlaces, hours, phone, website, address, googleMap, reviews };
     res.send(data)
     //res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
