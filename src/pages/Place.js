@@ -28,6 +28,7 @@ function Place() {
   const [googleMap, setGoogleMap] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [errorMsg, setErrorMsg] = useState('')
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -87,6 +88,13 @@ function Place() {
       console.log(error.response.data)
       setErrorMsg(error.response.data)
     }
+
+    try {
+      const res = await axios.get(`http://localhost:3000/places/${id}`);
+      setAverageRating(res.data.averageRating)
+    } catch (error) {
+      console.log(error);
+    }
   
     setRating(null);
   };
@@ -107,6 +115,15 @@ function Place() {
     try {
       const response = await axios.delete(`http://localhost:3000/places/${id}/reviews/${reviewId}`);
       console.log(response.data.review);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const res = await axios.get(`http://localhost:3000/places/${id}`);
+      console.log(res.data)
+      setAverageRating(res.data.averageRating)
+      console.log(res.data.averageRating)
     } catch (error) {
       console.log(error);
     }
@@ -132,18 +149,36 @@ function Place() {
     window.open(googleMap, "_blank");
   };
 
+  function handleImageClick() {
+    setIsExpanded(!isExpanded);
+  }
+
   return (
     <div className='place-container'>
         <div className='top-container'>
           <div className="image-carousel">
             <div className="place-image">
-              <img src={placesImages[currentImageIndex]} alt="place" id="place-img" />
-              <button className="prev" onClick={handlePrevClick}>
-                &#8249;
-              </button>
-              <button className="next" onClick={handleNextClick}>
-                &#8250;
-              </button>
+              <img
+                src={placesImages[currentImageIndex]}
+                alt="place"
+                id="place-img"
+                onClick={handleImageClick}
+              />
+              {isExpanded && (
+                <div className="expanded-image-overlay" onClick={handleImageClick}>
+                  <img src={placesImages[currentImageIndex]} alt="place" id="expanded-place-img" />
+                </div>
+              )}
+              {!isExpanded && (
+                <div>
+                  <button className="prev" onClick={handlePrevClick}>
+                    &#8249;
+                  </button>
+                  <button className="next" onClick={handleNextClick}>
+                    &#8250;
+                  </button>
+                </div>
+              )}
             </div>
           </div>
             <div className='info-container'>
@@ -231,16 +266,18 @@ function Place() {
                             "Please log in to add a review"
                         )}</p>
                     {errorMsg !== '' && <p className='error-msg'>{errorMsg}</p>}
-                    <div className='text-box-container'>
+                    {!isExpanded && (
+                      <div className='text-box-container'>
                         <textarea
-                            placeholder="Let us know what you think about this place!"
-                            id="review"
-                            value={review}
-                            onChange={(event) => setReview(event.target.value)}>
+                          placeholder="Let us know what you think about this place!"
+                          id="review"
+                          value={review}
+                          onChange={(event) => setReview(event.target.value)}>
                         </textarea>
                         {/* <img className="add-image-icon" src={AddImage} alt="add icon"/> */}
                         <button className='review-button' type="submit" onClick={handleSubmit} disabled={!currentUser} title={!currentUser ? "Please log in to add a review" : ""}>Submit</button>
-                    </div>
+                      </div>
+                    )}
                 </div>
                 {/* <span className="sorting">Sort By: <b>Recent</b> &#8595;</span> */}
                 <div className='review-container'>
