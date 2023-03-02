@@ -219,9 +219,10 @@ function Place() {
                   }
                 </div>
                 <div className='tags-container-place'>
-                    {placesTags.splice(0,4).map(tag => (
-                        <span id='tag'>{tag}</span>
-                    ))}
+                  <span id='tag'>{placesTags[0]}</span>
+                  <span id='tag'>{placesTags[1]}</span>
+                  <span id='tag'>{placesTags[2]}</span>
+                  <span id='tag'>{placesTags[3]}</span>
                 </div>
                 <span>{place.address}</span>
                 <p>{place.description}</p>

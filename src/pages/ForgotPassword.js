@@ -33,7 +33,7 @@ function ForgotPassword() {
                 <span>Email</span>
                 <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter your email" required />
                 </label>
-                {sent && <p id='reset-msg'>Password reset link sent to ${email}</p>}
+                {sent && <p id='reset-msg'>Password reset link sent to {email}</p>}
                 <button type="submit" className="submit-button">
                     Send reset link
                 </button>
