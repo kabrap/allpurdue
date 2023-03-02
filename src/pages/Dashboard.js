@@ -80,7 +80,7 @@ function Dashboard() {
       <div id = "fields">
         <div class="field">
           <label for="username">Name:</label>
-          <p id="username">{user.name}{purdueVerified && <img alt='Verified Purdue User' src="https://img.icons8.com/windows/32/FAB005/instagram-check-mark.png"/>}</p>
+          <p id="username">{user.name}{purdueVerified && <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/>}</p>
         </div>
         <div class="field">
           <label for="email">Email:</label>

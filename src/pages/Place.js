@@ -211,8 +211,8 @@ function Place() {
                   : <span className="rating-number">{placesReviews.length} Reviews</span> 
                   }
                 </div>
-                <div className='tags-container'>
-                    {placesTags.map(tag => (
+                <div className='tags-container-place'>
+                    {placesTags.splice(0,4).map(tag => (
                         <span id='tag'>{tag}</span>
                     ))}
                 </div>
