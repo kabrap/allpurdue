@@ -123,6 +123,14 @@ const placeSchema = new Schema(
       type: String,
       required: true,
     },
+    hours: [{
+      type: String,
+      required: true,
+    }],
+    phone: {
+      type: String,
+      required: true,
+    },
     placeType: {
       type: String,
       required: true,
