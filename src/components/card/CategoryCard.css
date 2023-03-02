@@ -1,15 +1,14 @@
-.card {
+.category-card {
   background-color: #FFFFFF;
   display: flex;
   flex-direction: row;
-  max-height: 175px;
-  width: 100%;
-  max-width: 750px;
+  height: 175px;
+  width: 750px;
   border-radius: 16px;
   position: relative;
 }
 
-.card:hover {
+.category-card:hover {
   cursor: pointer;
 }
 
