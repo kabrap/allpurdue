@@ -106,6 +106,13 @@ function Place() {
     } catch (error) {
       console.error(error);
     }
+
+    try {
+      const response = await axios.get(`http://localhost:3000/places/${id}`);
+      setPlacesReviews(response.data.reviews);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDelete = async (reviewId) => {
