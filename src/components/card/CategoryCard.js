@@ -3,9 +3,6 @@ import './CategoryCard.css';
 import { Link } from 'react-router-dom';
 
 const Card = (props) => {
-  const [averageRating, setAverageRating] = useState(null);
-
-  console.log(props._id)
   return (
     <Link key={props._id} to={`/places/${props._id}`}>
       <div className="card">
@@ -17,12 +14,12 @@ const Card = (props) => {
             <h2 className="restaurant-name">{props.title}</h2>
             <div className="rating">
               <span className="stars">
-                {Array.from({ length: Math.floor(averageRating) }, (_, index) => (
+                {Array.from({ length: Math.floor(props.avgRating) }, (_, index) => (
                   <span key={index}>&#9733;</span>
                 ))}
-                {averageRating % 1 !== 0 ? <span>&#9734;</span> : null}
+                {props.avgRating % 1 !== 0 ? <span>&#9734;</span> : null}
                 {Array.from(
-                  { length: Math.floor(5 - averageRating) },
+                  { length: Math.floor(5 - props.avgRating) },
                   (_, index) => (
                     <span key={index}>&#9734;</span>
                   )

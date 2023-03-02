@@ -76,6 +76,7 @@
 .rating {
     font-size: 24px;
     margin: 0px;
+    display: flex;
     justify-content: space-evenly;
     width: fit-content;
 }
@@ -83,10 +84,21 @@
 .rating-number {
     display: flex;
     margin-right: 4px;
+    font-size: 14px;
+    padding-top: 4px;
+}
+
+.ratings-reviews-container {
+    display: flex;
 }
 
 .tags-container {
     margin-top: 4px;
+}
+
+.hours-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .bottom-container {

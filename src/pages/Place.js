@@ -16,6 +16,7 @@ function Place() {
   const [placesReviews, setPlacesReviews] = useState([])
   const [placesTags, setPlacesTags] = useState([])
   const [placesImages, setPlacesImages] = useState([])
+  const [placesHours, setPlacesHours] = useState([])
   const [rating, setRating] = useState(null);
   const [averageRating, setAverageRating] = useState(null);
   const [hover, setHover] = useState(null);
@@ -42,6 +43,7 @@ function Place() {
         const response = await axios.get(`http://localhost:3000/places/${id}`);
         setPlace(response.data.place);
         setSuggestedPlaces(response.data.suggestedPlaces);
+        setPlacesHours(response.data.hours)
         setAverageRating(response.data.averageRating);
         setWebsite(response.data.website);
         setGoogleMap(response.data.googleMap);
@@ -150,7 +152,7 @@ function Place() {
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/>
+                        {/* <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/> */}
                     </div>
                 </div>
                 <div className="rating">
@@ -167,8 +169,8 @@ function Place() {
                     )}
                   </span>
                   {averageRating ?
-                    <div>
-                      <span className="rating-number">{averageRating} Rating | </span> 
+                    <div className='ratings-reviews-container'>
+                      <span className="rating-number">&#40;{averageRating.toFixed(1)}&#41;</span> 
                       <span className="rating-number">{placesReviews.length} Reviews</span> 
                     </div>
                   : <span className="rating-number">{placesReviews.length} Reviews</span> 
@@ -181,6 +183,16 @@ function Place() {
                 </div>
                 <span>{place.address}</span>
                 <p>{place.description}</p>
+                <div className='hours-container'>
+                  <span>Hours of operation</span>
+                  <span>SU: {placesHours[0]}</span>
+                  <span>M: {placesHours[1]}</span>
+                  <span>T: {placesHours[2]}</span>
+                  <span>W: {placesHours[3]}</span>
+                  <span>TH: {placesHours[4]}</span>
+                  <span>F: {placesHours[5]}</span>
+                  <span>SA: {placesHours[6]}</span>
+                </div>
             </div>
         </div>
         <div className='bottom-container'>
