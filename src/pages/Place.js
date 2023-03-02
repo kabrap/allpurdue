@@ -183,15 +183,23 @@ function Place() {
                 </div>
                 <span>{place.address}</span>
                 <p>{place.description}</p>
-                <div className='hours-container'>
-                  <span>Hours of operation</span>
-                  <span>SU: {placesHours[0]}</span>
-                  <span>M: {placesHours[1]}</span>
-                  <span>T: {placesHours[2]}</span>
-                  <span>W: {placesHours[3]}</span>
-                  <span>TH: {placesHours[4]}</span>
-                  <span>F: {placesHours[5]}</span>
-                  <span>SA: {placesHours[6]}</span>
+                <div>
+                  {placesHours.length !== 0 ?
+                    <div className='hours-container'>
+                      <span>Hours of operation</span>
+                      <span>SU: {placesHours[0]}</span>
+                      <span>M: {placesHours[1]}</span>
+                      <span>T: {placesHours[2]}</span>
+                      <span>W: {placesHours[3]}</span>
+                      <span>TH: {placesHours[4]}</span>
+                      <span>F: {placesHours[5]}</span>
+                      <span>SA: {placesHours[6]}</span>
+                    </div>
+                    : <div className='hours-container'>
+                        <span>Hours of operation</span>
+                        <span>N/A</span>
+                      </div>
+                  }
                 </div>
             </div>
         </div>

@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden;
+  }
+
 .browse {
     display: flex;
     flex-direction: column;
