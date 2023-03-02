@@ -358,12 +358,14 @@ app.get('/places/:id', async (req, res) => {
       suggestedPlaces.push(...matchingPlaceTypes);
     }
 
+    const hours = place.hours;
+    const phone = place.phone;
     const website = place.website;
     const address = place.address;
     const googleMap = place.googleMap;
 
     // sending everything as response
-    const data = { place, reviewRatings, averageRating, suggestedPlaces, website, address, googleMap };
+    const data = { place, reviewRatings, averageRating, suggestedPlaces, hours, phone, website, address, googleMap };
     res.send(data)
     //res.render('place-details', { place: place, averageRating: averageRating, numRatings: reviewRatings.length });
   } catch (error) {
