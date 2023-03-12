@@ -267,7 +267,6 @@ function(accessToken, refreshToken, profile, cb) {
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find();
-
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -678,10 +677,47 @@ app.post('/register', function (req, res) {
     console.log("Password length is less than 6!");
     res.status(500).send('Password length is less than 6!');
   }
+  if (req.body.username.endsWith('@purdue.edu')) {
+    const link = `http://localhost:3000/verify-user/${req.body.name}/${req.body.username}/${md5(req.body.password)}`;
+    const msg = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: req.body.username,
+      subject: 'AllPurdue Email Verification',
+      text: `Hello from AllPurdue! Boiler Up! Please click the link to verify your email:\n${link}.\n`
+    }
+    transporter.sendMail(msg, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    res.render('home');
+  } else {
+      const newUser = new User({
+        name: req.body.name,
+        email: req.body.username,
+        password: md5(req.body.password)
+      });
+      newUser.save(function (err) {
+        if (err) {
+          console.log(err);
+          res.status(500).send('Unsuccessful registration');
+        } else {
+          console.log("User Successfully Registered!");
+          res.render("login");
+        }
+      });
+  }
+});
+
+app.get("/verify-user/:name/:email/:password", function(req, res) {
+  console.log("User Successfully Verified!");
+  const { name, email, password } = req.params;
   const newUser = new User({
-    name: req.body.name,
-    email: req.body.username,
-    password: md5(req.body.password)
+    name: name,
+    email: email,
+    password: password
   });
   newUser.save(function (err) {
     if (err) {
