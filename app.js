@@ -31,7 +31,7 @@ mongoose.set('strictQuery', false);
 // mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 
 // for windows
-mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
+ mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -227,6 +227,46 @@ const reviewSchema = new Schema(
   );
 
 const Review = new mongoose.model("Review", reviewSchema);
+
+
+// Blogs Schema
+
+const blogSchema = new Schema(
+    {
+      title: {
+        type: String,
+        required: true,
+      },
+      text: {
+        type: String,
+      },
+      place: {
+        type: Schema.Types.ObjectId,
+        ref: 'Place',
+      },
+      author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      images: [
+        {
+          type: String,
+        },
+      ],
+      likes: {
+        type: Number,
+        default: 0,
+      },
+      likes_by: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }]
+    },
+    { timestamps: true }
+);
+
+Blog = new mongoose.model("Blog", blogSchema);
 
 /* ---------- [End] Models ---------- */
 
@@ -636,6 +676,109 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 });
 
 /* ---------- [End] Reviews Routes ---------- */
+
+/* ---------- [Start] Blogs Routes ---------- */
+
+// GET all blogs
+app.get('/blogs', async (req, res) => {
+  try {
+    const blogs = await Blog.find().populate(['author' , 'place'])
+    res.render('blogs', { blogs });
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving blogs');
+  }
+});
+
+// GET new blog form
+app.get('/blogs/new-blog', async (req, res) => {
+  try {
+    const users = await User.find();
+    const place = await Place.find();
+    res.render('new-blog', { users, place });
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving new blog form');
+  }
+});
+
+// POST new blog
+app.post('/blogs', async (req, res) => {
+  try {
+    const blog = new Blog({
+      title: req.body.title,
+      text: req.body.text,
+      author: req.body.author,
+      place: req.body.place,
+    });
+    await blog.save();
+    res.redirect('/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error creating new blog');
+  }
+});
+
+// GET specific blog by ID
+app.get('/blogs/:id', async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate(['author' , 'place'])
+    res.render('blog', { blog });
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving blog');
+  }
+});
+
+// DELETE specific blog by ID
+app.delete('/blogs/:id', async (req, res) => {
+  try {
+    await Blog.findByIdAndDelete(req.params.id);
+    res.redirect('/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error deleting blog');
+  }
+});
+
+// GET recent blogs
+// app.get('/recent-blogs', async (req, res) => {
+//   try {
+//     const recentBlogs = await Blog.find({})
+//       // .populate('place', 'name tags placeType images') 
+//       // @Andrew / @Antony Add Whatever You Need In this Populate Command ^
+//       .sort({ updatedAt: -1 })
+//       .exec()
+    
+//     // sending recentBlogs as response
+//     res.send(recentBlogs)
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// })
+
+// PUT update an existing blog by ID
+// app.put("/blogs/:blogId", async (req, res) => {
+//   const { blogId } = req.params;
+//   const { title, text, places } = req.body;
+//   try {
+//     const blog = await Blog.findByIdAndUpdate(
+//       blogId,
+//       { title, text, places },
+//       { new: true }
+//     );
+//     if (!blog) {
+//       return res.status(404).json({ message: "Blog not found" });
+//     }
+//     res.json(blog);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// });
+
+/* ---------- [End] Blogs Routes ----------- */
 
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
 
