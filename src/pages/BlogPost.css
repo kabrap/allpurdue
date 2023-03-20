@@ -1,0 +1,32 @@
+.blog-post {
+    margin-top: 3%;
+}
+
+.category-date {
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.category-date #category-blog {
+    margin-right: 20px;
+    color: #ffcf56;
+}
+
+.category-date #date-blog {
+    margin-right: 20px;
+    color: rgb(201, 201, 201);
+}
+
+.blog-post h1 {
+    font-size: 40px;
+    margin: 0;
+    margin-bottom: 2%;
+    margin-top: 0.5%;
+}
+
+.blog-post #body {
+    font-size: 18px;
+    line-height: 36px;
+}

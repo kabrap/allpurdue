@@ -17,6 +17,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
 import axios from 'axios';
+import BlogPost from './pages/BlogPost';
 
 function App() {
   const [currentUser, setCurrentUser] = useState('undefined');
@@ -59,6 +60,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
+          <Route path="/blog-post" element={<BlogPost />} />
         </Routes>
       </Router>
     </div>
