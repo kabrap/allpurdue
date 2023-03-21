@@ -328,6 +328,7 @@ app.get('/users/:id', async (req, res) => {
 
 /* ---------- [Start] Place Routes ---------- */
 
+/**
 app.get('/add_place', (req, res) => {
   res.render("add_place");
 });
@@ -357,6 +358,7 @@ app.post('/add_place', async (req, res) => {
     res.status(500).send('Error adding place');
   }
 });
+*/
 
 // GET route for displaying all places
 app.get('/places', async (req, res) => {
@@ -676,6 +678,46 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 });
 
 /* ---------- [End] Reviews Routes ---------- */
+
+/* ---------- [Start] Admin Modification Routes ---------- */
+
+app.get('/admin/add-place', async (req, res) => {
+  try {
+    res.render('add-place'); // render the add-place EJS view
+  } catch (err) {
+    console.log(err);
+    res.send('Error fetching add place form.')
+  }
+});
+
+app.post('/add', async (req, res) => {
+  try {
+    const newPlace = new Place({
+    name: req.body.name,
+    description: req.body.description,
+    placeType: req.body.placeType,
+    hours: req.body.hours.split(','),
+    phone: req.body.phone,
+    tags: req.body.tags.split(','),
+    location: {
+      type: "Point",
+      coordinates: [req.body.longitude, req.body.latitude],
+    },
+    images: req.body.images.split(','),
+    address: req.body.address,
+    googleMap: req.body.googleMap,
+    website: req.body.website
+  });
+  await newPlace.save();
+  res.redirect('/places/$(newPlace._id)')
+  } catch (err) {
+    console.log(err);
+    res.send("Error adding new place");
+  }
+});
+
+/* ---------- [End] Admin Modification Routes ---------- */
+
 
 /* ---------- [Start] Blogs Routes ---------- */
 
