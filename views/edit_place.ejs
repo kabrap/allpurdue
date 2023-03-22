@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Edit Place</title>
+    </head>
+    <body>
+        <h1>Edit Place</h1>
+        <form action="/places/<%= place._id %>/edit/?_method=PUT" method="POST">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" name="name" value="<%= place.name %>" required><br>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea name="description" required><%= place.description %></textarea><br>
+            </div>
+            <div>
+                <label for="hours">Hours:</label>
+                <input type="text" name="hours" value="<%= place.hours.join(',') %>" required><br>
+            </div>
+            <div>
+                <label for="phone">Phone:</label>
+                <input type="tel" name="phone" value="<%= place.phone %>" required><br>
+            </div>
+            <div>
+                <label for="placeType">Place Type:</label>
+                <input type="text" name="placeType" value="<%= place.placeType %>" required><br>
+            </div>
+            <div>
+                <label for="tags">Tags:</label>
+                <input type="text" name="tags" value="<%= place.tags.join(',') %>"><br>
+            </div>
+            <div>
+                <label for="lng">Longitude:</label>
+                <input type="text" name="lng" value="<%= place.location.coordinates[0] %>" required>
+            </div>
+            <div>
+                <label for="lat">Latitude:</label>
+                <input type="text" name="lat" value="<%= place.location.coordinates[1] %>" required>
+              </div>
+            <div>
+                <label for="images">Images:</label>
+                <input type="text" name="images" value="<%= place.images.join(',') %>"><br>
+            </div>
+            <div>
+                <label for="address">Address:</label>
+                <input type="text" name="address" value="<%= place.address %>" required><br>
+            </div>
+            <div>
+                <label for="googleMap">Google Map:</label>
+                <input type="text" name="googleMap" value="<%= place.googleMap %>" required><br>
+            </div>
+            <div>
+                <label for="website">Website:</label>
+                <input type="url" name="website" value="<%= place.website %>" required><br>
+            </div>
+            <button type="submit">Update</button>
+        </form>
+    </body>
+</html>

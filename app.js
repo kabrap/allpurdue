@@ -690,7 +690,7 @@ app.get('/admin/add-place', async (req, res) => {
   }
 });
 
-app.post('/add', async (req, res) => {
+app.post('/admin/add-place', async (req, res) => {
   try {
     const newPlace = new Place({
     name: req.body.name,
@@ -709,12 +709,53 @@ app.post('/add', async (req, res) => {
     website: req.body.website
   });
   await newPlace.save();
-  res.redirect('/places/$(newPlace._id)')
+  res.redirect(`/places/${newPlace._id}`);
   } catch (err) {
     console.log(err);
     res.send("Error adding new place");
   }
 });
+
+// GET request to display the form to update a place
+app.get('/places/:id/edit', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    res.render('edit_place', { place });
+  } catch (err) {
+    console.error(err);
+    res.send('Error getting edit place form');
+  }
+});
+
+// PUT request to update a place
+app.put('/places/:id/edit', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    place.name = req.body.name;
+    place.description = req.body.description;
+    place.hours = req.body.hours;
+    place.phone = req.body.phone;
+    place.placeType = req.body.placeType;
+    place.tags = req.body.tags;
+    place.location = {
+      type: 'Point',
+      coordinates: [req.body.lng, req.body.lat],
+    };
+    place.images = req.body.images;
+    place.address = req.body.address;
+    place.googleMap = req.body.googleMap;
+    place.website = req.body.website;
+    await place.save();
+    res.redirect(`/places/${place._id}`);
+  } catch (err) {
+    console.error(err);
+    res.send('Error editing place information');
+  }
+});
+
 
 /* ---------- [End] Admin Modification Routes ---------- */
 
