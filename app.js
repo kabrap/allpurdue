@@ -113,6 +113,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Review',
     }],
+    savedBlogs: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Blog',
+    }],
     googleId: {
       type: String
     }
