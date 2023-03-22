@@ -1,0 +1,25 @@
+.blog-card {
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+    display: flex;
+}
+  
+.blog-card-title {
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+}
+  
+.blog-card-author {
+    font-size: 14px;
+    color: #838282;
+    margin-bottom: 8px;
+}
+  
+.blog-card-content {
+    color: #505050;
+    font-size: 18px;
+}

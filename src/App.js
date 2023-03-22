@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
 import axios from 'axios';
 import BlogPost from './pages/BlogPost';
+import BlogCreationPage from './pages/BlogCreationPage';
 
 function App() {
   const [currentUser, setCurrentUser] = useState('undefined');
@@ -61,6 +62,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
           <Route path="/blog-post" element={<BlogPost />} />
+          <Route path="/blog/create" element={<BlogCreationPage />} />
         </Routes>
       </Router>
     </div>
