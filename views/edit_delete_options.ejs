@@ -1,0 +1,19 @@
+<div>
+    <h2><%= place.name %></h2>
+    <p><%= place.description %></p>
+    <a href="/places/<%= place._id %>/edit">Edit</a>
+</div>
+
+<% places.forEach(place => { %>
+    <div>
+      <h2><%= place.name %></h2>
+      <p><%= place.description %></p>
+      <form method="POST" action="/admin/places/<%= place._id %>?_method=DELETE">
+        <button>Delete</button>
+      </form>
+      <form method="POST" action="/admin/places/<%= place._id %>?_method=GET">
+        <button>Edit</button>
+      </form>
+    </div>
+<% }); %>
+  

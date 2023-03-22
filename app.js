@@ -696,9 +696,9 @@ app.post('/admin/add-place', async (req, res) => {
     name: req.body.name,
     description: req.body.description,
     placeType: req.body.placeType,
-    hours: req.body.hours.split(','),
+    hours: req.body.hours.split(',').map(tag => tag.trim()),
     phone: req.body.phone,
-    tags: req.body.tags.split(','),
+    tags: req.body.tags.split(',').map(image => image.trim()),
     location: {
       type: "Point",
       coordinates: [req.body.longitude, req.body.latitude],
@@ -709,7 +709,7 @@ app.post('/admin/add-place', async (req, res) => {
     website: req.body.website
   });
   await newPlace.save();
-  res.redirect(`/places/${newPlace._id}`);
+  res.redirect(`/admin/places/${newPlace._id}`);
   } catch (err) {
     console.log(err);
     res.send("Error adding new place");
@@ -717,10 +717,13 @@ app.post('/admin/add-place', async (req, res) => {
 });
 
 // GET request to display the form to update a place
-app.get('/places/:id/edit', async (req, res) => {
+app.get('/admin/places/:id/edit', async (req, res) => {
   try {
     const place = await Place.findById(req.params.id);
-    res.render('edit_place', { place });
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    res.render('/admin/places/:id/edit', { place });
   } catch (err) {
     console.error(err);
     res.send('Error getting edit place form');
@@ -728,7 +731,7 @@ app.get('/places/:id/edit', async (req, res) => {
 });
 
 // PUT request to update a place
-app.put('/places/:id/edit', async (req, res) => {
+app.put('/admin/places/:id/edit', async (req, res) => {
   try {
     const place = await Place.findById(req.params.id);
     if (!place) {
@@ -739,20 +742,35 @@ app.put('/places/:id/edit', async (req, res) => {
     place.hours = req.body.hours;
     place.phone = req.body.phone;
     place.placeType = req.body.placeType;
-    place.tags = req.body.tags;
+    place.tags = req.body.tags.split(',').map(tag => tag.trim());
     place.location = {
       type: 'Point',
       coordinates: [req.body.lng, req.body.lat],
     };
-    place.images = req.body.images;
+    place.images = req.body.images.split(',').map(image => image.trim());
     place.address = req.body.address;
     place.googleMap = req.body.googleMap;
     place.website = req.body.website;
     await place.save();
-    res.redirect(`/places/${place._id}`);
+    res.redirect(`/admin/places/${place._id}`);
   } catch (err) {
     console.error(err);
     res.send('Error editing place information');
+  }
+});
+
+// DELETE a place by ID
+app.delete('/admin/places/:id', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    await Place.findByIdAndDelete(req.params.id);
+    res.redirect('/places');
+  } catch (err) {
+    console.error(err);
+    res.send('Error Deleting Place');
   }
 });
 

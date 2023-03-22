@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>Edit Place</h1>
-        <form action="/places/<%= place._id %>/edit/?_method=PUT" method="POST">
+        <form action="/admin/places/<%= place._id %>/edit/?_method=PUT" method="POST">
             <div>
                 <label for="name">Name:</label>
                 <input type="text" name="name" value="<%= place.name %>" required><br>
@@ -26,6 +26,12 @@
             </div>
             <div>
                 <label for="placeType">Place Type:</label>
+                <select id="placeType" name="placeType" required>
+                    <option value="Restaurant" <% if (place.placeType === 'Restaurant') { %>selected<% } %>>Restaurant</option>
+                    <option value="Cafe" <% if (place.placeType === 'Cafe') { %>selected<% } %>>Cafe</option>
+                    <option value="Living" <% if (place.placeType === 'Living') { %>selected<% } %>>Living</option>
+                    <option value="Study" <% if (place.placeType === 'Study') { %>selected<% } %>>Study</option>
+                  </select>
                 <input type="text" name="placeType" value="<%= place.placeType %>" required><br>
             </div>
             <div>
@@ -56,7 +62,7 @@
                 <label for="website">Website:</label>
                 <input type="url" name="website" value="<%= place.website %>" required><br>
             </div>
-            <button type="submit">Update</button>
+            <button type="submit">Save</button>
         </form>
     </body>
 </html>
