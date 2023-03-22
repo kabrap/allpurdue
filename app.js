@@ -12,6 +12,9 @@ const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 const methodOverride = require('method-override');
+const multer  = require('multer')
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
@@ -22,6 +25,22 @@ const corsOptions ={
    credentials:true,
    optionSuccessStatus:200,
 }
+
+/* Multer Setup for Images */
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    console.log(file);
+    cb(null, file.originalname);
+  }
+})
+
+var upload = multer({ storage: storage })
+
+/* End multer Setup for Images */
 
 app.use(cors(corsOptions));
 
@@ -47,6 +66,8 @@ const transporter = nodemailer.createTransport({
 app.use(methodOverride('_method'));
 
 app.use(express.static("public"));
+app.use(express.static("uploads"));
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -695,7 +716,7 @@ app.get('/blogs/new-blog', async (req, res) => {
   try {
     const users = await User.find();
     const place = await Place.find();
-    res.render('new-blog', { users, place });
+    res.render('new-blog', { users, place});
   } catch (err) {
     console.log(err);
     res.send('Error retrieving new blog form');
@@ -703,16 +724,25 @@ app.get('/blogs/new-blog', async (req, res) => {
 });
 
 // POST new blog
-app.post('/blogs', async (req, res) => {
+app.post('/blogs', upload.array('blog-images'), async (req, res) => {
   try {
+    var img = [];
+    for(var i = 0; i < req.files.length; i++) {
+      var unique = Math.random();
+      fs.renameSync(req.files[i].path, req.files[i].path.replace(req.files[i].originalname, unique + "-" + req.files[i].originalname));
+      var imgTitle = unique + "-" + req.files[i].originalname;
+      img.push(imgTitle);
+    }
     const blog = new Blog({
       title: req.body.title,
       text: req.body.text,
       author: req.body.author,
       place: req.body.place,
+      images: img
     });
     await blog.save();
-    res.redirect('/blogs');
+    res.send("Blog Uploaded");
+    // res.redirect('/blogs');
   } catch (err) {
     console.log(err);
     res.send('Error creating new blog');
