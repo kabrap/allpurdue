@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import "./BlogCreationPage.css"
+import { Link } from 'react-router-dom';
+import AddImage from '../images/addimgicon.png'
 
 function BlogCreationPage() {
   const [title, setTitle] = useState("");
@@ -35,30 +38,27 @@ function BlogCreationPage() {
 
   return (
     <div>
-      <h2>Create a Blog Post</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title:</label>
-          <input type="text" id="title" value={title} onChange={handleTitleChange} />
-        </div>
-        <div>
-          <label>Content:</label>
-          <textarea id="content" value={content} onChange={handleContentChange} />
-        </div>
-        <div>
-          <label>Pictures:</label>
-          <input type="file" id="pictures" onChange={handlePictureChange} multiple />
-        </div>
+      <Link to='/blog'>&#8617; Blogs</Link>
+      <h2 className="blog-page-title">Create a Blog Post</h2>
+      <form onSubmit={handleSubmit} className="form-container">
+        <label>Title:</label>
+        <input type="text" id="title" value={title} onChange={handleTitleChange} placeholder="Enter a title for your blog post..."/>
+        <label>Content:</label>
+        <textarea id="content" value={content} onChange={handleContentChange} placeholder="Type up your blog here"/>
         <div className="picture-preview-container">
             {pictures.map((picture, index) => (
-                <div key={index} className="picture-preview">
-                    <button type="button" onClick={() => handlePictureDelete(index)} className="picture-delete-button">
-                        <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} style={{ maxWidth: "200px", maxHeight: "200px", margin: "10px" }} className="picture-preview-image" />
-                    </button>
-                </div>
+                <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} onClick={() => handlePictureDelete(index)} className="picture-preview-image" />
             ))}
         </div>
-        <button type="submit">Create Blog Post</button>
+        <div className="button-container">
+            <div className="add-pic-container">
+                <label for="pictures">
+                    <img src={AddImage} alt="add icon"/>
+                </label>
+                <input type="file" id="pictures" onChange={handlePictureChange} multiple />
+            </div>
+            <button type="submit">Create</button>
+        </div>
       </form>
     </div>
   );
