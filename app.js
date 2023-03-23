@@ -681,15 +681,17 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 
 /* ---------- [Start] Admin Modification Routes ---------- */
 
+//Get request to display add place form
 app.get('/admin/add-place', async (req, res) => {
   try {
-    res.render('add-place'); // render the add-place EJS view
+    res.render('add_place'); // render the add-place EJS view
   } catch (err) {
     console.log(err);
     res.send('Error fetching add place form.')
   }
 });
 
+//POST Route to add a place
 app.post('/admin/add-place', async (req, res) => {
   try {
     const newPlace = new Place({
@@ -723,7 +725,7 @@ app.get('/admin/places/:id/edit', async (req, res) => {
     if (!place) {
       return res.status(404).send('Place not found');
     }
-    res.render('/admin/places/:id/edit', { place });
+    res.render('edit_place', { place });
   } catch (err) {
     console.error(err);
     res.send('Error getting edit place form');
