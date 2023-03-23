@@ -771,6 +771,14 @@ app.get('/blogs/:id', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/blogs/:id', async (req, res) => {
   try {
+    const blog = await Blog.findById(req.params.id);
+    var img = blog.images;
+    for(var i = 0; i < img.length; i++) {
+      var path = "uploads/" + img[i];
+      fs.unlink(path, (err) => {
+        if (err) throw err;
+      });
+    }
     await Blog.findByIdAndDelete(req.params.id);
     res.redirect('/blogs');
   } catch (err) {
