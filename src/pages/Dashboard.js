@@ -112,6 +112,10 @@ function Dashboard() {
       </div>
       }
       <br/>
+      <div id = "addLocationButton">
+        <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
+      </div>
+      <br/>
       <button onClick={logout}>Logout</button>
     </div>
   )

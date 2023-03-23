@@ -5,6 +5,7 @@ import LoggedInNavbar from './components/navbar/LoggedInNavbar';
 import React, {useEffect, useState} from 'react'
 import Home from './pages/Home'
 import About from './pages/About'
+import AddLocation from './pages/AddLocation'
 import Categories from './pages/categories/Categories';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
@@ -48,6 +49,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/add-location" element={<AddLocation />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
