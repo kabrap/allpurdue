@@ -11,6 +11,8 @@ function AddLocation() {
     const [images, setImages] = useState('')
     const [address, setAddress] = useState('')
     const [googleUrl, setGoogleUrl] = useState('')
+    const [latitude, setLatitude] = useState('')
+    const [longitude, setLongitude] = useState('')
     const [website, setWebsite] = useState('')
 
 
@@ -56,6 +58,14 @@ function AddLocation() {
 
     const handleGoogleUrl = (e) => {
       setGoogleUrl(e.target.value);
+    }
+
+    const handleLatitude = (e) => {
+      setLatitude(e.target.value);
+    }
+
+    const handleLongitude = (e) => {
+      setLongitude(e.target.value);
     }
 
     const handleWebsite = (e) => {
@@ -139,35 +149,32 @@ function AddLocation() {
 
       const imagesArr = images.split(',').map(e => e.trim());
 
-      const post = [
-        {name: nameOfPlace},
-        {description: description},
-        {hours: AMPMhours},
-        {phone: phoneNum},
-        {placeType: placeType},
-        {tags: tagsArr},
-        {location: []},
-        {reviews: []},
-        {images: imagesArr},
-        {address: address},
-        {googleMap: googleUrl},
-        {website: website}
-      ];
-      console.log(post);
-
       // submit request
-      // await axios.post('http://localhost:3000/admin/add', {
-      //     name: nameOfPlace,
-      //     description: description,
-      //     hours: 
-      // })
-      // .then(function (res) {
-      //   console.log('successful submission')
-      //   setShowSuccessMsg(true)
-      // })
-      // .catch(function (err) {
-      //   console.log(err)
-      // }) 
+      await axios.post('http://localhost:3000/admin/add-place', 
+      {
+        name: nameOfPlace,
+        description: description,
+        hours: AMPMhours,
+        phone: phoneNum,
+        placeType: placeType,
+        tags: tagsArr,
+        location: {
+          type: "Point",
+          coordinates: [longitude, latitude]
+        },
+        reviews: [],
+        images: imagesArr,
+        address: address,
+        googleMap: googleUrl,
+        website: website
+      })
+      .then(function (res) {
+        console.log('successful submission')
+        setShowSuccessMsg(true)
+      })
+      .catch(function (err) {
+        console.log(err)
+      }) 
     }
 
     return (
@@ -227,6 +234,14 @@ function AddLocation() {
               <label className='location-field-container'>
                 <span>Google Map Url</span>
                 <input type="url" placeholder="https://www.google.com/maps/place/Five+Guys/@40.4233731,-86.9122599,17.05z/data=!4m6!3m5!1s0x8812e2aed99721e9:0x2a65fca44b4f0116!8m2!3d40.4233321!4d-86.9080151!16s%2Fg%2F1tvq4qs0" value={googleUrl} onChange={handleGoogleUrl}></input>
+              </label>
+              <label className='location-field-container'>
+                <span>Latitude</span>
+                <input type="number" placeholder="40.42343994609269" value={latitude} onChange={handleLatitude}></input>
+              </label>
+              <label className='location-field-container'>
+                <span>Longitude</span>
+                <input type="number" placeholder="-86.90795109977412" value={longitude} onChange={handleLongitude}></input>
               </label>
               <label className='location-field-container'>
                 <span>Website</span>
