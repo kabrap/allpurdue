@@ -750,8 +750,7 @@ app.post('/blogs', upload.array('blog-images'), async (req, res) => {
       images: img
     });
     await blog.save();
-    res.send("Blog Uploaded");
-    // res.redirect('/blogs');
+    res.redirect('/blogs');
   } catch (err) {
     console.log(err);
     res.send('Error creating new blog');
@@ -777,6 +776,48 @@ app.delete('/blogs/:id', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send('Error deleting blog');
+  }
+});
+
+// Save specific blog by ID
+app.post('/save-blog/:id', async (req, res) => {
+  try {
+    if (!currentUser) {
+      res.send("no user logged in");
+      return;
+    }
+    if (currentUser.savedBlogs.includes(req.params.id)) {
+      res.send("blog already saved");
+      return;
+    }
+    currentUser.savedBlogs.push(req.params.id);
+    User.findOneAndUpdate(
+      { _id: currentUser._id }, 
+      { savedBlogs: currentUser.savedBlogs }, function (err) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+      } else {
+        res.status(201).send("success")
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.send('Error saving blogs');
+  }
+});
+
+// Get saved blogs of the current user
+app.get('/saved-blogs/', async (req, res) => {
+  try {
+    if (!currentUser) {
+      res.send('user not logged in');
+      return;
+    }
+    res.send(currentUser.savedBlogs);
+  } catch (err) {
+    console.log(err);
+    res.send('Error sending saved blogs');
   }
 });
 
@@ -858,6 +899,7 @@ app.post('/register', function (req, res) {
   if(req.body.password.length < 6) {
     console.log("Password length is less than 6!");
     res.status(500).send('Password length is less than 6!');
+    return;
   }
   if (req.body.username.endsWith('@purdue.edu')) {
     const link = `http://localhost:3000/verify-user/${req.body.name}/${req.body.username}/${md5(req.body.password)}`;

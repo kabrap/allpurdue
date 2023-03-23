@@ -13,7 +13,10 @@
     <p>Likes: <%= blog.likes %></p>
     <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST">
       <button type="submit">Delete</button>
-
+    </form>
+    <form action="/save-blog/<%= blog._id %>" method="POST">
+      <button type="submit">Save</button>
+    </form>
     <a href="/blogs">All Blogs</a>
   </body>
 </html>
