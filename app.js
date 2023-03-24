@@ -262,38 +262,39 @@ const Review = new mongoose.model("Review", reviewSchema);
 // Blogs Schema
 
 const blogSchema = new Schema(
-    {
-      title: {
-        type: String,
-        required: true,
-      },
-      text: {
-        type: String,
-      },
-      place: {
-        type: Schema.Types.ObjectId,
-        ref: 'Place',
-      },
-      author: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-      images: [
-        {
-          type: String,
-        },
-      ],
-      likes: {
-        type: Number,
-        default: 0,
-      },
-      likes_by: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    }]
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    { timestamps: true }
+    text: {
+      type: String,
+    },
+    tags: [
+      {
+        type: String,
+      },
+    ],
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    likes_by: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    }],
+  },
+  { timestamps: true }
 );
 
 Blog = new mongoose.model("Blog", blogSchema);
@@ -712,11 +713,10 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 // GET all blogs
 app.get('/blogs', async (req, res) => {
   try {
-    const blogs = await Blog.find().populate(['author' , 'place'])
-    res.render('blogs', { blogs });
+    const blogs = await Blog.find();
+    res.json(blogs);
   } catch (err) {
-    console.log(err);
-    res.send('Error retrieving blogs');
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -724,8 +724,7 @@ app.get('/blogs', async (req, res) => {
 app.get('/blogs/new-blog', async (req, res) => {
   try {
     const users = await User.find();
-    const place = await Place.find();
-    res.render('new-blog', { users, place});
+    res.render('new-blog', { users });
   } catch (err) {
     console.log(err);
     res.send('Error retrieving new blog form');
@@ -735,32 +734,23 @@ app.get('/blogs/new-blog', async (req, res) => {
 // POST new blog
 app.post('/blogs', upload.array('blog-images'), async (req, res) => {
   try {
-    var img = [];
-    for(var i = 0; i < req.files.length; i++) {
-      var unique = Math.random();
-      fs.renameSync(req.files[i].path, req.files[i].path.replace(req.files[i].originalname, unique + "-" + req.files[i].originalname));
-      var imgTitle = unique + "-" + req.files[i].originalname;
-      img.push(imgTitle);
-    }
-    const blog = new Blog({
-      title: req.body.title,
-      text: req.body.text,
-      author: req.body.author,
-      place: req.body.place,
-      images: img
-    });
-    await blog.save();
-    res.redirect('/blogs');
+    const { title, text, author, tags } = req.body;
+    const images = req.files.map((file) => file.filename);
+
+    const newBlog = new Blog({ title, text, author, tags, images });
+    const savedBlog = await newBlog.save();
+
+    res.status(201).json(savedBlog);
   } catch (err) {
-    console.log(err);
-    res.send('Error creating new blog');
+    console.error(err);
+    res.status(500).send('Server error');
   }
 });
 
 // GET specific blog by ID
 app.get('/blogs/:id', async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate(['author' , 'place'])
+    const blog = await Blog.findById(req.params.id).populate('author');
     res.render('blog', { blog });
   } catch (err) {
     console.log(err);
@@ -830,41 +820,76 @@ app.get('/saved-blogs/', async (req, res) => {
 });
 
 // GET recent blogs
-// app.get('/recent-blogs', async (req, res) => {
-//   try {
-//     const recentBlogs = await Blog.find({})
-//       // .populate('place', 'name tags placeType images') 
-//       // @Andrew / @Antony Add Whatever You Need In this Populate Command ^
-//       .sort({ updatedAt: -1 })
-//       .exec()
+app.get('/recent-blogs', async (req, res) => {
+  try {
+    const recentBlogs = await Blog.find({})
+      // .populate('place', 'name tags placeType images') 
+      // @Andrew / @Antony Add Whatever You Need In this Populate Command ^
+      .sort({ updatedAt: -1 })
+      .exec()
     
-//     // sending recentBlogs as response
-//     res.send(recentBlogs)
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// })
+    // sending recentBlogs as response
+    res.send(recentBlogs)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+})
 
 // PUT update an existing blog by ID
-// app.put("/blogs/:blogId", async (req, res) => {
-//   const { blogId } = req.params;
-//   const { title, text, places } = req.body;
-//   try {
-//     const blog = await Blog.findByIdAndUpdate(
-//       blogId,
-//       { title, text, places },
-//       { new: true }
-//     );
-//     if (!blog) {
-//       return res.status(404).json({ message: "Blog not found" });
-//     }
-//     res.json(blog);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// });
+app.put("/blogs/:blogId", async (req, res) => {
+  const { blogId } = req.params;
+  const { title, text, places } = req.body;
+  try {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      { title, text, places },
+      { new: true }
+    );
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    res.json(blog);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// Like and unlike a blog
+app.post('/blogs/:blogId/like/:userId', async (req, res) => {
+  const blogId = req.params.blogId;
+  const user = await User.findById(req.params.userId);
+
+  try {
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(404).send('Blog not found');
+    }
+
+    const hasLiked = blog.likes_by.includes(user._id);
+
+    if (hasLiked) {
+      blog.likes = blog.likes - 1;
+      blog.likes_by.pop(user._id);
+      // user.likedReviews.pop(review._id);
+    } else {
+      blog.likes = blog.likes + 1;
+      blog.likes_by.push(user._id);
+      // user.likedReviews.push(review._id);
+    }
+
+    // Save the changes to the blog and user documents
+    await blog.save();
+    // await user.save();
+
+    return res.json({ blog });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
 
 /* ---------- [End] Blogs Routes ----------- */
 
