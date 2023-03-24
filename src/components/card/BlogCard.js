@@ -1,17 +1,22 @@
-import React from "react";
-import "./BlogCard.css";
+import React, { useState } from 'react';
+import './BlogCard.css';
+import { Link } from 'react-router-dom';
 
-function BlogCard(props) {
-    return (
-        <div className="blog-card">
-            <div className="blog-card-likes">{props.likes} likes</div>
-            <div>
-                <div className="blog-card-title">{props.title}</div>
-                <div className="blog-card-author">Posted by {props.author}</div>
-                <div className="blog-card-content">{props.content}</div>
+const BlogCard = (props) => {
+  return (
+    <Link key={props._id} to={`/blogs/${props._id}`}>
+        <div className="blog-card-container">
+            <div className='blog-card-tags-container'>
+                {props.tags.slice(0, 3).map(tag => (
+                    <span className='blog-card-tag'>{tag} </span>
+                ))}
+                <span className='blog-card-date'>&#183; Posted by {props.author} {props.date}</span>
             </div>
+            <span className="blog-card-title">{props.title}</span>
+            <span className="blog-card-content">{props.text}</span>
         </div>
-    );
-}
+    </Link>
+  );
+};
 
 export default BlogCard;

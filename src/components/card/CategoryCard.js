@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './CategoryCard.css';
 import { Link } from 'react-router-dom';
 
-const Card = (props) => {
+const CategoryCard = (props) => {
   return (
     <Link key={props._id} to={`/places/${props._id}`}>
       <div className="category-card">
@@ -46,4 +46,4 @@ const Card = (props) => {
   );
 };
 
-export default Card;
+export default CategoryCard;

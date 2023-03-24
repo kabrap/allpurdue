@@ -6,7 +6,7 @@ import React, {useEffect, useState} from 'react'
 import Home from './pages/Home'
 import About from './pages/About'
 import Categories from './pages/categories/Categories';
-import Blog from './pages/Blog';
+import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
 import LoginSignup from './pages/LoginSignup';
 import Cafes from './pages/categories/Cafes'
@@ -51,7 +51,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs" element={<Blogs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/loginsignup" element={<LoginSignup />} />
           <Route path="/categories/cafes" element={<Cafes />} />
@@ -62,7 +62,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
           <Route path="/blog-post" element={<BlogPost />} />
-          <Route path="/blog/create" element={<BlogCreationPage />} />
+          <Route path="/blogs/create" element={<BlogCreationPage />} />
         </Routes>
       </Router>
     </div>

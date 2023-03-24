@@ -68,6 +68,42 @@
 }
 
 .button-container button:hover{
-    background-color: transparent;
-    border: 1px solid rgb(255, 255, 255);
+    border: 1px solid #FFC632;
+    background-color: #FFC632;
+    color: #070707;
 }
+
+.tag-container {
+    background-color: transparent;
+    max-width: 100%;
+    resize: none;
+    margin-bottom: 16px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    color: rgb(231, 231, 231);
+    padding: 6px;
+}
+
+.tag-button {
+    padding: 5px 10px;
+    margin-right: 4px;
+    border: none;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid grey;
+}
+
+.tag-button:hover {
+    border: 1px solid #FFC632;
+    background-color: #FFC632;
+    color: #070707;
+}
+  
+.tag-button.selected {
+    border: 1px solid #FFC632;
+    background-color: #FFC632;
+    color: #070707;
+}
+  
