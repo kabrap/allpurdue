@@ -12,6 +12,9 @@ const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 const methodOverride = require('method-override');
+const multer  = require('multer')
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
@@ -23,6 +26,27 @@ const corsOptions ={
    optionSuccessStatus:200,
 }
 
+/* Multer Setup for Images */
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    console.log(file);
+    cb(null, file.originalname);
+  }
+})
+
+var upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024
+  }
+})
+
+/* End multer Setup for Images */
+
 app.use(cors(corsOptions));
 
 mongoose.set('strictQuery', false);
@@ -31,7 +55,7 @@ mongoose.set('strictQuery', false);
 // mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 
 // for windows
-mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
+ mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -47,6 +71,8 @@ const transporter = nodemailer.createTransport({
 app.use(methodOverride('_method'));
 
 app.use(express.static("public"));
+app.use(express.static("uploads"));
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -86,6 +112,10 @@ const userSchema = new Schema(
     postedReviews: [{
       type: Schema.Types.ObjectId,
       ref: 'Review',
+    }],
+    savedBlogs: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Blog',
     }],
     googleId: {
       type: String
@@ -227,6 +257,46 @@ const reviewSchema = new Schema(
   );
 
 const Review = new mongoose.model("Review", reviewSchema);
+
+
+// Blogs Schema
+
+const blogSchema = new Schema(
+    {
+      title: {
+        type: String,
+        required: true,
+      },
+      text: {
+        type: String,
+      },
+      place: {
+        type: Schema.Types.ObjectId,
+        ref: 'Place',
+      },
+      author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      images: [
+        {
+          type: String,
+        },
+      ],
+      likes: {
+        type: Number,
+        default: 0,
+      },
+      likes_by: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }]
+    },
+    { timestamps: true }
+);
+
+Blog = new mongoose.model("Blog", blogSchema);
 
 /* ---------- [End] Models ---------- */
 
@@ -637,6 +707,167 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 
 /* ---------- [End] Reviews Routes ---------- */
 
+/* ---------- [Start] Blogs Routes ---------- */
+
+// GET all blogs
+app.get('/blogs', async (req, res) => {
+  try {
+    const blogs = await Blog.find().populate(['author' , 'place'])
+    res.render('blogs', { blogs });
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving blogs');
+  }
+});
+
+// GET new blog form
+app.get('/blogs/new-blog', async (req, res) => {
+  try {
+    const users = await User.find();
+    const place = await Place.find();
+    res.render('new-blog', { users, place});
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving new blog form');
+  }
+});
+
+// POST new blog
+app.post('/blogs', upload.array('blog-images'), async (req, res) => {
+  try {
+    var img = [];
+    for(var i = 0; i < req.files.length; i++) {
+      var unique = Math.random();
+      fs.renameSync(req.files[i].path, req.files[i].path.replace(req.files[i].originalname, unique + "-" + req.files[i].originalname));
+      var imgTitle = unique + "-" + req.files[i].originalname;
+      img.push(imgTitle);
+    }
+    const blog = new Blog({
+      title: req.body.title,
+      text: req.body.text,
+      author: req.body.author,
+      place: req.body.place,
+      images: img
+    });
+    await blog.save();
+    res.redirect('/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error creating new blog');
+  }
+});
+
+// GET specific blog by ID
+app.get('/blogs/:id', async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate(['author' , 'place'])
+    res.render('blog', { blog });
+  } catch (err) {
+    console.log(err);
+    res.send('Error retrieving blog');
+  }
+});
+
+// DELETE specific blog by ID
+app.delete('/blogs/:id', async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    var img = blog.images;
+    for(var i = 0; i < img.length; i++) {
+      var path = "uploads/" + img[i];
+      fs.unlink(path, (err) => {
+        if (err) throw err;
+      });
+    }
+    await Blog.findByIdAndDelete(req.params.id);
+    res.redirect('/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error deleting blog');
+  }
+});
+
+// Save specific blog by ID
+app.post('/save-blog/:id', async (req, res) => {
+  try {
+    if (!currentUser) {
+      res.send("no user logged in");
+      return;
+    }
+    if (currentUser.savedBlogs.includes(req.params.id)) {
+      res.send("blog already saved");
+      return;
+    }
+    currentUser.savedBlogs.push(req.params.id);
+    User.findOneAndUpdate(
+      { _id: currentUser._id }, 
+      { savedBlogs: currentUser.savedBlogs }, function (err) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+      } else {
+        res.status(201).send("success")
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.send('Error saving blogs');
+  }
+});
+
+// Get saved blogs of the current user
+app.get('/saved-blogs/', async (req, res) => {
+  try {
+    if (!currentUser) {
+      res.send('user not logged in');
+      return;
+    }
+    res.send(currentUser.savedBlogs);
+  } catch (err) {
+    console.log(err);
+    res.send('Error sending saved blogs');
+  }
+});
+
+// GET recent blogs
+// app.get('/recent-blogs', async (req, res) => {
+//   try {
+//     const recentBlogs = await Blog.find({})
+//       // .populate('place', 'name tags placeType images') 
+//       // @Andrew / @Antony Add Whatever You Need In this Populate Command ^
+//       .sort({ updatedAt: -1 })
+//       .exec()
+    
+//     // sending recentBlogs as response
+//     res.send(recentBlogs)
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// })
+
+// PUT update an existing blog by ID
+// app.put("/blogs/:blogId", async (req, res) => {
+//   const { blogId } = req.params;
+//   const { title, text, places } = req.body;
+//   try {
+//     const blog = await Blog.findByIdAndUpdate(
+//       blogId,
+//       { title, text, places },
+//       { new: true }
+//     );
+//     if (!blog) {
+//       return res.status(404).json({ message: "Blog not found" });
+//     }
+//     res.json(blog);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// });
+
+/* ---------- [End] Blogs Routes ----------- */
+
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
 
 // GET Route for Homes
@@ -676,6 +907,7 @@ app.post('/register', function (req, res) {
   if(req.body.password.length < 6) {
     console.log("Password length is less than 6!");
     res.status(500).send('Password length is less than 6!');
+    return;
   }
   if (req.body.username.endsWith('@purdue.edu')) {
     const link = `http://localhost:3000/verify-user/${req.body.name}/${req.body.username}/${md5(req.body.password)}`;

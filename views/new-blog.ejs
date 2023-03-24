@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Blog</title>
+  </head>
+  <body>
+    <h1>New Blog</h1>
+    <form action="/blogs" method="POST" enctype="multipart/form-data">
+      <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+      <div>
+        <label for="text">Text:</label>
+        <textarea id="text" name="text"></textarea>
+      </div>
+      <div>
+        <label for="place">Place:</label>
+        <select id="place" name="place">
+          <% place.forEach(function(place) { %>
+          <option value="<%= place._id %>"><%= place.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label for="author">Author:</label>
+        <select id="author" name="author" required>
+          <% users.forEach(function(user) { %>
+          <option value="<%= user._id %>"><%= user.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Upload Pictures</label>
+        <input type="file" name="blog-images" accept='image/*' multiple/>
+      </div>
+      <button type="submit" value="Upload">Create</button>
+    </form>
+  </body>
+</html>
