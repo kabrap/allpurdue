@@ -1,3 +1,9 @@
+.blog-creation-page-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1100px;
+}
+
 .blog-page-title {
     display: flex;
     justify-content: center;
@@ -8,30 +14,34 @@
     flex-direction: column;
 }
 
-.form-container label {
-    margin-bottom: 4px;
-    font-size: 18px;
-}
-
-.form-container input {
-    background-color: transparent;
-    margin-bottom: 16px;
-    border-radius: 4px;
-    border: 1px solid grey;
-    color: rgb(231, 231, 231);
-    padding: 6px;
-}
-
-.form-container textarea {
-    background-color: transparent;
-    max-width: 100%;
-    resize: none;
-    margin-bottom: 16px;
+.title-tag-container {
+    display: flex;
+    flex-direction: column;
     border: 1px solid grey;
     border-radius: 4px;
-    color: rgb(231, 231, 231);
-    padding: 6px;
-    height: 300px;
+    background-color: rgba(255, 255, 255, 0.062);
+    margin-bottom: 12px;
+}
+
+.create-title-container {
+    display: flex;
+    padding: 12px;
+}
+
+.create-title-container input {
+    border: 1px solid grey;
+    font-size: 16px;
+    width: 100%;
+    text-align: left;
+    padding: 12px 18px;
+    margin-right: 12px;
+    background-color: rgba(255, 255, 255, 0.021);
+    color: white;
+    border-radius: 4px;
+}
+
+.create-title-container input:hover {
+    border: 1px solid rgb(192, 192, 192);
 }
 
 .add-pic-container input {
@@ -39,31 +49,62 @@
 }
 
 .add-pic-container img {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-top: 3px;
+    padding: 2px;
+}
+
+.add-pic-container img:hover {
+    border: 1px solid rgb(192, 192, 192);
+    cursor: pointer;
+}
+
+
+.form-container textarea {
+    background-color: rgba(255, 255, 255, 0.062);
+    max-width: 100%;
+    resize: none;
+    margin-bottom: 16px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    color: rgb(231, 231, 231);
+    padding: 12px;
+    height: 300px;
+    font-size: 14px;
+}
+
+.picture-preview-container {
+    border: 1px solid grey;
+    padding: 12px;
+    border-radius: 4px;
 }
 
 .picture-preview-image {
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
     border: 1px solid grey;
     border-radius: 6px;
     margin-right: 4px;
+    padding: 8px;
 }
 
 .picture-preview-image:hover {
     cursor: pointer;
-    border: 1px solid rgb(255, 52, 52);
+    border: 1px solid rgb(192, 192, 192);
 }
 
 .button-container {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    margin-top: 12px;
 }
 
 .button-container button {
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.062);
     border: 1px solid grey;
 }
 
@@ -74,14 +115,13 @@
 }
 
 .tag-container {
-    background-color: transparent;
     max-width: 100%;
-    resize: none;
-    margin-bottom: 16px;
-    border: 1px solid grey;
-    border-radius: 4px;
+    border-top: 1px solid grey;
     color: rgb(231, 231, 231);
-    padding: 6px;
+    margin-left: 12px;
+    margin-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
 .tag-button {
@@ -106,4 +146,3 @@
     background-color: #FFC632;
     color: #070707;
 }
-  
