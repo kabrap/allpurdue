@@ -783,7 +783,26 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
     if (!review) {
       return res.status(404).send('Review not found');
     }
+    // Send a notification email
+    const msg = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: review.author.email,
+      subject: 'Review Deletion Notification',
+      text: `Hello from AllPurdue! Boiler Up! The following review was deleted due to violation of our site policies:\n
+      Review Text: ${review.text}\n
+      Review Place: ${review.place}\n
+      Please reach out to us for any questions regarding the deletion.`
+    }
+    transporter.sendMail(msg, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    // Delete the review from Review collection
     await Review.findByIdAndDelete(req.params.reviewId);
+    // Delete Review from Place Review Array
     const place = await Place.findById(req.params.placeId);
     if (!place) {
       return res.status(404).send('Place not found');
@@ -791,7 +810,6 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
     place.reviews.pull(req.params.reviewId);
     await place.save();
     res.redirect(`/admin/places/${req.params.placeId}`);
-    
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
@@ -801,6 +819,37 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/admin/blogs/:id', async (req, res) => {
   try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).send('Blog not found');
+    }
+    // Send a notification email
+    const msg = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: review.author.email,
+      subject: 'Blog Post Deletion Notification',
+      text: `Hello from AllPurdue! Boiler Up! The following blog post was deleted due to violation of our site policies:\n
+      Blog Title: ${blog.title}
+      Blog Text: ${blog.text}\n
+      Blog Place: ${blog.place}\n
+      Please reach out to us for any questions regarding the deletion.`
+    }
+    transporter.sendMail(msg, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    // Delete Images of Blog Post, if any
+    var img = blog.images;
+    for(var i = 0; i < img.length; i++) {
+      var path = "uploads/" + img[i];
+      fs.unlink(path, (err) => {
+        if (err) throw err;
+      });
+    }
+    // Delete the Blog from Blog Table
     await Blog.findByIdAndDelete(req.params.id);
     res.redirect('/admin/blogs');
   } catch (err) {
