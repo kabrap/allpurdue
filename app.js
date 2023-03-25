@@ -750,8 +750,13 @@ app.post('/blogs', upload.array('blog-images'), async (req, res) => {
 // GET specific blog by ID
 app.get('/blogs/:id', async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate('author');
-    res.render('blog', { blog });
+    const blog = await Blog.findById(req.params.id);
+    const user = await User.findById(blog.author);
+    const response = {
+      ...blog.toObject(),
+      authorName: user.name
+    };
+    res.send(response);
   } catch (err) {
     console.log(err);
     res.send('Error retrieving blog');
@@ -884,7 +889,7 @@ app.post('/blogs/:blogId/like/:userId', async (req, res) => {
     await blog.save();
     // await user.save();
 
-    return res.json({ blog });
+    return res.send(blog);
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
