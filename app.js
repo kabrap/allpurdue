@@ -769,13 +769,34 @@ app.delete('/admin/places/:id', async (req, res) => {
       return res.status(404).send('Place not found');
     }
     await Place.findByIdAndDelete(req.params.id);
-    res.redirect('/places');
+    res.redirect('/admin/places');
   } catch (err) {
     console.error(err);
     res.send('Error Deleting Place');
   }
 });
 
+// delete any review
+app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.reviewId);
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+    await Review.findByIdAndDelete(req.params.reviewId);
+    const place = await Place.findById(req.params.placeId);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    place.reviews.pull(req.params.reviewId);
+    await place.save();
+    res.redirect(`/admin/places/${req.params.placeId}`);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
 
 /* ---------- [End] Admin Modification Routes ---------- */
 
