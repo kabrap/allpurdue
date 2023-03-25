@@ -1,0 +1,32 @@
+.blog-card-container {
+    background-color: transparent;
+    /* border-radius: 4px; */
+    color: black;
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid grey;
+    padding: 12px; */
+}
+
+.blog-card-tag {
+    font-size: 14px;
+    color: #FFC632;
+}
+
+.blog-card-date {
+    font-size: 14px;
+    color: grey;
+}
+
+.blog-card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    margin-top: 12px;
+}
+
+.blog-card-content {
+    margin-top: 12px;
+    font-size: 16px;
+    color: white;
+}
