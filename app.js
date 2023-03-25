@@ -785,29 +785,33 @@ app.delete('/blogs/:id', async (req, res) => {
 // Save specific blog by ID
 app.post('/save-blog/:id', async (req, res) => {
   try {
+    
     if (!currentUser) {
       res.send("no user logged in");
       return;
     }
+
     if (currentUser.savedBlogs.includes(req.params.id)) {
-      res.send("blog already saved");
-      return;
+      currentUser.savedBlogs.pop(req.params.id);
+    } else {
+      currentUser.savedBlogs.push(req.params.id);
+      User.findOneAndUpdate(
+        { _id: currentUser._id }, 
+        { savedBlogs: currentUser.savedBlogs }, function (err) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.status(201).send("success")
+        }
+      });
     }
-    currentUser.savedBlogs.push(req.params.id);
-    User.findOneAndUpdate(
-      { _id: currentUser._id }, 
-      { savedBlogs: currentUser.savedBlogs }, function (err) {
-      if (err) {
-        console.log(err);
-        res.sendStatus(500);
-      } else {
-        res.status(201).send("success")
-      }
-    });
+
   } catch (err) {
     console.log(err);
     res.send('Error saving blogs');
   }
+  
 });
 
 // Get saved blogs of the current user
