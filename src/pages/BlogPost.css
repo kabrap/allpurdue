@@ -54,6 +54,11 @@
     width: 25px;
 }
 
+.blog-post-icon:hover {
+    cursor: pointer;
+    color: #ffcf56;
+}
+
 #blog-up-arrow {
     padding: 0;
     font-size: 2rem;
