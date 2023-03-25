@@ -798,6 +798,17 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
   }
 });
 
+// DELETE specific blog by ID
+app.delete('/admin/blogs/:id', async (req, res) => {
+  try {
+    await Blog.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error deleting blog');
+  }
+});
+
 /* ---------- [End] Admin Modification Routes ---------- */
 
 
