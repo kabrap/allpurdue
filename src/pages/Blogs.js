@@ -149,8 +149,8 @@ function Blogs() {
                   flexDirection: "column",
                 }}
                 onClick={() => handleLike(blog._id)}
-                disabled={!localStorage.getItem("currentUser")}
-                title={!localStorage.getItem("currentUser") ? "Please log in to like" : ""}
+                disabled={localStorage.getItem("currentUser") === "undefined"}
+                title={localStorage.getItem("currentUser") === "undefined" ? "Please log in to like" : ""}
               >
                 <span>&#8679;</span>
                 <span id="blog-likes">{blog.likes}</span>

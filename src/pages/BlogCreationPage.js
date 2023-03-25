@@ -95,13 +95,15 @@ function BlogCreationPage() {
           </div>
         </div>
         <textarea id="content" value={content} onChange={handleContentChange} placeholder="Type up your blog here"/>
-        <div className="picture-preview-container">
-          {pictures.map((picture, index) => (
-            <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} onClick={() => handlePictureDelete(index)} className="picture-preview-image" />
-          ))}
-        </div>
+        {pictures.length > 0 && (
+          <div className="picture-preview-container">
+            {pictures.map((picture, index) => (
+              <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} onClick={() => handlePictureDelete(index)} className="picture-preview-image" />
+            ))}
+          </div>
+        )}
         <div className="button-container">
-          <button onClick={handleSubmit}>Create</button>
+          <button onClick={handleSubmit} disabled={localStorage.getItem("currentUser") === "undefined"} className={`create-button ${localStorage.getItem("currentUser") === "undefined" ? "disabled" : ""}`}>Create</button>
         </div>
       </div>
     </div>
