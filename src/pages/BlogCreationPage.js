@@ -79,33 +79,36 @@ function BlogCreationPage() {
   };
 
   return (
-    <div>
+    <div className="blog-creation-page-container">
       <Link to='/blogs'>&#8617; Blogs</Link>
       <h2 className="blog-page-title">Create a Blog Post</h2>
       <div className="form-container">
-        <label>Title:</label>
-        <input type="text" id="title" value={title} onChange={handleTitleChange} placeholder="Enter a title for your blog post..."/>
-        <label>Tags:</label>
-        <div className="tag-container">
-          {tags.map((tag, index) => (
-            <button key={index} type="button" className={`tag-button ${tag.selected ? "selected" : ""}`} onClick={() => handleTagClick(index)}>{tag.name}</button>
-          ))}
-        </div>
-        <label>Content:</label>
-        <textarea id="content" value={content} onChange={handleContentChange} placeholder="Type up your blog here"/>
-        <div className="picture-preview-container">
-          {pictures.map((picture, index) => (
-            <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} onClick={() => handlePictureDelete(index)} className="picture-preview-image" />
-          ))}
-        </div>
-        <div className="button-container">
-          <div className="add-pic-container">
-            <label htmlFor="pictures">
-              <img src={AddImage} alt="add icon"/>
-            </label>
-            <input type="file" id="pictures" onChange={handlePictureChange} multiple />
+        <div className="title-tag-container">
+          <div className='create-title-container'>
+            <input type="text" id="title" value={title} onChange={handleTitleChange} placeholder="Enter a title for your blog post..."/>
+            <div className="add-pic-container">
+              <label htmlFor="pictures">
+                <img src={AddImage} alt="add icon"/>
+              </label>
+              <input type="file" id="pictures" onChange={handlePictureChange} multiple />
+            </div>
           </div>
-          <button  onClick={handleSubmit}>Create</button>
+          <div className="tag-container">
+            {tags.map((tag, index) => (
+              <button key={index} type="button" className={`tag-button ${tag.selected ? "selected" : ""}`} onClick={() => handleTagClick(index)}>{tag.name}</button>
+            ))}
+          </div>
+        </div>
+        <textarea id="content" value={content} onChange={handleContentChange} placeholder="Type up your blog here"/>
+        {pictures.length > 0 && (
+          <div className="picture-preview-container">
+            {pictures.map((picture, index) => (
+              <img src={URL.createObjectURL(picture)} alt={`Preview ${index}`} onClick={() => handlePictureDelete(index)} className="picture-preview-image" />
+            ))}
+          </div>
+        )}
+        <div className="button-container">
+          <button onClick={handleSubmit} disabled={localStorage.getItem("currentUser") === "undefined"} className={`create-button ${localStorage.getItem("currentUser") === "undefined" ? "disabled" : ""}`}>Create</button>
         </div>
       </div>
     </div>

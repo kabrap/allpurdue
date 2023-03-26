@@ -42,10 +42,26 @@
     margin-right: 4px;
     border-radius: 20px;
     font-size: 16px;
+    border: 1px solid transparent;
+
 }
 
 .blogs-button-container button:hover {
-    background-color: rgba(255, 255, 255, 0.123);
+    border: 1px solid #FFC632;
+}
+
+button.selected {
+    border: 1px solid #FFC632;
+}
+
+button.showtags {
+    border: 1px solid #FFC632;
+}
+
+.tag-selector {
+    border-top: 1px solid grey;
+    margin-top: 12px;
+    padding-top: 12px;
 }
 
 .blogs-card-container {
@@ -55,6 +71,7 @@
     border-radius: 4px;
     padding: 18px;
     background-color: rgba(255, 255, 255, 0.062);
+    margin-bottom: 12px;
   }
   
   .blogs-card-container:hover {
