@@ -67,7 +67,12 @@ function BlogCreationPage() {
         formData.append('blog-images', picture);
       });
   
-      await axios.post('http://localhost:3000/blogs', formData);
+      await axios.post('http://localhost:3000/blogs', formData)
+        .then(function (res) {
+          console.log("blog created")
+          console.log(res.data)
+          window.location.href = `/blogs/${res.data._id}`
+        });
     } catch (error) {
       console.log(error);
     }

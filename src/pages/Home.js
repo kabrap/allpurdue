@@ -63,6 +63,7 @@ function Home() {
 
     axios.get('http://localhost:3000/recent-blogs')
       .then(response => {
+        console.log("recent blog check")
         console.log(response.data)
 
         setRecentBlogs(response.data)
@@ -124,10 +125,11 @@ function Home() {
       <div className='recent-blogs'>
         <h1>Recent Blogs</h1>
         <div className='recent-blogs-container'>
+          {console.log("here")}
+          {console.log(recentBlogs)}
           {recentBlogs.slice(0, 6).map(blog => (
             <div className='blogs-card-container' id='recent-blog-card'>
               <BlogCard 
-                id='recent-blog-card-info'
                 key={blog._id}
                 _id = {blog._id}
                 title={blog.title}
@@ -135,6 +137,7 @@ function Home() {
                 tags={blog.tags}
                 date={formatDate(blog.createdAt)}
                 author={getAuthorName(blog)}
+                images={blog.images}
               />
             </div>
           ))}
