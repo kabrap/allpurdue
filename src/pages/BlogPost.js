@@ -119,7 +119,8 @@ function BlogPost() {
         </div>
         <h1>{title}</h1>
         <p id='body'>{text}</p>
-        <div className="image-carousel">
+        {blogImages ?? 
+          <div className="image-carousel">
             <div className="place-image">
               <img
                 src={`http://localhost:3000/${blogImages[currentImageIndex]}`}
@@ -144,6 +145,7 @@ function BlogPost() {
               )}
             </div>
           </div>
+        }
     </div>
   )
 }
