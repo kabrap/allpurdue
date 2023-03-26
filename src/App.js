@@ -61,7 +61,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
-          <Route path="/blog-post" element={<BlogPost />} />
+          <Route path="/blogs/:id" element={<BlogPost />} />
           <Route path="/blogs/create" element={<BlogCreationPage />} />
         </Routes>
       </Router>

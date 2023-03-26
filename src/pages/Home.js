@@ -5,10 +5,36 @@ import Card from '../components/card/Card.js'
 import bellTower from '../images/bell-tower.gif'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import BlogCard from '../components/card/BlogCard'
 
 function Home() {
   const [currentUser, setCurrentUser] = useState(null)
+  const [recentBlogs, setRecentBlogs] = useState([])
   const [recentReviews, setRecentReviews] = useState([])
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/users/')
+      .then(response => {
+        setUsers(response.data);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
 
   useEffect(() => {
     async function fetchUser() {
@@ -34,7 +60,28 @@ function Home() {
         setRecentReviews(response.data)
       })
       .catch(error => console.log(error));
+
+    axios.get('http://localhost:3000/recent-blogs')
+      .then(response => {
+        console.log(response.data)
+
+        setRecentBlogs(response.data)
+      })
+      .catch(error => console.log(error));
   }, []);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const month = months[d.getMonth()];
+    const day = d.getDate();
+    const year = d.getFullYear();
+    return `${month} ${day}, ${year}`;
+  }
+
+  const getAuthorName = (blog) => {
+    const author = users.find(user => user._id === blog.author);
+    return author ? author.name : '';
+  }
 
   return (
     <div>
@@ -70,6 +117,26 @@ function Home() {
                 imageUrl={review.place.images[0]}
               />
             </Link>
+          ))}
+        </div>
+      </div>
+      <hr />
+      <div className='recent-blogs'>
+        <h1>Recent Blogs</h1>
+        <div className='recent-blogs-container'>
+          {recentBlogs.slice(0, 6).map(blog => (
+            <div className='blogs-card-container' id='recent-blog-card'>
+              <BlogCard 
+                id='recent-blog-card-info'
+                key={blog._id}
+                _id = {blog._id}
+                title={blog.title}
+                text={blog.text}
+                tags={blog.tags}
+                date={formatDate(blog.createdAt)}
+                author={getAuthorName(blog)}
+              />
+            </div>
           ))}
         </div>
       </div>

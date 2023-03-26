@@ -158,6 +158,7 @@ function Blogs() {
               </button>
               <BlogCard 
                 key={blog._id}
+                _id = {blog._id}
                 title={blog.title}
                 text={blog.text}
                 tags={blog.tags}
