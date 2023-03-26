@@ -7,19 +7,32 @@ import "./Blogs.css"
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
+  const [sortOption, setSortOption] = useState("new");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [showTags, setShowTags] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await axios.get('http://localhost:3000/blogs');
-        console.log(response.data)
-        setBlogs(response.data);
+        let sortedData = response.data;
+        if (sortOption === "new") {
+          sortedData = sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else if (sortOption === "top") {
+          sortedData = sortedData.sort((a, b) => b.likes - a.likes);
+        }
+        if (selectedTags.length > 0) {
+          sortedData = sortedData.filter(blog => {
+            return selectedTags.every(tag => blog.tags.includes(tag));
+          });
+        }
+        setBlogs(sortedData);
       } catch (error) {
         console.error(error);
       }
     }
     fetchData();
-  }, []);
+  }, [sortOption, selectedTags]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/users/')
@@ -66,11 +79,34 @@ function Blogs() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3000/blogs/`);
-      setBlogs(response.data);
+      const response = await axios.get('http://localhost:3000/blogs');
+      let sortedData = response.data;
+      if (sortOption === "new") {
+        sortedData = sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (sortOption === "top") {
+        sortedData = sortedData.sort((a, b) => b.likes - a.likes);
+      }
+      if (selectedTags.length > 0) {
+        sortedData = sortedData.filter(blog => {
+          return selectedTags.every(tag => blog.tags.includes(tag));
+        });
+      }
+      setBlogs(sortedData);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleTagSelection = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(t => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const isTagSelected = tag => {
+    return selectedTags.includes(tag);
   };
 
   return (
@@ -81,9 +117,18 @@ function Blogs() {
           <button>Create Blog Post</button>
         </Link>
       </div>
-      <div className='blogs-button-container'>
-        <button>New</button>
-        <button>Top</button>
+      <div className="blogs-button-container">
+        <button className={sortOption === 'new' ? 'selected' : ''} onClick={() => setSortOption("new")}>New</button>
+        <button className={sortOption === 'top' ? 'selected' : ''} onClick={() => setSortOption("top")}>Top</button>
+        <button className={showTags === true ? 'showtags' : ''} onClick={() => { setShowTags(!showTags); setSelectedTags([]) }}>Filter by tags</button>
+        {showTags && (
+          <div className="tag-selector">
+            <button className={isTagSelected('Cafes') ? 'selected' : ''} onClick={() => handleTagSelection('Cafes')}>Cafes</button>
+            <button className={isTagSelected('Restaurants') ? 'selected' : ''} onClick={() => handleTagSelection('Restaurants')}>Restaurants</button>
+            <button className={isTagSelected('Residence Halls') ? 'selected' : ''} onClick={() => handleTagSelection('Residence Halls')}>Residence Halls</button>
+            <button className={isTagSelected('Study Spots') ? 'selected' : ''} onClick={() => handleTagSelection('Study Spots')}>Study Spots</button>
+          </div>
+        )}
       </div>
       <div className='blog-cards'>
         {blogs.map(blog => {
@@ -105,8 +150,8 @@ function Blogs() {
                   flexDirection: "column",
                 }}
                 onClick={() => handleLike(blog._id)}
-                disabled={!localStorage.getItem("currentUser")}
-                title={!localStorage.getItem("currentUser") ? "Please log in to like" : ""}
+                disabled={localStorage.getItem("currentUser") === "undefined"}
+                title={localStorage.getItem("currentUser") === "undefined" ? "Please log in to like" : ""}
               >
                 <span>&#8679;</span>
                 <span id="blog-likes">{blog.likes}</span>
@@ -119,6 +164,7 @@ function Blogs() {
                 tags={blog.tags}
                 date={formatDate(blog.createdAt)}
                 author={getAuthorName(blog)}
+                images={blog.images}
               />
             </div>
           );
