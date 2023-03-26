@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import './Dashboard.css'
-import * as ReactDOM from 'react-dom'
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-
+import Delete from '../images/delete.png'
+import Edit from '../images/edit.png'
 
 function Dashboard() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -20,9 +20,7 @@ function Dashboard() {
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
 
-  const [showBlogs, setShowBlogs] = useState(true);
-  const [showPlaces, setShowPlaces] = useState(false);
-  const [showReviews, setShowReviews] = useState(false);
+  const [activeComponent, setActiveComponent] = useState('blogs');
 
   const [places, setPlaces] = useState([])
 
@@ -223,22 +221,8 @@ function Dashboard() {
     }
   };
 
-  const handleShowBlogs = () => {
-    setShowBlogs(true);
-    setShowPlaces(false);
-    setShowReviews(false);
-  };
-  
-  const handleShowPlaces = () => {
-    setShowBlogs(false);
-    setShowPlaces(true);
-    setShowReviews(false);
-  };
-  
-  const handleShowReviews = () => {
-    setShowBlogs(false);
-    setShowPlaces(false);
-    setShowReviews(true);
+  const handleComponentChange = (component) => {
+    setActiveComponent(component);
   };
 
   return (
@@ -284,23 +268,48 @@ function Dashboard() {
       </div>
 
       {/* Tables for blogs, places, and reviews */}
-      <div className='entire-tables-container'>
+      <div className='table-header-container'>
         {/* Buttons to toggle between tables */}
-        <button onClick={handleShowBlogs}>Blogs</button>
-        <button onClick={handleShowPlaces}>Places</button>
-        <button onClick={handleShowReviews}>Reviews</button>
-
-        <div>
-          {/* Show blogs table */}
-          {showBlogs && (
+        <button className={activeComponent === 'blogs' ? 'selected' : ''} onClick={() => handleComponentChange('blogs')}>Blogs</button>
+        <button className={activeComponent === 'all-blogs' ? 'selected' : ''} onClick={() => handleComponentChange('all-blogs')}>All Blogs</button>
+        <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
+        <button className={activeComponent === 'all-reviews' ? 'selected' : ''} onClick={() => handleComponentChange('all-reviews')}>Reviews</button>
+      </div>
+        <div className='table-container'>
+          {/* Show user's blogs table */}
+          {activeComponent === 'blogs' && (
             <table>
               <thead>
                 <tr>
                   <th>Title</th>
+                  <th>Content</th>
+                  <th>Date Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                {blogs.filter(blog => blog.author === localStorage.getItem("currentUser")).map((blog) => (
+                  <tr key={blog._id}>
+                    <td>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </td>
+                    <td>{blog.text}</td>
+                    <td>{formatDate(blog.createdAt)}</td>
+                    <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Show admin blogs table */}
+          {activeComponent === 'all-blogs' && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Content</th>
                   <th>Author</th>
                   <th>Date Created</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -309,34 +318,24 @@ function Dashboard() {
                     <td>
                       <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
                     </td>
+                    <td>{blog.text}</td>
                     <td>{getAuthorName(blog)}</td>
                     <td>{formatDate(blog.createdAt)}</td>
-                    <td>
-                      <Link to={`/places/${blog._id}`}>
-                        <button>Edit</button>
-                      </Link>
-                    </td>
-                    <td>
-                      <button onClick={() => handleDeleteBlog(blog._id)}>
-                        Delete
-                      </button>
-                    </td>
+                    <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
 
-          {/* Show places table */}
-          {showPlaces && (
+          {/* Show admin places table */}
+          {activeComponent === 'places' && (
             <table>
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>Type</th>
                   <th>Reviews</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -349,13 +348,11 @@ function Dashboard() {
                     <td>{place.reviews.length}</td>
                     <td>
                       <Link to={`/places/${place._id}`}>
-                        <button>Edit</button>
+                        <img className="dashboard-edit-icon" src={Edit} alt="edit icon"/>
                       </Link>
                     </td>
                     <td>
-                      <button onClick={() => handleDeletePlace(place._id)}>
-                        Delete
-                      </button>
+                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
                     </td>
                   </tr>
                 ))}
@@ -363,8 +360,8 @@ function Dashboard() {
             </table>
           )}
 
-          {/* Show reviews table */}
-          {showReviews && (
+          {/* Show admin reviews table */}
+          {activeComponent === 'all-reviews' && (
             <table>
               <thead>
                 <tr>
@@ -373,7 +370,6 @@ function Dashboard() {
                   <th>User</th>
                   <th>Rating</th>
                   <th>Date Created</th>
-                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -385,7 +381,7 @@ function Dashboard() {
                       <td>{getAuthorNameReview(review.author)}</td>
                       <td>{review.rating}</td>
                       <td>{formatDate(review.createdAt)}</td>
-                      <button onClick={() => handleDeleteReview(review.place._id, review._id)}>Delete</button>
+                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
                     </tr>
                   )
                 })}
@@ -394,7 +390,6 @@ function Dashboard() {
           )}
         </div>
       </div>
-    </div>
   )
 }
 
