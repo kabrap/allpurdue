@@ -126,6 +126,7 @@ function Blogs() {
             <button className={isTagSelected('Cafes') ? 'selected' : ''} onClick={() => handleTagSelection('Cafes')}>Cafes</button>
             <button className={isTagSelected('Restaurants') ? 'selected' : ''} onClick={() => handleTagSelection('Restaurants')}>Restaurants</button>
             <button className={isTagSelected('Residence Halls') ? 'selected' : ''} onClick={() => handleTagSelection('Residence Halls')}>Residence Halls</button>
+            <button className={isTagSelected('Study Spots') ? 'selected' : ''} onClick={() => handleTagSelection('Study Spots')}>Study Spots</button>
           </div>
         )}
       </div>
