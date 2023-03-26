@@ -741,7 +741,7 @@ app.post('/blogs', upload.array('blog-images'), async (req, res) => {
     const newBlog = new Blog({ title, text, author, tags, images });
     const savedBlog = await newBlog.save();
 
-    res.status(201).json(savedBlog);
+    res.status(201).send(savedBlog);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
