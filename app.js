@@ -462,16 +462,17 @@ app.get('/places/:id', async (req, res) => {
 //   .catch((err) => console.log(err));
 // });
 
-// // for removing a place
-// app.delete('/:place_id', (req, res) => {
-//   Place.findByIdAndDelete(req.params.id, (err) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       res.render("landing");
-//     }
-//   });
-// });
+app.delete('/places/:place_id', (req, res) => {
+  console.log("testing")
+  Place.findByIdAndDelete(req.params.place_id, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Place deleted");
+    }
+  });
+});
+
 
 /* ---------- [End] Place Routes ---------- */
 
