@@ -783,7 +783,7 @@ app.delete('/blogs/:id', async (req, res) => {
   }
 });
 
-// Save specific blog by ID
+// Save/Unsave specific blog by ID
 app.post('/save-blog/:id', async (req, res) => {
   try {
     
