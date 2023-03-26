@@ -462,7 +462,7 @@ app.get('/places/:id', async (req, res) => {
 //   .catch((err) => console.log(err));
 // });
 
-app.delete('/places/:place_id', (req, res) => {
+app.delete('/places/delete/:place_id', (req, res) => {
   console.log("testing")
   Place.findByIdAndDelete(req.params.place_id, (err) => {
     if (err) {
