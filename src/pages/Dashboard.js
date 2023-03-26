@@ -18,7 +18,12 @@ function Dashboard() {
 
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
+  const [reviews, setReviews] = useState([]);
+
   const [showBlogs, setShowBlogs] = useState(true);
+  const [showPlaces, setShowPlaces] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
+
   const [places, setPlaces] = useState([])
 
   const handleCurrentPasswordChange = (e) => {
@@ -50,6 +55,12 @@ function Dashboard() {
         }
       })
       .catch(error => console.log(error));
+
+    axios.get('http://localhost:3000/recent-reviews')
+    .then(response => {
+      setReviews(response.data)
+    })
+    .catch(error => console.log(error));
   }, []);
 
   const handleSubmit = () => {
@@ -141,6 +152,11 @@ function Dashboard() {
     return author ? author.name : '';
   }
 
+  const getAuthorNameReview = (review) => {
+    const author = users.find(user => user._id === review);
+    return author ? author.name : '';
+  }
+
   const handleDeleteBlog = async (blogId) => {
     console.log(blogId)
     const updatedBlogs = blogs.filter((blog) => blog._id !== blogId);
@@ -180,13 +196,51 @@ function Dashboard() {
     }
   };
 
-  const handleShowBlogs = () => {
-    setShowBlogs(true);
+  const handleDeleteReview = async (placeId, reviewId) => {
+    const updatedReviews = reviews.filter((review) => review._id !== reviewId);
+    setReviews(updatedReviews)
+    try {
+      const response = await axios.delete(`http://localhost:3000/places/${placeId}/reviews/${reviewId}`);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const response = await axios.get('http://localhost:3000/recent-reviews');
+      console.log(response.data)
+      setReviews(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+    try {
+      const response = await axios.get('http://localhost:3000/places');
+      console.log(response.data)
+      setPlaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  const handleShowBlogs = () => {
+    setShowBlogs(true);
+    setShowPlaces(false);
+    setShowReviews(false);
+  };
+  
   const handleShowPlaces = () => {
     setShowBlogs(false);
+    setShowPlaces(true);
+    setShowReviews(false);
   };
+  
+  const handleShowReviews = () => {
+    setShowBlogs(false);
+    setShowPlaces(false);
+    setShowReviews(true);
+  };
+
   return (
     <div>
       {/* Change Password */}
@@ -229,15 +283,16 @@ function Dashboard() {
         <button onClick={logout}>Logout</button>
       </div>
 
-      {/* Tables for blogs and places */}
+      {/* Tables for blogs, places, and reviews */}
       <div className='entire-tables-container'>
-
         {/* Buttons to toggle between tables */}
         <button onClick={handleShowBlogs}>Blogs</button>
         <button onClick={handleShowPlaces}>Places</button>
+        <button onClick={handleShowReviews}>Reviews</button>
 
         <div>
-          {showBlogs ? (
+          {/* Show blogs table */}
+          {showBlogs && (
             <table>
               <thead>
                 <tr>
@@ -251,44 +306,91 @@ function Dashboard() {
               <tbody>
                 {blogs.map((blog) => (
                   <tr key={blog._id}>
-                    <td><Link to={`/blogs/${blog._id}`}>{blog.title}</Link></td>
+                    <td>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </td>
                     <td>{getAuthorName(blog)}</td>
                     <td>{formatDate(blog.createdAt)}</td>
                     <td>
-                      <Link to={`/places/${blog._id}`}><button>Edit</button></Link>
+                      <Link to={`/places/${blog._id}`}>
+                        <button>Edit</button>
+                      </Link>
                     </td>
                     <td>
-                      <button onClick={() => handleDeleteBlog(blog._id)}>Delete</button>
+                      <button onClick={() => handleDeleteBlog(blog._id)}>
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Reviews</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {places.map((place) => (
-                <tr key={place._id}>
-                  <td><Link to={`/places/${place._id}`}>{place.name}</Link></td>
-                  <td>{place.placeType}</td>
-                  <td>{place.reviews.length}</td>
-                  <td><Link to={`/places/${place._id}`}><button>Edit</button></Link></td>
-                  <td>
-                    <button onClick={() => handleDeletePlace(place._id)}>Delete</button>
-                  </td>
+          )}
+
+          {/* Show places table */}
+          {showPlaces && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Reviews</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {places.map((place) => (
+                  <tr key={place._id}>
+                    <td>
+                      <Link to={`/places/${place._id}`}>{place.name}</Link>
+                    </td>
+                    <td>{place.placeType}</td>
+                    <td>{place.reviews.length}</td>
+                    <td>
+                      <Link to={`/places/${place._id}`}>
+                        <button>Edit</button>
+                      </Link>
+                    </td>
+                    <td>
+                      <button onClick={() => handleDeletePlace(place._id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Show reviews table */}
+          {showReviews && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Place</th>
+                  <th>Comment</th>                  
+                  <th>User</th>
+                  <th>Rating</th>
+                  <th>Date Created</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reviews.map((review) => {
+                  return (
+                    <tr key={review._id}>
+                      <td>{review.place.name}</td>
+                      <td>{review.text}</td>
+                      <td>{getAuthorNameReview(review.author)}</td>
+                      <td>{review.rating}</td>
+                      <td>{formatDate(review.createdAt)}</td>
+                      <button onClick={() => handleDeleteReview(review.place._id, review._id)}>Delete</button>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           )}
         </div>
       </div>

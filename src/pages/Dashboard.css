@@ -55,11 +55,6 @@
     margin-top: 20px;
 }
 
-.table-container {
-    display: flex;
-    align-items: center;
-}
-
 th {
     text-align: left;
     padding: 6px;
