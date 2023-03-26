@@ -997,6 +997,8 @@ app.get("/verify-user/:name/:email/:password", function(req, res) {
   });
 });
 
+let adminAccount = false
+
 // POST Route for Login
 app.post('/login', function (req, res) {
   var username = req.body.username;
@@ -1013,6 +1015,11 @@ app.post('/login', function (req, res) {
           // sessionStorage.setItem('userID', userExists._id);
           req.session.user = userExists;
           currentUser = userExists;
+
+          if (currentUser.email === 'allpurdue2023@gmail.com') {
+            adminAccount = true;
+          }
+
           res.redirect("/landing");
         } else {
           console.log("Incorrect Password!");
@@ -1140,6 +1147,7 @@ app.post("/change-password", function (req, res) {
 app.get("/logout", async function(req, res) {
   req.session.user = null;
   currentUser = null
+  adminAccount = false
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
@@ -1198,3 +1206,10 @@ app.post("/submit-request", function (req, res) {
     }
   });
 });
+
+// verifying if account is admin account
+app.get("/verify-admin", function (req, res) {
+  if (adminAccount) {
+    res.send(true)
+  }
+})
