@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import './Dashboard.css'
 import * as ReactDOM from 'react-dom'
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 
 function Dashboard() {
@@ -179,9 +180,6 @@ function Dashboard() {
     }
   };
 
-  const handleEdit = (blogId) => {
-  };
-
   const handleShowBlogs = () => {
     setShowBlogs(true);
   };
@@ -253,11 +251,11 @@ function Dashboard() {
               <tbody>
                 {blogs.map((blog) => (
                   <tr key={blog._id}>
-                    <td>{blog.title}</td>
+                    <td><Link to={`/blogs/${blog._id}`}>{blog.title}</Link></td>
                     <td>{getAuthorName(blog)}</td>
                     <td>{formatDate(blog.createdAt)}</td>
                     <td>
-                      <button onClick={() => handleEdit(blog._id)}>Edit</button>
+                      <Link to={`/places/${blog._id}`}><button>Edit</button></Link>
                     </td>
                     <td>
                       <button onClick={() => handleDeleteBlog(blog._id)}>Delete</button>
@@ -271,7 +269,7 @@ function Dashboard() {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Category</th>
+                <th>Type</th>
                 <th>Reviews</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -280,12 +278,10 @@ function Dashboard() {
             <tbody>
               {places.map((place) => (
                 <tr key={place._id}>
-                  <td>{place.name}</td>
+                  <td><Link to={`/places/${place._id}`}>{place.name}</Link></td>
                   <td>{place.placeType}</td>
                   <td>{place.reviews.length}</td>
-                  <td>
-                    <button onClick={() => handleEdit(place._id)}>Edit</button>
-                  </td>
+                  <td><Link to={`/places/${place._id}`}><button>Edit</button></Link></td>
                   <td>
                     <button onClick={() => handleDeletePlace(place._id)}>Delete</button>
                   </td>
