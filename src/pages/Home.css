@@ -113,3 +113,29 @@ hr {
 #recent-blog-card-info {
   color: black;
 }
+
+.recent-blogs h1 {
+  font-size: 45px;
+  line-height: 25px;
+}
+
+.recent-blogs h1 span {
+  color: #ffb30e;
+}
+
+.recent-blog-heading {
+  margin-bottom: 40px;
+}
+
+#explore-blog-arrow {
+  color: white;
+}
+
+#explore-blog-arrow:hover {
+  cursor: pointer;
+  color: #ffb30e;
+}
+
+#subheading {
+  font-size: 56px;
+}

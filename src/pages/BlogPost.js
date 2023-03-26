@@ -119,7 +119,7 @@ function BlogPost() {
         </div>
         <h1>{title}</h1>
         <p id='body'>{text}</p>
-        {blogImages ?? 
+        {blogImages.length > 0 && 
           <div className="image-carousel">
             <div className="place-image">
               <img

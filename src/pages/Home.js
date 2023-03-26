@@ -84,6 +84,10 @@ function Home() {
     return author ? author.name : '';
   }
 
+  const exploreBlogs = () => {
+    window.location.href = `/blogs`
+  }
+
   return (
     <div>
         <div className='hero'>
@@ -123,7 +127,10 @@ function Home() {
       </div>
       <hr />
       <div className='recent-blogs'>
-        <h1>Recent Blogs</h1>
+        <div className='recent-blog-heading'>
+          <h1>Explore recent <span id='explore-blog-arrow' onClick={exploreBlogs}>&#10140;</span></h1>
+          <h1 id='subheading'>blogs by <span>Boilermakers</span></h1>
+        </div>
         <div className='recent-blogs-container'>
           {console.log("here")}
           {console.log(recentBlogs)}
