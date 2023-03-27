@@ -745,12 +745,12 @@ app.put('/admin/places/:id/edit', async (req, res) => {
     place.hours = req.body.hours;
     place.phone = req.body.phone;
     place.placeType = req.body.placeType;
-    place.tags = req.body.tags.split(',').map(tag => tag.trim());
+    place.tags = req.body.tags;
     place.location = {
       type: 'Point',
       coordinates: [req.body.lng, req.body.lat],
     };
-    place.images = req.body.images.split(',').map(image => image.trim());
+    place.images = req.body.images;
     place.address = req.body.address;
     place.googleMap = req.body.googleMap;
     place.website = req.body.website;
