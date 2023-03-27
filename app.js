@@ -692,18 +692,19 @@ app.get('/admin/add-place', async (req, res) => {
 
 app.post('/admin/add-place', async (req, res) => {
   try {
+    console.log(req.body)
     const newPlace = new Place({
     name: req.body.name,
     description: req.body.description,
     placeType: req.body.placeType,
-    hours: req.body.hours.split(',').map(tag => tag.trim()),
+    hours: req.body.hours,
     phone: req.body.phone,
-    tags: req.body.tags.split(',').map(image => image.trim()),
+    tags: req.body.tags,
     location: {
       type: "Point",
       coordinates: [req.body.longitude, req.body.latitude],
     },
-    images: req.body.images.split(','),
+    images: req.body.images,
     address: req.body.address,
     googleMap: req.body.googleMap,
     website: req.body.website
