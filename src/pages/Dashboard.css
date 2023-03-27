@@ -51,17 +51,48 @@
     height: 22px;
 }
 
-.entire-tables-container {
+.table-header-container {
     margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+.table-header-container button {
+    background-color: transparent;
+    border-radius: 16px;
+}
+
+.table-container {
+    display: flex;
+    width: fit-content;
 }
 
 th {
     text-align: left;
-    padding: 6px;
+    padding: 18px 12px;
     color: rgb(180, 180, 180);
     font-weight: bold;
 }
 
 td {
-    padding: 6px;
+    padding: 4px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 400px;
+}
+
+.dashboard-edit-icon {
+    height: 18px;
+    width: 18px;
+    padding-top: 3px;
+}
+
+.dashboard-delete-icon {
+    height: 18px;
+    width: 18px;
+    padding-top: 6px;
+}
+
+.dashboard-delete-icon:hover {
+    cursor: pointer;
 }
