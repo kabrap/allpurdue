@@ -115,6 +115,18 @@ function Place() {
     }
   };
 
+  const handleFavorite = async () => {
+    const placeId = place._id;
+    try {
+      const author = localStorage.getItem("currentUser");
+      const response = await axios.post(`http://localhost:3000/places/${placeId}/save-place/${author}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   const handleDelete = async (reviewId) => {
     console.log(reviewId)
     const updatedReviews = placesReviews.filter((review) => review._id !== reviewId);
@@ -194,7 +206,7 @@ function Place() {
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        {/* <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/> */}
+                        <span onClick={handleFavorite}>&#x2764;</span>
                     </div>
                 </div>
                 <div className="rating">

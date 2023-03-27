@@ -22,7 +22,8 @@ function Dashboard() {
 
   const [activeComponent, setActiveComponent] = useState('blogs');
 
-  const [places, setPlaces] = useState([])
+  const [places, setPlaces] = useState([]);
+  const [savedPlaces, setSavedPlaces] = useState([]);
 
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value);
@@ -46,6 +47,7 @@ function Dashboard() {
     axios.get('http://localhost:3000/users/')
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
+        setSavedPlaces(response.data.find(user => user._id === userId).savedPlaces);
         if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
           console.log(user.email)
           setPurdueVerified(true)
@@ -120,7 +122,6 @@ function Dashboard() {
     async function fetchData() {
       try {
         const response = await axios.get('http://localhost:3000/places');
-        console.log(response.data)
         setPlaces(response.data);
       } catch (error) {
         console.error(error);
@@ -278,60 +279,69 @@ function Dashboard() {
       <div className='table-header-container'>
         {/* Buttons to toggle between tables */}
         <button className={activeComponent === 'blogs' ? 'selected' : ''} onClick={() => handleComponentChange('blogs')}>Blogs</button>
-        <button className={activeComponent === 'all-blogs' ? 'selected' : ''} onClick={() => handleComponentChange('all-blogs')}>All Blogs</button>
-        <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
-        <button className={activeComponent === 'all-reviews' ? 'selected' : ''} onClick={() => handleComponentChange('all-reviews')}>Reviews</button>
+        <button className={activeComponent === 'reviews' ? 'selected' : ''} onClick={() => handleComponentChange('reviews')}>Reviews</button>
+        {!isAdmin && (
+          <button className={activeComponent === 'favorites' ? 'selected' : ''} onClick={() => handleComponentChange('favorites')}>Favorites</button>
+        )}
+        {isAdmin && (
+          <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
+        )}
       </div>
         <div className='table-container'>
-          {/* Show user's blogs table */}
+          {/* Show blogs table */}
           {activeComponent === 'blogs' && (
             <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Content</th>
-                  <th>Date Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {blogs.filter(blog => blog.author === localStorage.getItem("currentUser")).map((blog) => (
-                  <tr key={blog._id}>
-                    <td>
-                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
-                    </td>
-                    <td>{blog.text}</td>
-                    <td>{formatDate(blog.createdAt)}</td>
-                    <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+              {/* Admin view */}
+              {isAdmin && (
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>User</th>
+                    <th>Date Created</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+              )}
+              {isAdmin && (
+                <tbody>
+                  {blogs.map((blog) => (
+                    <tr key={blog._id}>
+                      <td>
+                        <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                      </td>
+                      <td>{blog.text}</td>
+                      <td>{getAuthorName(blog)}</td>
+                      <td>{formatDate(blog.createdAt)}</td>
+                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
 
-          {/* Show admin blogs table */}
-          {activeComponent === 'all-blogs' && (
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Content</th>
-                  <th>Author</th>
-                  <th>Date Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {blogs.map((blog) => (
-                  <tr key={blog._id}>
-                    <td>
-                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
-                    </td>
-                    <td>{blog.text}</td>
-                    <td>{getAuthorName(blog)}</td>
-                    <td>{formatDate(blog.createdAt)}</td>
-                    <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
-                  </tr>
-                ))}
-              </tbody>
+              {/* User view */}
+              {!isAdmin && (
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Date Created</th>
+                    </tr>
+                </thead>
+              )}
+              {!isAdmin && (
+                <tbody>
+                  {blogs.filter(blog => blog.author === localStorage.getItem("currentUser")).map((blog) => (
+                    <tr key={blog._id}>
+                      <td>
+                        <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                      </td>
+                      <td>{blog.text}</td>
+                      <td>{formatDate(blog.createdAt)}</td>
+                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
           )}
 
@@ -367,31 +377,87 @@ function Dashboard() {
             </table>
           )}
 
-          {/* Show admin reviews table */}
-          {activeComponent === 'all-reviews' && (
+          {/* Show reviews table */}
+          {activeComponent === 'reviews' && (
             <table>
+              {/* Admin view */}
+              {isAdmin && (
+                <thead>
+                  <tr>
+                    <th>Place</th>
+                    <th>Comment</th>                  
+                    <th>User</th>
+                    <th>Rating</th>
+                    <th>Date Created</th>
+                  </tr>
+                </thead>
+              )}
+              {isAdmin && (
+                <tbody>
+                  {reviews.map((review) => {
+                    return (
+                      <tr key={review._id}>
+                        <td>{review.place.name}</td>
+                        <td>{review.text}</td>
+                        <td>{getAuthorNameReview(review.author)}</td>
+                        <td>{review.rating}</td>
+                        <td>{formatDate(review.createdAt)}</td>
+                        <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              )}
+
+              {/* User view */}
+              {!isAdmin && (
+                <thead>
+                  <tr>
+                    <th>Place</th>
+                    <th>Comment</th>                  
+                    <th>Rating</th>
+                    <th>Date Created</th>
+                  </tr>
+                </thead>
+              )}
+              {!isAdmin && (
+                <tbody>
+                  {reviews.filter(review => review.author === localStorage.getItem("currentUser")).map((review) => (
+                    <tr key={review._id}>
+                      <td>{review.place.name}</td>
+                      <td>{review.text}</td>
+                      <td>{review.rating}</td>
+                      <td>{formatDate(review.createdAt)}</td>
+                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+            </table>
+          )}
+
+          {/* Show favorites table */}
+          {activeComponent === 'favorites' && (
+            <table>
+              {/* User view */}
               <thead>
                 <tr>
                   <th>Place</th>
                   <th>Comment</th>                  
-                  <th>User</th>
                   <th>Rating</th>
                   <th>Date Created</th>
                 </tr>
               </thead>
               <tbody>
-                {reviews.map((review) => {
-                  return (
-                    <tr key={review._id}>
-                      <td>{review.place.name}</td>
-                      <td>{review.text}</td>
-                      <td>{getAuthorNameReview(review.author)}</td>
-                      <td>{review.rating}</td>
-                      <td>{formatDate(review.createdAt)}</td>
-                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
-                    </tr>
-                  )
-                })}
+                {savedPlaces.map(place => (
+                  <tr key={place._id}>
+                    <td>{place._id}</td>
+                    <td>{place.name}</td>
+                    <td>{place.description}</td>
+                    <td>{place.location}</td>
+                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}
