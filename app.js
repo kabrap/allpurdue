@@ -113,6 +113,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Review',
     }],
+    savedPlaces: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Place',
+    }],
     savedBlogs: [{
       type: Schema.Types.ObjectId,
       ref: 'Blog',
@@ -473,6 +477,30 @@ app.delete('/places/delete/:place_id', (req, res) => {
   });
 });
 
+// Save/Unsave specific place by ID
+app.post('/places/:placeId/save-place/:author', async (req, res) => {
+  try {
+    const { placeId, author } = req.params;
+    const currentUser = await User.findOne({ _id: author });
+    if (!currentUser) {
+      res.send("no user found");
+      return;
+    }
+    if (currentUser.savedPlaces.includes(placeId)) {
+      currentUser.savedPlaces.pop(placeId);
+    } else {
+      currentUser.savedPlaces.push(placeId);
+    }
+    await User.findOneAndUpdate(
+      { _id: currentUser._id }, 
+      { savedPlaces: currentUser.savedPlaces }
+    );
+    res.status(201).send("success");
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }  
+});
 
 /* ---------- [End] Place Routes ---------- */
 
@@ -793,7 +821,10 @@ app.post('/save-blog/:id', async (req, res) => {
     }
 
     if (currentUser.savedBlogs.includes(req.params.id)) {
-      currentUser.savedBlogs.pop(req.params.id);
+      const index = currentUser.savedBlogs.indexOf(req.params.id);
+      if (index > -1) {
+        currentUser.savedBlogs.splice(index, 1);
+      }
     } else {
       currentUser.savedBlogs.push(req.params.id);
       User.findOneAndUpdate(
