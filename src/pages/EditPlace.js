@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
-import './AddLocation.css'
-import axios from 'axios';
+import axios from 'axios'
 
-function AddLocation() {
-  const [placeType, setPlaceType] = useState("Food");
+function EditPlace() {
+    const [placeType, setPlaceType] = useState("Food");
     const [nameOfPlace, setNameOfPlace] = useState('')
     const [description, setDescription] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
@@ -100,6 +99,8 @@ function AddLocation() {
     const handleSubmit = async (e) => {
       e.preventDefault();
 
+      const id = window.location.href.substring(window.location.href.indexOf("edit-place/")+11);
+
       const hoursArr = [
         [hours[0].start, hours[0].end],
         [hours[1].start, hours[1].end],
@@ -150,8 +151,9 @@ function AddLocation() {
       const imagesArr = images.split(',').map(e => e.trim());
 
       // submit request
-      await axios.post('http://localhost:3000/admin/add-place', 
+      await axios.put(`http://localhost:3000/admin/places/${id}/edit`, 
       {
+        id: id,
         name: nameOfPlace,
         description: description,
         hours: AMPMhours,
@@ -171,6 +173,7 @@ function AddLocation() {
       .then(function (res) {
         console.log('successful submission')
         setShowSuccessMsg(true)
+        window.location.href=`../places/${id}`
       })
       .catch(function (err) {
         console.log(err)
@@ -179,7 +182,7 @@ function AddLocation() {
 
     return (
         <div className="location-container">
-            <h2 className="title">Add a Location</h2>
+            <h2 className="title">Edit a Location</h2>
             <form id='forgot-form' className="form" onSubmit={handleSubmit}>
               <div className="type-bar">
                 {placeType === "Food" &&
@@ -209,11 +212,11 @@ function AddLocation() {
               </div>
               <label className='location-field-container'>
                 <span>Name of Place</span>
-                <input type="message" value={nameOfPlace} onChange={handleNameOfPlace} placeholder="Name of place to add..." required />
+                <input type="message" value={nameOfPlace} onChange={handleNameOfPlace} placeholder="Name of place to edit..." required />
               </label>
               <label className='location-field-container'>
                 <span>Description of Place</span>
-                <textarea type="message" value={description} onChange={handleDescription} placeholder="Description of place to add..." />
+                <textarea type="message" value={description} onChange={handleDescription} placeholder="Description of place to edit..." />
               </label>
               <label className='location-field-container'>
                 <span>Phone number</span>
@@ -358,7 +361,7 @@ function AddLocation() {
               </div>
 
                 {/* Displaing success message when they submit */}
-                {showSuccessMsg && <p className='success-msg'>Location successfully added!</p>}
+                {showSuccessMsg && <p className='success-msg'>Location successfully edited!</p>}
 
                 <button type="submit" className="submit-button">
                     Submit
@@ -368,4 +371,4 @@ function AddLocation() {
     )
 }
 
-export default AddLocation
+export default EditPlace

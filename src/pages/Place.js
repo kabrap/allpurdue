@@ -190,7 +190,10 @@ function Place() {
           </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                    <div className="name-edit-row">
+                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                      <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                    </div>
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>

@@ -17,6 +17,7 @@ import Study from './pages/categories/Study'
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
+import EditPlace from './pages/EditPlace'
 import axios from 'axios';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
+          <Route exact path="edit-place/:d" element={<EditPlace />} />
         </Routes>
       </Router>
     </div>
