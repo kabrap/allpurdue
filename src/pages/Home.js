@@ -41,7 +41,6 @@ function Home() {
       try {
         const response = await axios.get('http://localhost:3000/currentUser');
         setCurrentUser(response.data);
-        console.log(response.data)
         if (response.data === 'undefined') {
           localStorage.removeItem("currentUser")
         } else {
@@ -55,17 +54,12 @@ function Home() {
 
     axios.get('http://localhost:3000/recent-reviews')
       .then(response => {
-        console.log(response.data)
-
         setRecentReviews(response.data)
       })
       .catch(error => console.log(error));
 
     axios.get('http://localhost:3000/recent-blogs')
       .then(response => {
-        console.log("recent blog check")
-        console.log(response.data)
-
         setRecentBlogs(response.data)
       })
       .catch(error => console.log(error));
