@@ -32,7 +32,6 @@
                     <option value="Living" <% if (place.placeType === 'Living') { %>selected<% } %>>Living</option>
                     <option value="Study" <% if (place.placeType === 'Study') { %>selected<% } %>>Study</option>
                   </select>
-                <input type="text" name="placeType" value="<%= place.placeType %>" required><br>
             </div>
             <div>
                 <label for="tags">Tags:</label>
@@ -60,7 +59,7 @@
             </div>
             <div>
                 <label for="website">Website:</label>
-                <input type="url" name="website" value="<%= place.website %>" required><br>
+                <input type="text" name="website" value="<%= place.website %>" required><br>
             </div>
             <button type="submit">Save</button>
         </form>

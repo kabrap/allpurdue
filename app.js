@@ -681,15 +681,17 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 
 /* ---------- [Start] Admin Modification Routes ---------- */
 
+//Get request to display add place form
 app.get('/admin/add-place', async (req, res) => {
   try {
-    res.render('add-place'); // render the add-place EJS view
+    res.render('add_place'); // render the add-place EJS view
   } catch (err) {
     console.log(err);
     res.send('Error fetching add place form.')
   }
 });
 
+//POST Route to add a place
 app.post('/admin/add-place', async (req, res) => {
   try {
     console.log(req.body)
@@ -724,7 +726,7 @@ app.get('/admin/places/:id/edit', async (req, res) => {
     if (!place) {
       return res.status(404).send('Place not found');
     }
-    res.render('/admin/places/:id/edit', { place });
+    res.render('edit_place', { place });
   } catch (err) {
     console.error(err);
     res.send('Error getting edit place form');
@@ -768,13 +770,45 @@ app.delete('/admin/places/:id', async (req, res) => {
       return res.status(404).send('Place not found');
     }
     await Place.findByIdAndDelete(req.params.id);
-    res.redirect('/places');
+    res.redirect('/admin/places');
   } catch (err) {
     console.error(err);
     res.send('Error Deleting Place');
   }
 });
 
+// delete any review
+app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.reviewId);
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+    await Review.findByIdAndDelete(req.params.reviewId);
+    const place = await Place.findById(req.params.placeId);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    place.reviews.pull(req.params.reviewId);
+    await place.save();
+    res.redirect(`/admin/places/${req.params.placeId}`);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// DELETE specific blog by ID
+app.delete('/admin/blogs/:id', async (req, res) => {
+  try {
+    await Blog.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error deleting blog');
+  }
+});
 
 /* ---------- [End] Admin Modification Routes ---------- */
 
