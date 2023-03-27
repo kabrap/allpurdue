@@ -15,7 +15,7 @@ function Dashboard() {
   const [purdueVerified, setPurdueVerified] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-
+  const [isAdmin, setIsAdmin] = useState(false)
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -57,6 +57,13 @@ function Dashboard() {
     axios.get('http://localhost:3000/recent-reviews')
     .then(response => {
       setReviews(response.data)
+    })
+    .catch(error => console.log(error));
+
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
     })
     .catch(error => console.log(error));
   }, []);
