@@ -82,17 +82,27 @@ td {
 }
 
 .dashboard-edit-icon {
-    height: 18px;
-    width: 18px;
-    padding-top: 3px;
+    display: flex;
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+    border-radius: 20px;
+}
+
+.dashboard-edit-icon:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 255, 0.199);
 }
 
 .dashboard-delete-icon {
+    display: flex;
     height: 18px;
     width: 18px;
-    padding-top: 6px;
+    padding: 6px;
+    border-radius: 20px;
 }
 
 .dashboard-delete-icon:hover {
     cursor: pointer;
+    background-color: rgba(255, 0, 0, 0.199);
 }

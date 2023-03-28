@@ -48,6 +48,7 @@ function Dashboard() {
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
         setSavedPlaces(response.data.find(user => user._id === userId).savedPlaces);
+        console.log(savedPlaces)
         if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
           console.log(user.email)
           setPurdueVerified(true)
@@ -443,18 +444,18 @@ function Dashboard() {
               <thead>
                 <tr>
                   <th>Place</th>
-                  <th>Comment</th>                  
-                  <th>Rating</th>
-                  <th>Date Created</th>
+                  <th>Description</th>                  
+                  <th>Type</th>
                 </tr>
               </thead>
               <tbody>
-                {savedPlaces.map(place => (
+              {places.filter(place => savedPlaces.includes(place._id)).map(place => (
                   <tr key={place._id}>
-                    <td>{place._id}</td>
-                    <td>{place.name}</td>
+                    <td>
+                      <Link to={`/places/${place._id}`}>{place.name}</Link>
+                    </td>
                     <td>{place.description}</td>
-                    <td>{place.location}</td>
+                    <td>{place.placeType}</td>
                     <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
                   </tr>
                 ))}

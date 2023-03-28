@@ -27,8 +27,7 @@ function App() {
     async function fetchUser() {
       try {
         const response = await axios.get('http://localhost:3000/currentUser');
-        console.log("res")
-        console.log(response.data)
+        // console.log(response.data)
         if (response.data === 'undefined') {
           setCurrentUser(undefined);
           localStorage.removeItem("currentUser")
