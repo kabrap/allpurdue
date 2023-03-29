@@ -1026,13 +1026,37 @@ app.delete('/blogs/:id', async (req, res) => {
         if (err) throw err;
       });
     }
+    const blogAuthor = blog.author
+    const blogTitle = blog.title
+    let authorEmail = ''
     await Blog.findByIdAndDelete(req.params.id);
-    res.status(201).send('blog deleted');
-  } catch (err) {
-    console.log(err);
-    res.send('Error deleting blog');
-  }
-});
+    User.findOne({ _id: blogAuthor }, (err, user) => {
+      if (err) {
+        console.log(err);
+      } else if (!user) {
+      } else {
+        authorEmail = user.email
+        const msg = {
+          from: '"Team AllPurdue" allpurdue2023@gmail.com',
+          to: authorEmail,
+          subject: 'Your blog ' + blogTitle + ' on AllPurdue has been deleted',
+          text: 'Your blog ' + blogTitle + ' on AllPurdue has been deleted'
+        }
+        transporter.sendMail(msg, function(err){
+          if (err) {
+            console.log(err);
+            res.status(500).send("error emailing deletion confirmation email")
+          } else {
+            console.log("successful deletion email sent");
+            res.status(200).send("success")
+          }
+        });
+        res.status(201).send('blog deleted');
+      } 
+    });
+} catch(err) {
+  console.log(err)
+}});
 
 // Save/Unsave specific blog by ID
 app.post('/save-blog/:id', async (req, res) => {
