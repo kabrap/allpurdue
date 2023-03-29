@@ -19,6 +19,7 @@ function Dashboard() {
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [savedBlogs, setSavedBlogs] = useState([])
 
   const [activeComponent, setActiveComponent] = useState('blogs');
 
@@ -48,6 +49,8 @@ function Dashboard() {
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
         setSavedPlaces(response.data.find(user => user._id === userId).savedPlaces);
+        console.log(response.data.find(user => user._id === userId).savedBlogs)
+        setSavedBlogs(response.data.find(user => user._id === userId).savedBlogs);
         console.log(savedPlaces)
         if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
           console.log(user.email)
@@ -284,6 +287,9 @@ function Dashboard() {
         {!isAdmin && (
           <button className={activeComponent === 'favorites' ? 'selected' : ''} onClick={() => handleComponentChange('favorites')}>Favorites</button>
         )}
+        {!isAdmin && (
+          <button className={activeComponent === 'savedBlogs' ? 'selected' : ''} onClick={() => handleComponentChange('savedBlogs')}>Saved Blogs</button>
+        )}
         {isAdmin && (
           <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
         )}
@@ -457,6 +463,31 @@ function Dashboard() {
                     <td>{place.description}</td>
                     <td>{place.placeType}</td>
                     <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {/* Show saved blogs table */}
+          {activeComponent === 'savedBlogs' && (
+            <table>
+              {/* User view */}
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Content</th>                  
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              {blogs.filter(blog => savedBlogs.includes(blog._id)).map(blog => (
+                  <tr key={blog._id}>
+                    <td>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </td>
+                    <td>{blog.text}</td>
+                    <td>{blog.tags[0]}</td>
+                    {/* <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/> */}
                   </tr>
                 ))}
               </tbody>

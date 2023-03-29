@@ -20,6 +20,7 @@ function BlogPost() {
   const [blogImages, setBlogImages] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, setUser] = useState(null)
 
   const handlePrevClick = () => {
     setCurrentImageIndex(
@@ -65,15 +66,27 @@ function BlogPost() {
       }
     }
     fetchBlog();
+
+    axios.get('http://localhost:3000/users/')
+    .then(response => {
+      setUser(response.data.find(user => user._id === localStorage.getItem("currentUser")));
+    })
+    .catch(error => console.log(error));
   }, [id]);
 
   const handleBookmark = async () => {
       try {
-        const response = await axios.post(`http://localhost:3000/save-blog/${blogId}`)
-        console.log(response)
+        const response = await axios.post(`http://localhost:3000/save-blog/${blogId}`);
+        console.log(response.data);
       } catch (error) {
-        
+        console.error(error);
       }
+
+      axios.get('http://localhost:3000/users/')
+      .then(response => {
+        setUser(response.data.find(user => user._id === localStorage.getItem("currentUser")));
+      })
+      .catch(error => console.log(error));
   }
 
   const handleShare = () => {
@@ -107,7 +120,7 @@ function BlogPost() {
             <span>&#8679;</span>
             <span id="review-likes">{likes}</span>
           </button>
-          <img className='blog-post-icon' src={bookmark} onClick={handleBookmark}></img>
+          {user && <span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>}
           <img className='blog-post-icon' src={share}></img>
         </div>
         <div className='blog-info-container'>
