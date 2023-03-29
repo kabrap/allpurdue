@@ -507,6 +507,7 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
     }
     if (currentUser.savedPlaces.includes(placeId)) {
       currentUser.savedPlaces.pop(placeId);
+      res.status(201).send(currentUser.savedPlaces)
     } else {
       currentUser.savedPlaces.push(placeId);
     }
@@ -514,10 +515,8 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
       { _id: currentUser._id }, 
       { savedPlaces: currentUser.savedPlaces }
     );
-    res.status(201).send("success");
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
   }  
 });
 
