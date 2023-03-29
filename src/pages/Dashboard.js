@@ -6,6 +6,7 @@ import Delete from '../images/delete.png'
 import Edit from '../images/edit.png'
 
 function Dashboard() {
+  const [isAdmin, setIsAdmin] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -73,6 +74,15 @@ function Dashboard() {
     })
     .catch(error => console.log(error));
   }, []);
+
+  useEffect( () => {
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
+    })
+    .catch(error => console.log(error));
+  }, [isAdmin])
 
   const handleSubmit = () => {
     if (newPassword.length < 6 || confirmPassword.length < 6) {
@@ -495,6 +505,18 @@ function Dashboard() {
           )}
         </div>
       </div>
+      }
+      <br/>
+      {isAdmin &&
+        <div id = "addLocationButton">
+          <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
+        </div>
+      }
+      {isAdmin &&
+        <br/>
+      }
+      <button onClick={logout}>Logout</button>
+    </div>
   )
 }
 

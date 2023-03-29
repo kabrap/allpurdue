@@ -10,6 +10,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 function Place() {
+  const [isAdmin, setIsAdmin] = useState(false)
   const [place, setPlace] = useState({});
   const { id } = useParams();
   const [review, setReview] = useState("");
@@ -70,6 +71,15 @@ function Place() {
       })
       .catch(error => console.log(error));
   }, []);
+
+  useEffect( () => {
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
+    })
+    .catch(error => console.log(error));
+  }, [isAdmin])
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -226,7 +236,12 @@ function Place() {
           </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                    <div className="name-edit-row">
+                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                      {isAdmin &&
+                        <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                      }
+                    </div>
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
