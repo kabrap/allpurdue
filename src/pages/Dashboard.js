@@ -16,7 +16,6 @@ function Dashboard() {
   const [purdueVerified, setPurdueVerified] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -285,6 +284,12 @@ function Dashboard() {
           <button id="passwordButton" onClick={() => setChangePassword(!changePassword)}>Change password</button>
         </div>
         }
+        {isAdmin && <br />}
+        {isAdmin &&
+          <div id = "addLocationButton">
+            <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
+          </div>
+        }
         <br/>
         <button onClick={logout}>Logout</button>
       </div>
@@ -504,19 +509,7 @@ function Dashboard() {
             </table>
           )}
         </div>
-      </div>
-      }
-      <br/>
-      {isAdmin &&
-        <div id = "addLocationButton">
-          <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
-        </div>
-      }
-      {isAdmin &&
-        <br/>
-      }
-      <button onClick={logout}>Logout</button>
-    </div>
+      </div>      
   )
 }
 
