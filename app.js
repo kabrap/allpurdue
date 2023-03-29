@@ -837,7 +837,7 @@ app.post('/admin/add-place', async (req, res) => {
     website: req.body.website
   });
   await newPlace.save();
-  res.redirect(`/admin/places/${newPlace._id}`);
+  res.status(201).send(newPlace._id);
   } catch (err) {
     console.log(err);
     res.send("Error adding new place");
@@ -880,7 +880,7 @@ app.put('/admin/places/:id/edit', async (req, res) => {
     place.googleMap = req.body.googleMap;
     place.website = req.body.website;
     await place.save();
-    res.redirect(`/admin/places/${place._id}`);
+    res.status(201).send("place edited")
   } catch (err) {
     console.error(err);
     res.send('Error editing place information');
