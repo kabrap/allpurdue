@@ -69,6 +69,21 @@
     justify-content: space-between;
 }
 
+.name-edit-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.edit-button {
+    margin: 5px;
+    margin-left: 15px;
+    border: #FFC632 1px solid;
+    background-color: #FFC632;
+    color: black;
+    font-size: 18px;
+    width: 85px;
+}
+
 .place-name {
     margin: 0px;
     font-size: 36px;

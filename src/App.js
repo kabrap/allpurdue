@@ -5,6 +5,7 @@ import LoggedInNavbar from './components/navbar/LoggedInNavbar';
 import React, {useEffect, useState} from 'react'
 import Home from './pages/Home'
 import About from './pages/About'
+import AddLocation from './pages/AddLocation'
 import Categories from './pages/categories/Categories';
 import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
@@ -16,6 +17,7 @@ import Study from './pages/categories/Study'
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
+import EditPlace from './pages/EditPlace'
 import axios from 'axios';
 import BlogPost from './pages/BlogPost';
 import BlogCreationPage from './pages/BlogCreationPage';
@@ -49,6 +51,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/add-location" element={<AddLocation />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/contact" element={<Contact />} />
@@ -60,6 +63,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
+          <Route exact path="edit-place/:d" element={<EditPlace />} />
           <Route path="/blogs/:id" element={<BlogPost />} />
           <Route path="/blogs/create" element={<BlogCreationPage />} />
         </Routes>

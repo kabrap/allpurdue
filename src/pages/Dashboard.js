@@ -6,6 +6,7 @@ import Delete from '../images/delete.png'
 import Edit from '../images/edit.png'
 
 function Dashboard() {
+  const [isAdmin, setIsAdmin] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,6 +20,7 @@ function Dashboard() {
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [savedBlogs, setSavedBlogs] = useState([])
 
   const [activeComponent, setActiveComponent] = useState('blogs');
 
@@ -48,6 +50,8 @@ function Dashboard() {
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
         setSavedPlaces(response.data.find(user => user._id === userId).savedPlaces);
+        console.log(response.data.find(user => user._id === userId).savedBlogs)
+        setSavedBlogs(response.data.find(user => user._id === userId).savedBlogs);
         console.log(savedPlaces)
         if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
           console.log(user.email)
@@ -70,6 +74,15 @@ function Dashboard() {
     })
     .catch(error => console.log(error));
   }, []);
+
+  useEffect( () => {
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
+    })
+    .catch(error => console.log(error));
+  }, [isAdmin])
 
   const handleSubmit = () => {
     if (newPassword.length < 6 || confirmPassword.length < 6) {
@@ -284,6 +297,9 @@ function Dashboard() {
         {!isAdmin && (
           <button className={activeComponent === 'favorites' ? 'selected' : ''} onClick={() => handleComponentChange('favorites')}>Favorites</button>
         )}
+        {!isAdmin && (
+          <button className={activeComponent === 'savedBlogs' ? 'selected' : ''} onClick={() => handleComponentChange('savedBlogs')}>Saved Blogs</button>
+        )}
         {isAdmin && (
           <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
         )}
@@ -462,8 +478,45 @@ function Dashboard() {
               </tbody>
             </table>
           )}
+          {/* Show saved blogs table */}
+          {activeComponent === 'savedBlogs' && (
+            <table>
+              {/* User view */}
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Content</th>                  
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              {blogs.filter(blog => savedBlogs.includes(blog._id)).map(blog => (
+                  <tr key={blog._id}>
+                    <td>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </td>
+                    <td>{blog.text}</td>
+                    <td>{blog.tags[0]}</td>
+                    {/* <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/> */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
+      }
+      <br/>
+      {isAdmin &&
+        <div id = "addLocationButton">
+          <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
+        </div>
+      }
+      {isAdmin &&
+        <br/>
+      }
+      <button onClick={logout}>Logout</button>
+    </div>
   )
 }
 
