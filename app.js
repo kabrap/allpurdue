@@ -121,6 +121,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Blog',
     }],
+    savedPlaces: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Place',
+    }],
     googleId: {
       type: String
     }
@@ -502,6 +506,54 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }  
+});
+
+// Save specific place by ID
+app.post('/save-place/:id', async (req, res) => {
+  try {
+    
+    if (!currentUser) {
+      res.send("no user logged in");
+      return;
+    }
+
+    if (currentUser.savedPlaces.includes(req.params.id)) {
+      currentUser.savedPlaces.pop(req.params.id);
+    } else {
+      currentUser.savedPlaces.push(req.params.id);
+      User.findOneAndUpdate(
+        { _id: currentUser._id }, 
+        { savedPlaces: currentUser.savedPlaces }, function (err) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.status(201).send("success")
+        }
+      });
+    }
+
+    console.log(currentUser.savedPlaces)
+
+  } catch (err) {
+    console.log(err);
+    res.send('Error saving place');
+  }
+  
+});
+
+// Get saved places of the current user
+app.get('/saved-places/', async (req, res) => {
+  try {
+    if (!currentUser) {
+      res.send('user not logged in');
+      return;
+    }
+    res.send(currentUser.savedPlaces);
+  } catch (err) {
+    console.log(err);
+    res.send('Error sending saved blogs');
+  }
 });
 
 /* ---------- [End] Place Routes ---------- */
