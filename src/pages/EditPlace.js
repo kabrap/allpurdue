@@ -224,7 +224,7 @@ function EditPlace() {
               </label>
               <label className='location-field-container'>
                 <span>Tags</span>
-                <input type="text" placeholder="Fast Food, Chauncey, Chain" value={tags} onChange={handleTags}></input>
+                <input type="text" placeholder="Fast Food, Chauncey, Chain" value={tags} pattern="[^,]+(,.*){3,}.+" onChange={handleTags}></input>
               </label>
               <label className='location-field-container'>
                 <span>Images</span>

@@ -220,8 +220,8 @@ function AddLocation() {
                 <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={phoneNumber} onChange={handlePhoneNumber} placeholder="xxx-xxx-xxxx"></input>
               </label>
               <label className='location-field-container'>
-                <span>Tags</span>
-                <input type="text" placeholder="Fast Food, Chauncey, Chain" value={tags} onChange={handleTags}></input>
+                <span>Tags (4 minimum)</span>
+                <input type="text" placeholder="Fast Food, Chauncey, Chain, Burgers" value={tags} pattern="[^,]+(,.*){3,}.+" onChange={handleTags}></input>
               </label>
               <label className='location-field-container'>
                 <span>Images</span>
