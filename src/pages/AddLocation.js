@@ -171,6 +171,7 @@ function AddLocation() {
       .then(function (res) {
         console.log('successful submission')
         setShowSuccessMsg(true)
+        window.location.href = `/places/${res.data}`
       })
       .catch(function (err) {
         console.log(err)

@@ -173,7 +173,7 @@ function EditPlace() {
       .then(function (res) {
         console.log('successful submission')
         setShowSuccessMsg(true)
-        window.location.href=`../places/${id}`
+        window.location.href = `/places/${id}`
       })
       .catch(function (err) {
         console.log(err)
