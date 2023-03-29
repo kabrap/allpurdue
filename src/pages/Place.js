@@ -30,6 +30,7 @@ function Place() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [errorMsg, setErrorMsg] = useState('')
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -66,6 +67,7 @@ function Place() {
     axios.get('http://localhost:3000/users/')
       .then(response => {
         setUsers(response.data);
+        setUser(response.data.find(user => user._id === author));
       })
       .catch(error => console.log(error));
   }, []);
@@ -124,6 +126,40 @@ function Place() {
       console.error(error);
     }
   };
+
+  const handleFavorite = async () => {
+    const placeId = place._id;
+    try {
+      const author = localStorage.getItem("currentUser");
+      const response = await axios.post(`http://localhost:3000/places/${placeId}/save-place/${author}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+    axios.get('http://localhost:3000/users/')
+    .then(response => {
+      setUsers(response.data);
+      setUser(response.data.find(user => user._id === author));
+    })
+    .catch(error => console.log(error));
+
+    async function fetchPlace() {
+      try {
+        const response = await axios.get(`http://localhost:3000/places/${id}`);
+        setPlace(response.data.place);
+        setSuggestedPlaces(response.data.suggestedPlaces);
+        setPlacesHours(response.data.hours)
+        setAverageRating(response.data.averageRating);
+        setWebsite(response.data.website);
+        setGoogleMap(response.data.googleMap);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlace();
+  };
+  
 
   const handleDelete = async (reviewId) => {
     console.log(reviewId)
@@ -209,7 +245,7 @@ function Place() {
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        {/* <img className="bookmark-icon" src={Bookmark} alt="bookmark icon"/> */}
+                        <span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>
                     </div>
                 </div>
                 <div className="rating">

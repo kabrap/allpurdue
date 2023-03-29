@@ -367,3 +367,16 @@
     margin-left: 3%;
     border-radius: 1rem;
 }
+
+.favorite-icon {
+    color: #626262;
+}
+
+.favorite-icon:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.red {
+    color: red;
+  }

@@ -7,7 +7,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import AddLocation from './pages/AddLocation'
 import Categories from './pages/categories/Categories';
-import Blog from './pages/Blog';
+import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
 import LoginSignup from './pages/LoginSignup';
 import Cafes from './pages/categories/Cafes'
@@ -19,6 +19,8 @@ import Dashboard from './pages/Dashboard'
 import Place from './pages/Place'
 import EditPlace from './pages/EditPlace'
 import axios from 'axios';
+import BlogPost from './pages/BlogPost';
+import BlogCreationPage from './pages/BlogCreationPage';
 
 function App() {
   const [currentUser, setCurrentUser] = useState('undefined');
@@ -27,8 +29,7 @@ function App() {
     async function fetchUser() {
       try {
         const response = await axios.get('http://localhost:3000/currentUser');
-        console.log("res")
-        console.log(response.data)
+        // console.log(response.data)
         if (response.data === 'undefined') {
           setCurrentUser(undefined);
           localStorage.removeItem("currentUser")
@@ -52,7 +53,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/add-location" element={<AddLocation />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs" element={<Blogs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/loginsignup" element={<LoginSignup />} />
           <Route path="/categories/cafes" element={<Cafes />} />
@@ -63,6 +64,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/places/:id" element={<Place />} />
           <Route exact path="edit-place/:d" element={<EditPlace />} />
+          <Route path="/blogs/:id" element={<BlogPost />} />
+          <Route path="/blogs/create" element={<BlogCreationPage />} />
         </Routes>
       </Router>
     </div>

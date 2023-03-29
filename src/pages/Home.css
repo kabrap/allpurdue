@@ -80,3 +80,62 @@ hr {
   row-gap: 20px;
   justify-content: space-between;
 }
+
+.recent-blogs-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#recent-blog-card {
+  color: black;
+  background-color: white;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+#recent-blog-card .blog-card-title {
+    color: black;
+}
+
+#recent-blog-card .blog-card-content {
+    color: black;
+}
+
+#recent-blog-card .blog-card-tag {
+  color: #ffb30e;
+  font-weight: 500;
+}
+
+#recent-blog-card::before {
+  background: none;
+}
+
+#recent-blog-card-info {
+  color: black;
+}
+
+.recent-blogs h1 {
+  font-size: 45px;
+  line-height: 25px;
+}
+
+.recent-blogs h1 span {
+  color: #ffb30e;
+}
+
+.recent-blog-heading {
+  margin-bottom: 40px;
+}
+
+#explore-blog-arrow {
+  color: white;
+}
+
+#explore-blog-arrow:hover {
+  cursor: pointer;
+  color: #ffb30e;
+}
+
+#subheading {
+  font-size: 56px;
+}
