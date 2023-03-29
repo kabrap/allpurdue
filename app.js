@@ -363,6 +363,7 @@ app.get('/users/:id', async (req, res) => {
 
 /* ---------- [Start] Place Routes ---------- */
 
+/**
 app.get('/add_place', (req, res) => {
   res.render("add_place");
 });
@@ -392,6 +393,7 @@ app.post('/add_place', async (req, res) => {
     res.status(500).send('Error adding place');
   }
 });
+*/
 
 // GET route for displaying all places
 app.get('/places', async (req, res) => {
@@ -736,6 +738,140 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
 });
 
 /* ---------- [End] Reviews Routes ---------- */
+
+/* ---------- [Start] Admin Modification Routes ---------- */
+
+//Get request to display add place form
+app.get('/admin/add-place', async (req, res) => {
+  try {
+    res.render('add_place'); // render the add-place EJS view
+  } catch (err) {
+    console.log(err);
+    res.send('Error fetching add place form.')
+  }
+});
+
+//POST Route to add a place
+app.post('/admin/add-place', async (req, res) => {
+  try {
+    console.log(req.body)
+    const newPlace = new Place({
+    name: req.body.name,
+    description: req.body.description,
+    placeType: req.body.placeType,
+    hours: req.body.hours,
+    phone: req.body.phone,
+    tags: req.body.tags,
+    location: {
+      type: "Point",
+      coordinates: [req.body.longitude, req.body.latitude],
+    },
+    images: req.body.images,
+    address: req.body.address,
+    googleMap: req.body.googleMap,
+    website: req.body.website
+  });
+  await newPlace.save();
+  res.redirect(`/admin/places/${newPlace._id}`);
+  } catch (err) {
+    console.log(err);
+    res.send("Error adding new place");
+  }
+});
+
+// GET request to display the form to update a place
+app.get('/admin/places/:id/edit', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    res.render('edit_place', { place });
+  } catch (err) {
+    console.error(err);
+    res.send('Error getting edit place form');
+  }
+});
+
+// PUT request to update a place
+app.put('/admin/places/:id/edit', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    place.name = req.body.name;
+    place.description = req.body.description;
+    place.hours = req.body.hours;
+    place.phone = req.body.phone;
+    place.placeType = req.body.placeType;
+    place.tags = req.body.tags;
+    place.location = {
+      type: 'Point',
+      coordinates: [req.body.lng, req.body.lat],
+    };
+    place.images = req.body.images;
+    place.address = req.body.address;
+    place.googleMap = req.body.googleMap;
+    place.website = req.body.website;
+    await place.save();
+    res.redirect(`/admin/places/${place._id}`);
+  } catch (err) {
+    console.error(err);
+    res.send('Error editing place information');
+  }
+});
+
+// DELETE a place by ID
+app.delete('/admin/places/:id', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    await Place.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/places');
+  } catch (err) {
+    console.error(err);
+    res.send('Error Deleting Place');
+  }
+});
+
+// delete any review
+app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.reviewId);
+    if (!review) {
+      return res.status(404).send('Review not found');
+    }
+    await Review.findByIdAndDelete(req.params.reviewId);
+    const place = await Place.findById(req.params.placeId);
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+    place.reviews.pull(req.params.reviewId);
+    await place.save();
+    res.redirect(`/admin/places/${req.params.placeId}`);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// DELETE specific blog by ID
+app.delete('/admin/blogs/:id', async (req, res) => {
+  try {
+    await Blog.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/blogs');
+  } catch (err) {
+    console.log(err);
+    res.send('Error deleting blog');
+  }
+});
+
+/* ---------- [End] Admin Modification Routes ---------- */
+
 
 /* ---------- [Start] Blogs Routes ---------- */
 
