@@ -1,4 +1,4 @@
-.location-container {
+.add-location-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,17 +9,17 @@
   color: black;
 }
     
-.title {
+.add-location-title {
   font-size: 2rem;
   margin-bottom: 1.5rem;
 }
 
-h1 {
+.add-location-container h1 {
   color: black;
   font-size: 1.5rem;
 }
     
-.form {
+.add-location-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,20 +72,20 @@ h1 {
   color: rgb(92, 92, 92);
 }
 
-.location-field-container {
+.add-location-field-container {
   display: flex;
   flex-direction: column;
   width: 80%;
 }
 
-.location-field-container span {
+.add-location-field-container span {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 4px;
   margin-top: 4px;
 }
 
-.location-field-container input {
+.add-location-field-container input {
   border-radius: 8px;
   padding: 8px;
 }
@@ -208,11 +208,11 @@ textarea:focus {
   transition: background-color 0.3s ease;
 }
 
-.type-bar {
+.add-location-type-bar {
   text-align: center;
 }
 
-.type-button {
+.add-location-type-button {
   background-color: white;
   color: black;
   border-radius: 0;
@@ -221,7 +221,7 @@ textarea:focus {
   width: 125px;
 }
 
-.clicked-button {
+.add-location-clicked-button {
   background-color: #e0dcdcc9;
   color: black;
   border-radius: 0;
