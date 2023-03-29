@@ -246,6 +246,16 @@ function Dashboard() {
     setActiveComponent(component);
   };
 
+  const unfavoritePlace = async (placeId) => {
+    try {
+      const author = localStorage.getItem("currentUser");
+      const response = await axios.post(`http://localhost:3000/places/${placeId}/save-place/${author}`);
+      setSavedPlaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {/* Change Password */}
@@ -477,7 +487,7 @@ function Dashboard() {
                     </td>
                     <td>{place.description}</td>
                     <td>{place.placeType}</td>
-                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
+                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => unfavoritePlace(place._id)}/>
                   </tr>
                 ))}
               </tbody>
