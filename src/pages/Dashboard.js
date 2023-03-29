@@ -199,8 +199,9 @@ function Dashboard() {
     console.log(placeId)
     const updatedPlaces = places.filter((place) => place._id !== placeId);
     setPlaces(updatedPlaces)
+    console.log(places)
     try {
-      const response = await axios.delete(`http://localhost:3000/places/${placeId}`);
+      const response = await axios.delete(`http://localhost:3000/places/delete/${placeId}`);
       console.log(response.data);
     } catch (error) {
       console.log(error);
