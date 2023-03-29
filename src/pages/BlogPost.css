@@ -38,14 +38,25 @@
 }
 
 .blog-options {
-    margin-top: 10px;
-    left: 4%;
+    margin-top: 8px;
+    left: 7%;
     height: 150px;
     position: absolute;
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
     align-items: center;
+}
+
+.more-blog-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8px;
+    margin-left: 10px;
+}
+
+.more-blog-options img {
+    margin-top: 6px;
 }
 
 .blog-post-icon {

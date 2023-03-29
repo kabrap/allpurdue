@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './Place.css'
-import AddImage from '../images/addimgicon.png'
-import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
-import Bookmark from '../images/bookmark.png'
 import Delete from '../images/delete.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
@@ -159,8 +156,17 @@ function Place() {
     }
     fetchPlace();
   };
-  
 
+  const handleDeletePlace = async() => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/places/delete/${id}`);
+      console.log(response.data);
+      window.location.href = `/categories/`
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   const handleDelete = async (reviewId) => {
     console.log(reviewId)
     const updatedReviews = placesReviews.filter((review) => review._id !== reviewId);
@@ -240,6 +246,9 @@ function Place() {
                       <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
                       {isAdmin &&
                         <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                      }
+                      {isAdmin &&
+                        <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
                       }
                     </div>
                     <div className='icons-container'>

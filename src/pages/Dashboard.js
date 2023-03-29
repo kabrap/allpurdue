@@ -16,10 +16,10 @@ function Dashboard() {
   const [purdueVerified, setPurdueVerified] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [savedBlogs, setSavedBlogs] = useState([])
 
   const [activeComponent, setActiveComponent] = useState('blogs');
 
@@ -49,6 +49,8 @@ function Dashboard() {
       .then(response => {
         setUser(response.data.find(user => user._id === userId));
         setSavedPlaces(response.data.find(user => user._id === userId).savedPlaces);
+        console.log(response.data.find(user => user._id === userId).savedBlogs)
+        setSavedBlogs(response.data.find(user => user._id === userId).savedBlogs);
         console.log(savedPlaces)
         if (response.data.find(user => user._id === userId).email.includes('purdue.edu')) {
           console.log(user.email)
@@ -197,8 +199,9 @@ function Dashboard() {
     console.log(placeId)
     const updatedPlaces = places.filter((place) => place._id !== placeId);
     setPlaces(updatedPlaces)
+    console.log(places)
     try {
-      const response = await axios.delete(`http://localhost:3000/places/${placeId}`);
+      const response = await axios.delete(`http://localhost:3000/places/delete/${placeId}`);
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -244,6 +247,16 @@ function Dashboard() {
     setActiveComponent(component);
   };
 
+  const unfavoritePlace = async (placeId) => {
+    try {
+      const author = localStorage.getItem("currentUser");
+      const response = await axios.post(`http://localhost:3000/places/${placeId}/save-place/${author}`);
+      setSavedPlaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {/* Change Password */}
@@ -282,6 +295,12 @@ function Dashboard() {
           <button id="passwordButton" onClick={() => setChangePassword(!changePassword)}>Change password</button>
         </div>
         }
+        {isAdmin && <br />}
+        {isAdmin &&
+          <div id = "addLocationButton">
+            <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
+          </div>
+        }
         <br/>
         <button onClick={logout}>Logout</button>
       </div>
@@ -293,6 +312,9 @@ function Dashboard() {
         <button className={activeComponent === 'reviews' ? 'selected' : ''} onClick={() => handleComponentChange('reviews')}>Reviews</button>
         {!isAdmin && (
           <button className={activeComponent === 'favorites' ? 'selected' : ''} onClick={() => handleComponentChange('favorites')}>Favorites</button>
+        )}
+        {!isAdmin && (
+          <button className={activeComponent === 'savedBlogs' ? 'selected' : ''} onClick={() => handleComponentChange('savedBlogs')}>Saved Blogs</button>
         )}
         {isAdmin && (
           <button className={activeComponent === 'places' ? 'selected' : ''} onClick={() => handleComponentChange('places')}>Places</button>
@@ -466,26 +488,39 @@ function Dashboard() {
                     </td>
                     <td>{place.description}</td>
                     <td>{place.placeType}</td>
-                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
+                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => unfavoritePlace(place._id)}/>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {/* Show saved blogs table */}
+          {activeComponent === 'savedBlogs' && (
+            <table>
+              {/* User view */}
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Content</th>                  
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              {blogs.filter(blog => savedBlogs.includes(blog._id)).map(blog => (
+                  <tr key={blog._id}>
+                    <td>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </td>
+                    <td>{blog.text}</td>
+                    <td>{blog.tags[0]}</td>
+                    {/* <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/> */}
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
         </div>
-      </div>
-      }
-      <br/>
-      {isAdmin &&
-        <div id = "addLocationButton">
-          <button id="addLocationButton" onClick={() => window.location.href = "/add-location"}>Add Location</button>
-        </div>
-      }
-      {isAdmin &&
-        <br/>
-      }
-      <button onClick={logout}>Logout</button>
-    </div>
+      </div>      
   )
 }
 

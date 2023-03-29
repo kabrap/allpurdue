@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import './BlogPost.css'
-import bookmark from '../images/bookmark.png'
 import share from '../images/shareicon.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Delete from '../images/delete.png'
 
 function BlogPost() {
   const { id } = useParams();
@@ -20,6 +19,17 @@ function BlogPost() {
   const [blogImages, setBlogImages] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, setUser] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect( () => {
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
+    })
+    .catch(error => console.log(error));
+  }, [isAdmin])
 
   const handlePrevClick = () => {
     setCurrentImageIndex(
@@ -65,15 +75,27 @@ function BlogPost() {
       }
     }
     fetchBlog();
+
+    axios.get('http://localhost:3000/users/')
+    .then(response => {
+      setUser(response.data.find(user => user._id === localStorage.getItem("currentUser")));
+    })
+    .catch(error => console.log(error));
   }, [id]);
 
   const handleBookmark = async () => {
       try {
-        const response = await axios.post(`http://localhost:3000/save-blog/${blogId}`)
-        console.log(response)
+        const response = await axios.post(`http://localhost:3000/save-blog/${blogId}`);
+        console.log(response.data);
       } catch (error) {
-        
+        console.error(error);
       }
+
+      axios.get('http://localhost:3000/users/')
+      .then(response => {
+        setUser(response.data.find(user => user._id === localStorage.getItem("currentUser")));
+      })
+      .catch(error => console.log(error));
   }
 
   const handleShare = () => {
@@ -90,6 +112,15 @@ function BlogPost() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/blogs/${blogId}`);
+      window.location.href = `/blogs`
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className='blog-post'>
         <div className='blog-options'>
@@ -101,14 +132,19 @@ function BlogPost() {
               pointerEvents: localStorage.getItem("currentUser") ? "auto" : "none",
               opacity: localStorage.getItem("currentUser") ? 1 : 0.5,
             }}
-            disabled={!localStorage.getItem("currentUser")}
-            title={!localStorage.getItem("currentUser") ? "Please log in to like" : ""}
+            disabled={localStorage.getItem("currentUser") === "undefined"}
+            title={localStorage.getItem("currentUser") === "undefined" ? "Please log in to like" : ""}
           >
             <span>&#8679;</span>
             <span id="review-likes">{likes}</span>
           </button>
-          <img className='blog-post-icon' src={bookmark} onClick={handleBookmark}></img>
-          <img className='blog-post-icon' src={share}></img>
+          <div className='more-blog-options'>
+            {user && <span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>}
+            {/* <img className='blog-post-icon' src={share}></img> */}
+            {localStorage.getItem("currentUser") === authorId || isAdmin ? (
+              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleDelete}/>
+            ) : null}
+          </div>
         </div>
         <div className='blog-info-container'>
           <div className='category-date'>
