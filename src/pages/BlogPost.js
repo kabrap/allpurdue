@@ -112,6 +112,15 @@ function BlogPost() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/blogs/${blogId}`);
+      window.location.href = `/blogs`
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className='blog-post'>
         <div className='blog-options'>
@@ -133,7 +142,7 @@ function BlogPost() {
             {user && <span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>}
             {/* <img className='blog-post-icon' src={share}></img> */}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
-              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" />
+              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleDelete}/>
             ) : null}
           </div>
         </div>
