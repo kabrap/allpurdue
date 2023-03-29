@@ -470,10 +470,23 @@ app.get('/places/:id', async (req, res) => {
 
 app.delete('/places/delete/:place_id', (req, res) => {
   console.log("testing")
+  User.updateMany(
+    { savedPlaces: req.params.place_id },
+    { $pull: { savedPlaces: req.params.place_id } },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Deleted place from users' savedPlaces:", result.nModified);
+      }
+    }
+  );
+  
   Place.findByIdAndDelete(req.params.place_id, (err) => {
     if (err) {
       console.log(err);
     } else {
+      res.status(201).send('place deleted')
       console.log("Place deleted");
     }
   });
@@ -862,8 +875,19 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/admin/blogs/:id', async (req, res) => {
   try {
+    User.updateMany(
+      { savedBlogs: req.params.id },
+      { $pull: { savedBlogs: req.params.id } },
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Deleted blog from users' savedBlogs:", result.nModified);
+        }
+      }
+    );
     await Blog.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/blogs');
+    res.status(201).send('blog deleted');
   } catch (err) {
     console.log(err);
     res.send('Error deleting blog');
@@ -931,6 +955,17 @@ app.get('/blogs/:id', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/blogs/:id', async (req, res) => {
   try {
+    User.updateMany(
+      { savedBlogs: req.params.id },
+      { $pull: { savedBlogs: req.params.id } },
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Deleted blog from users' savedBlogs:", result.nModified);
+        }
+      }
+    );
     const blog = await Blog.findById(req.params.id);
     var img = blog.images;
     for(var i = 0; i < img.length; i++) {
@@ -940,7 +975,7 @@ app.delete('/blogs/:id', async (req, res) => {
       });
     }
     await Blog.findByIdAndDelete(req.params.id);
-    res.redirect('/blogs');
+    res.status(201).send('blog deleted');
   } catch (err) {
     console.log(err);
     res.send('Error deleting blog');
