@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios'
 import BlogCard from '../components/card/BlogCard'
 import "./Blogs.css"
+import Delete from '../images/delete.png'
+
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
@@ -10,6 +12,16 @@ function Blogs() {
   const [sortOption, setSortOption] = useState("new");
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTags, setShowTags] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect( () => {
+    axios.get('http://localhost:3000/verify-admin')
+    .then(response => {
+      console.log(response.data)
+      setIsAdmin(true)
+    })
+    .catch(error => console.log(error));
+  }, [isAdmin])
 
   useEffect(() => {
     async function fetchData() {
@@ -97,6 +109,31 @@ function Blogs() {
     }
   };
 
+  const handleDelete = async (blogId) => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/blogs/${blogId}`);
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      const response = await axios.get('http://localhost:3000/blogs');
+      let sortedData = response.data;
+      if (sortOption === "new") {
+        sortedData = sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (sortOption === "top") {
+        sortedData = sortedData.sort((a, b) => b.likes - a.likes);
+      }
+      if (selectedTags.length > 0) {
+        sortedData = sortedData.filter(blog => {
+          return selectedTags.every(tag => blog.tags.includes(tag));
+        });
+      }
+      setBlogs(sortedData);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter(t => t !== tag));
@@ -156,6 +193,7 @@ function Blogs() {
                 <span>&#8679;</span>
                 <span id="blog-likes">{blog.likes}</span>
               </button>
+              {isAdmin && <img className="dashboard-delete-icon" id='blogs-page-delete' src={Delete} alt="delete icon" onClick={() => handleDelete(blog._id)}/>}
               <BlogCard 
                 key={blog._id}
                 _id = {blog._id}
