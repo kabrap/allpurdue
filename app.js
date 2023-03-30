@@ -474,10 +474,23 @@ app.get('/places/:id', async (req, res) => {
 
 app.delete('/places/delete/:place_id', (req, res) => {
   console.log("testing")
+  User.updateMany(
+    { savedPlaces: req.params.place_id },
+    { $pull: { savedPlaces: req.params.place_id } },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Deleted place from users' savedPlaces:", result.nModified);
+      }
+    }
+  );
+  
   Place.findByIdAndDelete(req.params.place_id, (err) => {
     if (err) {
       console.log(err);
     } else {
+      res.status(201).send('place deleted')
       console.log("Place deleted");
     }
   });
@@ -494,6 +507,7 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
     }
     if (currentUser.savedPlaces.includes(placeId)) {
       currentUser.savedPlaces.pop(placeId);
+      res.status(201).send(currentUser.savedPlaces)
     } else {
       currentUser.savedPlaces.push(placeId);
     }
@@ -501,10 +515,8 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
       { _id: currentUser._id }, 
       { savedPlaces: currentUser.savedPlaces }
     );
-    res.status(201).send("success");
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
   }  
 });
 
@@ -824,7 +836,7 @@ app.post('/admin/add-place', async (req, res) => {
     website: req.body.website
   });
   await newPlace.save();
-  res.redirect(`/admin/places/${newPlace._id}`);
+  res.status(201).send(newPlace._id);
   } catch (err) {
     console.log(err);
     res.send("Error adding new place");
@@ -867,7 +879,7 @@ app.put('/admin/places/:id/edit', async (req, res) => {
     place.googleMap = req.body.googleMap;
     place.website = req.body.website;
     await place.save();
-    res.redirect(`/admin/places/${place._id}`);
+    res.status(201).send("place edited")
   } catch (err) {
     console.error(err);
     res.send('Error editing place information');
@@ -914,8 +926,19 @@ app.delete('/admin/places/:placeId/reviews/:reviewId', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/admin/blogs/:id', async (req, res) => {
   try {
+    User.updateMany(
+      { savedBlogs: req.params.id },
+      { $pull: { savedBlogs: req.params.id } },
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Deleted blog from users' savedBlogs:", result.nModified);
+        }
+      }
+    );
     await Blog.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/blogs');
+    res.status(201).send('blog deleted');
   } catch (err) {
     console.log(err);
     res.send('Error deleting blog');
@@ -983,6 +1006,17 @@ app.get('/blogs/:id', async (req, res) => {
 // DELETE specific blog by ID
 app.delete('/blogs/:id', async (req, res) => {
   try {
+    User.updateMany(
+      { savedBlogs: req.params.id },
+      { $pull: { savedBlogs: req.params.id } },
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Deleted blog from users' savedBlogs:", result.nModified);
+        }
+      }
+    );
     const blog = await Blog.findById(req.params.id);
     var img = blog.images;
     for(var i = 0; i < img.length; i++) {
@@ -991,13 +1025,37 @@ app.delete('/blogs/:id', async (req, res) => {
         if (err) throw err;
       });
     }
+    const blogAuthor = blog.author
+    const blogTitle = blog.title
+    let authorEmail = ''
     await Blog.findByIdAndDelete(req.params.id);
-    res.redirect('/blogs');
-  } catch (err) {
-    console.log(err);
-    res.send('Error deleting blog');
-  }
-});
+    User.findOne({ _id: blogAuthor }, (err, user) => {
+      if (err) {
+        console.log(err);
+      } else if (!user) {
+      } else {
+        authorEmail = user.email
+        const msg = {
+          from: '"Team AllPurdue" allpurdue2023@gmail.com',
+          to: authorEmail,
+          subject: 'Your blog ' + blogTitle + ' on AllPurdue has been deleted',
+          text: 'Your blog ' + blogTitle + ' on AllPurdue has been deleted'
+        }
+        transporter.sendMail(msg, function(err){
+          if (err) {
+            console.log(err);
+            res.status(500).send("error emailing deletion confirmation email")
+          } else {
+            console.log("successful deletion email sent");
+            res.status(200).send("success")
+          }
+        });
+        res.status(201).send('blog deleted');
+      } 
+    });
+} catch(err) {
+  console.log(err)
+}});
 
 // Save/Unsave specific blog by ID
 app.post('/save-blog/:id', async (req, res) => {
