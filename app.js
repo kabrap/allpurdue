@@ -523,36 +523,39 @@ app.post('/places/:placeId/save-place/:author', async (req, res) => {
 // Save specific place by ID
 app.post('/save-place/:id', async (req, res) => {
   try {
-    
     if (!currentUser) {
       res.send("no user logged in");
       return;
     }
 
     if (currentUser.savedPlaces.includes(req.params.id)) {
-      currentUser.savedPlaces.pop(req.params.id);
+      // Remove the place from savedPlaces
+      const index = currentUser.savedPlaces.indexOf(req.params.id);
+      currentUser.savedPlaces.splice(index, 1);
     } else {
       currentUser.savedPlaces.push(req.params.id);
-      User.findOneAndUpdate(
-        { _id: currentUser._id }, 
-        { savedPlaces: currentUser.savedPlaces }, function (err) {
+    }
+
+    User.findOneAndUpdate(
+      { _id: currentUser._id }, 
+      { savedPlaces: currentUser.savedPlaces }, 
+      { new: true },
+      function (err, updatedUser) {
         if (err) {
           console.log(err);
           res.sendStatus(500);
         } else {
-          res.status(201).send("success")
+          res.status(201).send(updatedUser);
         }
-      });
-    }
-
-    console.log(currentUser.savedPlaces)
+      }
+    );
 
   } catch (err) {
     console.log(err);
     res.send('Error saving place');
   }
-  
 });
+
 
 // Get saved places of the current user
 app.get('/saved-places/', async (req, res) => {
