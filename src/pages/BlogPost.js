@@ -155,33 +155,23 @@ function BlogPost() {
         </div>
         <h1>{title}</h1>
         <p id='body'>{text}</p>
-        {blogImages.length > 0 && 
-          <div className="image-carousel">
-            <div className="place-image">
-              <img
-                src={`http://localhost:3000/${blogImages[currentImageIndex]}`}
-                alt="place"
-                id="place-img"
-                onClick={handleImageClick}
-              />
-              {isExpanded && (
-                <div className="expanded-image-overlay" onClick={handleImageClick}>
-                  <img src={`http://localhost:3000/${blogImages[currentImageIndex]}`} alt="place" id="expanded-place-img" />
-                </div>
-              )}
-              {!isExpanded && (
-                <div>
-                  <button className="prev" onClick={handlePrevClick}>
-                    &#8249;
-                  </button>
-                  <button className="next" onClick={handleNextClick}>
-                    &#8250;
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        }
+        <div className="image-wrapper">
+          {blogImages.length > 0 && 
+            blogImages.map((blogImage, index) => (
+              index % 3 === 0 ? 
+                <div className="image-row" key={index}>
+                  <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index]}`} />
+                  {blogImages[index + 1] &&
+                    <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index + 1]}`} />
+                  }
+                  {blogImages[index + 2] &&
+                    <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index + 2]}`} />
+                  }
+                </div> 
+              : null
+            ))
+          }
+        </div>
     </div>
   )
 }

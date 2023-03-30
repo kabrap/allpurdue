@@ -34,4 +34,6 @@
 .blog-card-image {
     margin-top: 8px;
     margin-right: 10px;
+    max-height: 128px;
+    max-width: 128px;
 }
