@@ -199,8 +199,9 @@ function Dashboard() {
     console.log(placeId)
     const updatedPlaces = places.filter((place) => place._id !== placeId);
     setPlaces(updatedPlaces)
+    console.log(places)
     try {
-      const response = await axios.delete(`http://localhost:3000/places/${placeId}`);
+      const response = await axios.delete(`http://localhost:3000/places/delete/${placeId}`);
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -245,6 +246,16 @@ function Dashboard() {
   const handleComponentChange = (component) => {
     setActiveComponent(component);
   };
+
+  const unfavoritePlace = async (placeId) => {
+    try {
+      const author = localStorage.getItem("currentUser");
+      const response = await axios.post(`http://localhost:3000/places/${placeId}/save-place/${author}`);
+      setSavedPlaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <div>
@@ -477,7 +488,7 @@ function Dashboard() {
                     </td>
                     <td>{place.description}</td>
                     <td>{place.placeType}</td>
-                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
+                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => unfavoritePlace(place._id)}/>
                   </tr>
                 ))}
               </tbody>
