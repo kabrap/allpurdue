@@ -19,7 +19,7 @@ function BlogPost() {
   const [blogImages, setBlogImages] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState({})
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect( () => {
@@ -96,6 +96,35 @@ function BlogPost() {
         setUser(response.data.find(user => user._id === localStorage.getItem("currentUser")));
       })
       .catch(error => console.log(error));
+
+      async function fetchBlog() {
+        try {
+          const response = await axios.get(`http://localhost:3000/blogs/${id}`);
+          const { _id, author, authorName, title, text, createdAt, tags, likes, likes_by, images } = response.data;
+          console.log(response.data)
+          setAuthorId(author);
+          setAuthor(authorName);
+          setBlogId(_id);
+          setTags(tags);
+          setTitle(title);
+          setText(text);
+          setLikes(likes);
+          setBlogImages(images)
+          const createdDate = new Date(createdAt);
+          const formattedDate = createdDate.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          });
+          setDate(formattedDate);
+          if (likes_by.includes(localStorage.getItem('currentUser'))) {
+            setLiked(true);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchBlog();
   }
 
   const handleShare = () => {
@@ -139,8 +168,7 @@ function BlogPost() {
             <span id="review-likes">{likes}</span>
           </button>
           <div className='more-blog-options'>
-            {user && <span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>}
-            {/* <img className='blog-post-icon' src={share}></img> */}
+            {user && (<span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
               <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleDelete}/>
             ) : null}

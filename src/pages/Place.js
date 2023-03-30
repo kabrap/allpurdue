@@ -157,7 +157,7 @@ function Place() {
     fetchPlace();
   };
 
-  const handleDeletePlace = async() => {
+    const handleDeletePlace = async() => {
     try {
       const response = await axios.delete(`http://localhost:3000/places/delete/${id}`);
       console.log(response.data);
@@ -166,7 +166,7 @@ function Place() {
       console.log(error);
     }
   }
-  
+
   const handleDelete = async (reviewId) => {
     console.log(reviewId)
     const updatedReviews = placesReviews.filter((review) => review._id !== reviewId);
@@ -242,7 +242,7 @@ function Place() {
           </div>
             <div className='info-container'>
                 <div className='info-first-row'>
-                    <div className="name-edit-row">
+                  <div className="name-edit-row">
                       <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
                       {isAdmin &&
                         <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
@@ -254,7 +254,7 @@ function Place() {
                     <div className='icons-container'>
                         {/* <img className="share-icon" src={Share} alt="share icon"/> */}
                         <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        <span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>
+                        {user && (<span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
                     </div>
                 </div>
                 <div className="rating">

@@ -257,6 +257,15 @@ function Dashboard() {
     }
   }
 
+  const unfavoriteBlog = async (blogId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/save-blog/${blogId}`);
+      setSavedBlogs(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {/* Change Password */}
@@ -513,7 +522,7 @@ function Dashboard() {
                     </td>
                     <td>{blog.text}</td>
                     <td>{blog.tags[0]}</td>
-                    {/* <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/> */}
+                    <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => unfavoriteBlog(blog._id)}/>
                   </tr>
                 ))}
               </tbody>
