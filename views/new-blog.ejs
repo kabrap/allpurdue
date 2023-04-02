@@ -17,6 +17,14 @@
         <textarea id="text" name="text"></textarea>
       </div>
       <div>
+        <label for="place">Place:</label>
+        <select id="place" name="place">
+          <% place.forEach(function(place) { %>
+          <option value="<%= place._id %>"><%= place.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
         <label for="author">Author:</label>
         <select id="author" name="author" required>
           <% users.forEach(function(user) { %>

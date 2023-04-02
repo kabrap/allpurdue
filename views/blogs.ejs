@@ -12,6 +12,7 @@
       <li>
         <h3><%= blog.title %></h3>
         <p><%= blog.text %></p>
+        <p> <%= blog.place.name %>: <a href = "/places/<%= blog.place._id %>">View Place</a></p>
         <p>Author: <%= blog.author.name %></p>
         <p>Likes: <%= blog.likes %></p>
         <a href="/blogs/<%= blog._id %>">View</a>
