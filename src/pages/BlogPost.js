@@ -4,6 +4,7 @@ import share from '../images/shareicon.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Delete from '../images/delete.png'
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 function BlogPost() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ function BlogPost() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({})
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showBlogConfirmationDialog, setShowBlogConfirmationDialog] = useState(false);
 
   useEffect( () => {
     axios.get('http://localhost:3000/verify-admin')
@@ -142,12 +144,21 @@ function BlogPost() {
   };
 
   const handleDelete = async () => {
+    setShowConfirmationDialog(false);
     try {
       const response = await axios.delete(`http://localhost:3000/blogs/${blogId}`);
       window.location.href = `/blogs`
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const handleConfirmDelete = () => {
+    setShowConfirmationDialog(true);
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmationDialog(false);
   }
 
   return (
@@ -170,9 +181,15 @@ function BlogPost() {
           <div className='more-blog-options'>
             {user && (<span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
-              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleDelete}/>
+              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleConfirmDelete}/>
             ) : null}
           </div>
+          <ConfirmationDialog
+            open={showConfirmationDialog}
+            onClose={handleCancelDelete}
+            onConfirm={() => handleDelete()}
+            message="Are you sure you want to delete this blog post?"
+          />
         </div>
         <div className='blog-info-container'>
           <div className='category-date'>

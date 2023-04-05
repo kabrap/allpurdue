@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import Delete from '../images/delete.png'
 import Edit from '../images/edit.png'
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -20,6 +21,8 @@ function Dashboard() {
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [savedBlogs, setSavedBlogs] = useState([])
+  const [showBlogConfirmationDialog, setShowBlogConfirmationDialog] = useState(false);
+  const [showReviewConfirmationDialog, setShowReviewConfirmationDialog] = useState(false);
 
   const [activeComponent, setActiveComponent] = useState('blogs');
 
@@ -177,6 +180,7 @@ function Dashboard() {
   }
 
   const handleDeleteBlog = async (blogId) => {
+    setShowBlogConfirmationDialog(false);
     console.log(blogId)
     const updatedBlogs = blogs.filter((blog) => blog._id !== blogId);
     setBlogs(updatedBlogs)
@@ -217,6 +221,7 @@ function Dashboard() {
   };
 
   const handleDeleteReview = async (placeId, reviewId) => {
+    setShowReviewConfirmationDialog(false);
     const updatedReviews = reviews.filter((review) => review._id !== reviewId);
     setReviews(updatedReviews)
     try {
@@ -264,6 +269,22 @@ function Dashboard() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const handleBlogConfirmDelete = () => {
+    setShowBlogConfirmationDialog(true);
+  }
+
+  const handleBlogCancelDelete = () => {
+    setShowBlogConfirmationDialog(false);
+  }
+
+  const handleReviewConfirmDelete = () => {
+    setShowReviewConfirmationDialog(true);
+  }
+
+  const handleReviewCancelDelete = () => {
+    setShowReviewConfirmationDialog(false);
   }
 
   return (
@@ -354,11 +375,18 @@ function Dashboard() {
                       <td>{blog.text}</td>
                       <td>{getAuthorName(blog)}</td>
                       <td>{formatDate(blog.createdAt)}</td>
-                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleBlogConfirmDelete}/></td>
+                      <ConfirmationDialog
+                        open={showBlogConfirmationDialog}
+                        onClose={handleBlogCancelDelete}
+                        onConfirm={() => handleDeleteBlog(blog._id)}
+                        message="Are you sure you want to delete this blog post?"
+                      />
                     </tr>
                   ))}
                 </tbody>
               )}
+
 
               {/* User view */}
               {!isAdmin && (
@@ -379,7 +407,13 @@ function Dashboard() {
                       </td>
                       <td>{blog.text}</td>
                       <td>{formatDate(blog.createdAt)}</td>
-                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteBlog(blog._id)}/></td>
+                      <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleBlogConfirmDelete}/></td>
+                      <ConfirmationDialog
+                        open={showBlogConfirmationDialog}
+                        onClose={handleBlogCancelDelete}
+                        onConfirm={() => handleDeleteBlog(blog._id)}
+                        message="Are you sure you want to delete this blog post?"
+                      />
                     </tr>
                   ))}
                 </tbody>
@@ -444,7 +478,13 @@ function Dashboard() {
                         <td>{getAuthorNameReview(review.author)}</td>
                         <td>{review.rating}</td>
                         <td>{formatDate(review.createdAt)}</td>
-                        <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
+                        <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleReviewConfirmDelete}/>
+                        <ConfirmationDialog
+                          open={showReviewConfirmationDialog}
+                          onClose={handleReviewCancelDelete}
+                          onConfirm={() => handleDeleteReview(review.place._id, review._id)}
+                          message="Are you sure you want to delete this review?"
+                        />
                       </tr>
                     )
                   })}
@@ -470,7 +510,13 @@ function Dashboard() {
                       <td>{review.text}</td>
                       <td>{review.rating}</td>
                       <td>{formatDate(review.createdAt)}</td>
-                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeleteReview(review.place._id, review._id)}/>
+                      <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleReviewConfirmDelete}/>
+                      <ConfirmationDialog
+                        open={showReviewConfirmationDialog}
+                        onClose={handleReviewCancelDelete}
+                        onConfirm={() => handleDeleteReview(review.place._id, review._id)}
+                        message="Are you sure you want to delete this review?"
+                      />
                     </tr>
                   ))}
                 </tbody>
