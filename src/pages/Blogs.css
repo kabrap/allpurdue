@@ -106,3 +106,10 @@ button.showtags {
 #blog-likes {
     font-size: 16px;
 }
+
+.dashboard-delete-icon #blogs-page-delete {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
