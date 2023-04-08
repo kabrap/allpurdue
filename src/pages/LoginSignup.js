@@ -27,43 +27,45 @@ const LoginSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
-      // TODO: Implement login logic using email and password
-      await axios.post('http://localhost:3000/login', {
-        username: email,
-        password: password
-      })
-      .then(function (res) {
+      try {
+        const res = await axios.post('http://localhost:3000/login', {
+          username: email,
+          password: password
+        });
+  
         console.log("successful login")
         console.log(res.data)
-        localStorage.setItem("currentUser", res.data._id)
-        window.location.href = '/'
-      })
-      .catch(function (err) {
+  
+        localStorage.setItem("currentUser", res.data._id);
+        if (email === 'allpurdue2023@gmail.com') {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/';
+        }      } catch (err) {
         setErrorMsg(err.response.data)
         setShowLoginError(true);
-      })
+      }
     } else {
-      // TODO: Implement signup logic using email, password, firstName, and lastName
       console.log(name + email + password)
-
-      // Register
-      await axios.post('http://localhost:3000/register', {
-        name: name,
-        username: email,
-        password: password
-      })
-      .then(function (res) {
+  
+      try {
+        const res = await axios.post('http://localhost:3000/register', {
+          name: name,
+          username: email,
+          password: password
+        });
+  
         setIsLogin(true)
         setShowSignupError(false)
         console.log("successful user creation")
-      })
-      .catch(function (err) {
+      } catch (err) {
         setErrorMsg(err.response.data)
         setShowSignupError(true);
         console.log("unsuccessful user creation")
-      })
+      }
     }
   };
+  
 
   const toggleForm = () => {
     setShowSignupError(false)

@@ -5,6 +5,7 @@ import Delete from '../images/delete.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 function Place() {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -28,6 +29,7 @@ function Place() {
   const [errorMsg, setErrorMsg] = useState('')
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({});
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -151,6 +153,7 @@ function Place() {
   }
 
   const handleDelete = async (reviewId) => {
+    setShowConfirmationDialog(false);
     console.log(reviewId)
     const updatedReviews = placesReviews.filter((review) => review._id !== reviewId);
     setPlacesReviews(updatedReviews)
@@ -170,6 +173,14 @@ function Place() {
       console.log(error);
     }
   };
+
+  const handleConfirmDelete = () => {
+    setShowConfirmationDialog(true);
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmationDialog(false);
+  }
 
   const handlePrevClick = () => {
     setCurrentImageIndex(
@@ -369,7 +380,7 @@ function Place() {
                                   <span id="review-likes">{review.likes}</span>
                                   <span className="delete-icon-container">
                                     {review.author === author &&
-                                      <img className="delete-icon" src={Delete} alt="delete icon" onClick={() => handleDelete(review._id)}/>
+                                      <img className="delete-icon" src={Delete} alt="delete icon" onClick={handleConfirmDelete} />
                                     }
                                   </span>
                                 </button>
@@ -378,6 +389,12 @@ function Place() {
                                   <p id='review-stars'>{stars}</p>
                                   <p id='review-text'>{review.text}</p>
                                 </div>
+                                <ConfirmationDialog
+                                  open={showConfirmationDialog}
+                                  onClose={handleCancelDelete}
+                                  onConfirm={() => handleDelete(review._id)}
+                                  message="Are you sure you want to delete this review?"
+                                />
                               </div>
                             );
                         })}

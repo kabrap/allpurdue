@@ -4,6 +4,7 @@ import share from '../images/shareicon.png'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Delete from '../images/delete.png'
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 function BlogPost() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ function BlogPost() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({})
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showBlogConfirmationDialog, setShowBlogConfirmationDialog] = useState(false);
 
   useEffect( () => {
     axios.get('http://localhost:3000/verify-admin')
@@ -142,12 +144,21 @@ function BlogPost() {
   };
 
   const handleDelete = async () => {
+    setShowConfirmationDialog(false);
     try {
       const response = await axios.delete(`http://localhost:3000/blogs/${blogId}`);
       window.location.href = `/blogs`
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const handleConfirmDelete = () => {
+    setShowConfirmationDialog(true);
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmationDialog(false);
   }
 
   return (
@@ -170,9 +181,15 @@ function BlogPost() {
           <div className='more-blog-options'>
             {user && (<span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
-              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleDelete}/>
+              <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleConfirmDelete}/>
             ) : null}
           </div>
+          <ConfirmationDialog
+            open={showConfirmationDialog}
+            onClose={handleCancelDelete}
+            onConfirm={() => handleDelete()}
+            message="Are you sure you want to delete this blog post?"
+          />
         </div>
         <div className='blog-info-container'>
           <div className='category-date'>
@@ -183,33 +200,23 @@ function BlogPost() {
         </div>
         <h1>{title}</h1>
         <p id='body'>{text}</p>
-        {blogImages.length > 0 && 
-          <div className="image-carousel">
-            <div className="place-image">
-              <img
-                src={`http://localhost:3000/${blogImages[currentImageIndex]}`}
-                alt="place"
-                id="place-img"
-                onClick={handleImageClick}
-              />
-              {isExpanded && (
-                <div className="expanded-image-overlay" onClick={handleImageClick}>
-                  <img src={`http://localhost:3000/${blogImages[currentImageIndex]}`} alt="place" id="expanded-place-img" />
-                </div>
-              )}
-              {!isExpanded && (
-                <div>
-                  <button className="prev" onClick={handlePrevClick}>
-                    &#8249;
-                  </button>
-                  <button className="next" onClick={handleNextClick}>
-                    &#8250;
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        }
+        <div className="image-wrapper">
+          {blogImages.length > 0 && 
+            blogImages.map((blogImage, index) => (
+              index % 3 === 0 ? 
+                <div className="image-row" key={index}>
+                  <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index]}`} />
+                  {blogImages[index + 1] &&
+                    <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index + 1]}`} />
+                  }
+                  {blogImages[index + 2] &&
+                    <img className='blog-post-page-image' src={`http://localhost:3000/${blogImages[index + 2]}`} />
+                  }
+                </div> 
+              : null
+            ))
+          }
+        </div>
     </div>
   )
 }
