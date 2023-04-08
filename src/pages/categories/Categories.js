@@ -6,6 +6,12 @@ import axios from 'axios'
 
 function Categories() {
   const [places, setPlaces] = useState([])
+  const [fire, setFire] = useState(false);
+
+  const handleTrendingClick = () => {
+    setFire(true);
+    setTimeout(() => setFire(false), 1000);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -34,7 +40,10 @@ function Categories() {
       </div>
       <div className='sorting-container'>
         <span id='all-places'>All Places</span>
-        {/* <span>Sort: <b>Recommended</b>&#8595;</span> */}
+        <button className="fire-button" onClick={handleTrendingClick}>
+          Trending
+          {fire && <span className="fire"></span>}
+        </button>
       </div>
       <div className='categories-cards'>
         {places.map(place => (

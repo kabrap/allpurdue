@@ -55,3 +55,38 @@ body {
 .link-back {
     color: #FFC632;
 }
+
+.fire-button {
+    position: relative;
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(45deg, #ff512f, #dd2476);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  .fire-button::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: -60px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at center, transparent, #ff512f);
+    animation: flames 3s linear infinite;
+  }
+  
+  @keyframes flames {
+    0% {
+      transform: rotate(0) scale(1);
+    }
+    100% {
+      transform: rotate(360deg) scale(1.2);
+      opacity: 0;
+    }
+  }
