@@ -22,7 +22,7 @@ function BlogPost() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({})
   const [isAdmin, setIsAdmin] = useState(false);
-  const [showBlogConfirmationDialog, setShowBlogConfirmationDialog] = useState(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   useEffect( () => {
     axios.get('http://localhost:3000/verify-admin')

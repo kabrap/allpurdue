@@ -6,6 +6,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import Confetti from "react-confetti";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Place() {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -30,6 +33,7 @@ function Place() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -95,6 +99,19 @@ function Place() {
       setPlacesReviews([...placesReviews, response.data])
       setErrorMsg('')
       setReview("");
+      setShowConfetti(true);
+      toast.success("Review created!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 8000);
     } catch (error) {
       console.log(error.response.data)
       setErrorMsg(error.response.data)
@@ -421,6 +438,8 @@ function Place() {
                 </div>
             </div>
         </div>
+        {showConfetti && <Confetti />}
+        <ToastContainer />
     </div>
   )
 }
