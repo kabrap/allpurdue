@@ -30,6 +30,7 @@ function Place() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -117,15 +118,26 @@ function Place() {
     } catch (error) {
       console.error(error);
     }
-
+  
     try {
       const response = await axios.get(`http://localhost:3000/places/${id}`);
       setPlacesReviews(response.data.reviews);
+    
+      let sortedReviews = [];
+      if (sortOption === 'rating') {
+        sortedReviews = [...response.data.reviews].sort((a, b) => b.rating - a.rating);
+      } else if (sortOption === 'likes') {
+        sortedReviews = [...response.data.reviews].sort((a, b) => b.likes - a.likes);
+      } else {
+        sortedReviews = [...response.data.reviews];
+      }
+    
+      setPlacesReviews(sortedReviews);
     } catch (error) {
       console.error(error);
     }
   };
-
+  
   const handleFavorite = async () => {
     try {
       const response = await axios.post(`http://localhost:3000/save-place/${id}`);
@@ -141,7 +153,6 @@ function Place() {
     .catch(error => console.log(error));
   };
   
-
     const handleDeletePlace = async() => {
     try {
       const response = await axios.delete(`http://localhost:3000/places/delete/${id}`);
@@ -169,6 +180,17 @@ function Place() {
       console.log(res.data)
       setAverageRating(res.data.averageRating)
       console.log(res.data.averageRating)
+
+      let sortedReviews = [];
+      if (sortOption === 'rating') {
+        sortedReviews = [...res.data.reviews].sort((a, b) => b.rating - a.rating);
+      } else if (sortOption === 'likes') {
+        sortedReviews = [...res.data.reviews].sort((a, b) => b.likes - a.likes);
+      } else {
+        sortedReviews = [...res.data.reviews];
+      }
+            
+      setPlacesReviews(sortedReviews);
     } catch (error) {
       console.log(error);
     }
@@ -204,6 +226,19 @@ function Place() {
 
   function handleImageClick() {
     setIsExpanded(!isExpanded);
+  }
+
+  const handleSort = (option) => {
+    setSortOption(option);
+    let sortedReviews = [];
+    if (option === 'rating') {
+      sortedReviews = [...placesReviews].sort((a, b) => b.rating - a.rating);
+    } else if (option === 'likes') {
+      sortedReviews = [...placesReviews].sort((a, b) => b.likes - a.likes);
+    } else {
+      sortedReviews = [...placesReviews];
+    }
+    setPlacesReviews(sortedReviews);
   }
 
   return (
@@ -341,8 +376,27 @@ function Place() {
                       </div>
                     )}
                 </div>
-                {/* <span className="sorting">Sort By: <b>Recent</b> &#8595;</span> */}
-                <div className='review-container'>
+                  <span className="review-sorting-span">
+                    <button
+                      onClick={() => handleSort('')}
+                      className={sortOption === '' ? 'selected-review-sort' : ''}
+                    >
+                      Default
+                    </button>
+                    <button
+                      onClick={() => handleSort('rating')}
+                      className={sortOption === 'rating' ? 'selected-review-sort' : ''}
+                    >
+                      Rating
+                    </button>
+                    <button
+                      onClick={() => handleSort('likes')}
+                      className={sortOption === 'likes' ? 'selected-review-sort' : ''}
+                    >
+                      Likes
+                    </button>
+                  </span>                
+                  <div className='review-container'>
                     <div className='individual-review'>
                         {place && placesReviews.map((review) => {
                             const user = users.find(user => user._id === review.author);

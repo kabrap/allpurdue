@@ -390,3 +390,18 @@
 .red {
     color: red;
   }
+
+  .review-sorting-span {
+    margin-top: 12px;
+}
+
+.review-sorting-span button {
+    background-color: transparent;
+    font-size: 12px;
+    width: fit-content;
+
+}
+
+.selected-review-sort {
+    border: 1px solid #ffc107;
+}
