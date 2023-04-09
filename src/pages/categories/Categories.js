@@ -6,19 +6,23 @@ import axios from 'axios'
 
 function Categories() {
   const [places, setPlaces] = useState([])
-  const [fire, setFire] = useState(false);
+  const [trending, setTrending] = useState([])
+  const [displayTrending, setDisplayTrending] = useState(false)
 
   const handleTrendingClick = () => {
-    setFire(true);
-    setTimeout(() => setFire(false), 1000);
+    setDisplayTrending(!displayTrending)
   };
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await axios.get('http://localhost:3000/places');
+        const trendingData = await axios.get('http://localhost:3000/trending-places');
         console.log(response.data)
+        console.log("Trending here")
+        console.log(trendingData.data)
         setPlaces(response.data);
+        setTrending(trendingData.data)
       } catch (error) {
         console.error(error);
       }
@@ -39,14 +43,25 @@ function Categories() {
         <Link to='/categories/study-spots'><button id='right-filter' className='filter-button'>Study Spots</button></Link>
       </div>
       <div className='sorting-container'>
-        <span id='all-places'>All Places</span>
+        <span id='all-places'>All Places {displayTrending ? '>' : ''} {displayTrending ? 'Trending' : ''}</span>
         <button className="fire-button" onClick={handleTrendingClick}>
           Trending
-          {fire && <span className="fire"></span>}
         </button>
       </div>
       <div className='categories-cards'>
-        {places.map(place => (
+        {!displayTrending && places.map(place => (
+          <CategoryCard 
+            key={place._id}
+            title={place.name}
+            description={place.description}
+            tags={place.tags}
+            placeType={place.placeType}
+            avgRating={place.avgRating}
+            image={place.images[0]}
+            _id={place._id}
+          />
+        ))}
+        {displayTrending && trending.map(place => (
           <CategoryCard 
             key={place._id}
             title={place.name}
