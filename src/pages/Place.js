@@ -186,9 +186,12 @@ function Place() {
         sortedReviews = [...res.data.reviews].sort((a, b) => b.rating - a.rating);
       } else if (sortOption === 'likes') {
         sortedReviews = [...res.data.reviews].sort((a, b) => b.likes - a.likes);
+      } else if (sortOption === 'createdAt') {
+        sortedReviews = [...res.data.reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       } else {
         sortedReviews = [...res.data.reviews];
       }
+      
             
       setPlacesReviews(sortedReviews);
     } catch (error) {
@@ -235,7 +238,9 @@ function Place() {
       sortedReviews = [...placesReviews].sort((a, b) => b.rating - a.rating);
     } else if (option === 'likes') {
       sortedReviews = [...placesReviews].sort((a, b) => b.likes - a.likes);
-    } else {
+    } else if (option === 'createdAt') {
+      sortedReviews = [...placesReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }  else {
       sortedReviews = [...placesReviews];
     }
     setPlacesReviews(sortedReviews);
@@ -378,10 +383,10 @@ function Place() {
                 </div>
                   <span className="review-sorting-span">
                     <button
-                      onClick={() => handleSort('')}
-                      className={sortOption === '' ? 'selected-review-sort' : ''}
+                      onClick={() => handleSort('createdAt')}
+                      className={sortOption === 'createdAt' ? 'selected-review-sort' : ''}
                     >
-                      Default
+                      Recent
                     </button>
                     <button
                       onClick={() => handleSort('rating')}
