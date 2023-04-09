@@ -1491,3 +1491,24 @@ app.get("/verify-admin", function (req, res) {
     res.send(true)
   }
 })
+
+app.get('/trending-places', async (req, res) => {
+  try {
+    const places = await Place.find({});
+    const placesWithNumReviews = await Promise.all(places.map(async (place) => {
+      const reviews = await Review.find({ place: place._id });
+      return { ...place._doc, numReviews: reviews.length };
+    }));
+    const sortedPlaces = placesWithNumReviews.sort((a, b) => b.numReviews - a.numReviews);
+    const trendingPlaces = await Promise.all(sortedPlaces.map(async (place) => {
+      const reviews = await Review.find({ place: place._id });
+      const totalRatings = reviews.reduce((acc, review) => acc + review.rating, 0);
+      const avgRating = reviews.length > 0 ? roundToNearestHalf(totalRatings / reviews.length) : 0;
+      return { ...place, avgRating };
+    }));
+    res.send(trendingPlaces);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
