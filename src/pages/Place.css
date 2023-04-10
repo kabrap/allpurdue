@@ -309,9 +309,15 @@
     padding-left: 6px;
 }
 
+.individual-review-container-info img {
+    width: 20px;
+    margin-left: 4px;
+}
+
 #review-name {
     font-size: 16px;
     margin: 0px;
+    display: flex;
 }
 
 #review-stars {

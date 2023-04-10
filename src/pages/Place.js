@@ -13,6 +13,7 @@ function Place() {
   const { id } = useParams();
   const [review, setReview] = useState("");
   const [placesReviews, setPlacesReviews] = useState([])
+  const [originalPlacesReviews, setOriginalPlacesReviews] = useState([])
   const [placesTags, setPlacesTags] = useState([])
   const [placesImages, setPlacesImages] = useState([])
   const [placesHours, setPlacesHours] = useState([])
@@ -31,6 +32,8 @@ function Place() {
   const [user, setUser] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [sortOption, setSortOption] = useState('');
+  const [purdueUsers, setPurdueUsers] = useState([]);
+  const [filterOption, setFilterOption] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -59,6 +62,7 @@ function Place() {
 
   useEffect(() => {
     setPlacesReviews(place.reviews || []);
+    setOriginalPlacesReviews(place.reviews || []);
     setPlacesTags(place.tags || []);
     setPlacesImages(place.images || []);
   }, [place]);
@@ -68,6 +72,9 @@ function Place() {
       .then(response => {
         setUsers(response.data);
         setUser(response.data.find(user => user._id === author));
+        const purdueUsers = response.data.filter(user => user.email.endsWith('purdue.edu'));
+        const purdueUserIds = purdueUsers.map(user => user._id);
+        setPurdueUsers(purdueUserIds);
       })
       .catch(error => console.log(error));
   }, [author]);
@@ -192,7 +199,6 @@ function Place() {
         sortedReviews = [...res.data.reviews];
       }
       
-            
       setPlacesReviews(sortedReviews);
     } catch (error) {
       console.log(error);
@@ -232,18 +238,44 @@ function Place() {
   }
 
   const handleSort = (option) => {
-    setSortOption(option);
-    let sortedReviews = [];
-    if (option === 'rating') {
-      sortedReviews = [...placesReviews].sort((a, b) => b.rating - a.rating);
-    } else if (option === 'likes') {
-      sortedReviews = [...placesReviews].sort((a, b) => b.likes - a.likes);
-    } else if (option === 'createdAt') {
-      sortedReviews = [...placesReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }  else {
-      sortedReviews = [...placesReviews];
+    let sortedReviews = [...placesReviews];
+  
+    if (option === sortOption) {
+      sortedReviews.reverse();
+      setSortOption(null);
+    } else {
+      setSortOption(option);
+      if (option === 'rating') {
+        sortedReviews.sort((a, b) => b.rating - a.rating);
+      } else if (option === 'likes') {
+        sortedReviews.sort((a, b) => b.likes - a.likes);
+      } else if (option === 'createdAt') {
+        sortedReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
     }
     setPlacesReviews(sortedReviews);
+  };
+  
+  const handleFilter = (filterOption) => {
+    setFilterOption(filterOption)
+    console.log(filterOption)
+
+    let filteredReviews = [];
+
+    if (filterOption) {
+      filteredReviews = placesReviews.filter(review => purdueUsers.includes(review.author));
+      setPlacesReviews(filteredReviews)
+    } else {
+      filteredReviews = originalPlacesReviews;
+      if (sortOption === 'rating') {
+        filteredReviews.sort((a, b) => b.rating - a.rating);
+      } else if (sortOption === 'likes') {
+        filteredReviews.sort((a, b) => b.likes - a.likes);
+      } else if (sortOption === 'createdAt') {
+        filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+      setPlacesReviews(filteredReviews)
+    }
   }
 
   return (
@@ -400,6 +432,12 @@ function Place() {
                     >
                       Likes
                     </button>
+                    <button
+                      onClick={() => handleFilter(!filterOption)}
+                      className={filterOption ? 'selected-review-sort' : ''}
+                    >
+                      Purdue Verified
+                    </button>
                   </span>                
                   <div className='review-container'>
                     <div className='individual-review'>
@@ -444,7 +482,11 @@ function Place() {
                                   </span>
                                 </button>
                                 <div className='individual-review-container-info'>
-                                  <p id='review-name'>{user?.name}</p>
+                                  {purdueUsers.includes(user?._id) ? (
+                                    <p id='review-name'>{user?.name} <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/></p>
+                                  ) : (
+                                    <p id='review-name'>{user?.name}</p>
+                                  )}
                                   <p id='review-stars'>{stars}</p>
                                   <p id='review-text'>{review.text}</p>
                                 </div>
