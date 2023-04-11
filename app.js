@@ -311,6 +311,16 @@ const blogSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     }],
+    reported: {
+      type: Boolean,
+      default: false,
+    },
+    reported_by: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );
