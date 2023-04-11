@@ -1626,6 +1626,26 @@ app.post("/submit-request", function (req, res) {
   });
 });
 
+// sharing post request
+app.post("/share", function (req, res) {
+  const id = req.body.email;
+  const msg = {
+    from: '"Team AllPurdue" allpurdue2023@gmail.com',
+    to: id,
+    subject: 'AllPurdue Referral',
+    text: 'Hello! This is a referral'
+  }
+  transporter.sendMail(msg, function(err){
+    if (err) {
+      console.log(err);
+      res.status(500).send("error submitting request")
+    } else {
+      console.log("successful request submission");
+      res.status(200).send("success")
+    }
+  });
+});
+
 // verifying if account is admin account
 app.get("/verify-admin", function (req, res) {
   if (adminAccount) {
