@@ -1261,6 +1261,65 @@ app.post('/blogs/:blogId/like/:userId', async (req, res) => {
   }
 });
 
+// Report a blog
+app.post("/blog/report", async (req, res) => {
+  const { blogId, userId } = req.body;
+
+  try {
+    // Update the blog document
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      { reported: true, $addToSet: { reported_by: userId } },
+      { new: true }
+    );
+
+    // Get the place and author of the blog
+    const title = await Place.findById(blog.title);
+    const author = await User.findById(blog.author);
+    const authorName = author.name;
+    
+    // Send email to the admin of the review
+    const adminEmail = "allpurdue2023@gmail.com";
+    const msg1 = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: adminEmail,
+      subject: 'A blog on AllPurdue has been reported',
+      text: 'A blog: ' + title + ', \n by' + authorName +'on AllPurdue has been reported.'
+    }
+    transporter.sendMail(msg1, function(err){
+      if (err) {
+        console.log(err);
+        res.status(500).send("error emailing deletion confirmation email")
+      } else {
+        console.log("successful deletion email sent");
+        res.status(200).send("success")
+      }
+    });
+
+    // Send email to the author of the review
+    const authorEmail = author.email;
+    const msg2 = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: authorEmail,
+      subject: 'Your blog on AllPurdue has been reported',
+      text: 'Your blog ' + title + ' on AllPurdue has been reported'
+    }
+    transporter.sendMail(msg2, function(err){
+      if (err) {
+        console.log(err);
+        res.status(500).send("error emailing deletion confirmation email")
+      } else {
+        console.log("successful deletion email sent");
+        res.status(200).send("success")
+      }
+    });
+    
+    res.status(200).json({ message: "Review reported successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error reporting review", error: error.message });
+  }
+});
+
 /* ---------- [End] Blogs Routes ----------- */
 
 /* ---------- [Start] Login/Register/Home/Forgot Password Routes ---------- */
