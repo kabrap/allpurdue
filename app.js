@@ -259,7 +259,17 @@ const reviewSchema = new Schema(
       likes_by: [{
         type: Schema.Types.ObjectId,
         ref: 'User',
-    }]
+      }],
+      reported: {
+        type: Boolean,
+        default: false,
+      },
+      reported_by: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
     },
     { timestamps: true }
   );
@@ -301,6 +311,16 @@ const blogSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     }],
+    reported: {
+      type: Boolean,
+      default: false,
+    },
+    reported_by: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -803,6 +823,68 @@ app.post('/reviews/:reviewId/like/:userId', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// Report a review
+app.post("/reviews/report", async (req, res) => {
+  const { reviewId, userId } = req.body;
+
+  try {
+    // Update the review document
+    const review = await Review.findByIdAndUpdate(
+      reviewId,
+      { reported: true, $addToSet: { reported_by: userId } },
+      { new: true }
+    );
+
+    // Get the place and author of the review
+    const place = await Place.findById(review.place);
+    const author = await User.findById(review.author);
+    const authorName = author.name;
+    const reviewText = review.text;
+    const placeName = place.name;
+    
+    // Send email to the admin of the review
+    const adminEmail = "allpurdue2023@gmail.com";
+    const msg1 = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: authorEmail,
+      subject: 'A review on AllPurdue has been reported',
+      text: 'A review: ' + reviewText + ', \n for' + placeName + 'by' + authorName +'on AllPurdue has been reported.'
+    }
+    transporter.sendMail(msg1, function(err){
+      if (err) {
+        console.log(err);
+        res.status(500).send("error emailing deletion confirmation email")
+      } else {
+        console.log("successful deletion email sent");
+        res.status(200).send("success")
+      }
+    });
+
+    // Send email to the author of the review
+    const authorEmail = author.email;
+    const msg2 = {
+      from: '"Team AllPurdue" allpurdue2023@gmail.com',
+      to: authorEmail,
+      subject: 'Your review on AllPurdue has been reported',
+      text: 'Your review ' + reviewText + ', \n for' + placeName + ' on AllPurdue has been reported'
+    }
+    transporter.sendMail(msg2, function(err){
+      if (err) {
+        console.log(err);
+        res.status(500).send("error emailing deletion confirmation email")
+      } else {
+        console.log("successful deletion email sent");
+        res.status(200).send("success")
+      }
+    });
+    
+    res.status(200).json({ message: "Review reported successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error reporting review", error: error.message });
+  }
+});
+
 
 /* ---------- [End] Reviews Routes ---------- */
 
