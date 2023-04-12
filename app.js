@@ -1699,11 +1699,12 @@ app.post("/submit-request", function (req, res) {
 // sharing post request
 app.post("/share", function (req, res) {
   const id = req.body.email;
+  const url = req.body.url;
   const msg = {
     from: '"Team AllPurdue" allpurdue2023@gmail.com',
     to: id,
     subject: 'AllPurdue Referral',
-    text: 'Hello! This is a referral'
+    text: `Hello! Someone has shared a place with you. Check it out with this link: ${url}`
   }
   transporter.sendMail(msg, function(err){
     if (err) {
