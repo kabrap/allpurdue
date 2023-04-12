@@ -210,6 +210,10 @@ const placeSchema = new Schema(
     website: {
       type: String,
       required: true,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }
@@ -321,6 +325,10 @@ const blogSchema = new Schema(
         ref: "User",
       },
     ],
+    featured: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
@@ -1027,6 +1035,68 @@ app.delete('/admin/blogs/:id', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send('Error deleting blog');
+  }
+});
+
+// Admin Feature/Unfeature Place
+app.post('/feature-place/:placeId', async (req, res) => {
+  const placeId = req.params.placeId;
+  const user = await User.findById(req.params.userId);
+
+  try {
+    const place = await Place.findById(placeId);
+
+    if (!place) {
+      return res.status(404).send('Place not found');
+    }
+
+    const featured = place.featured == true ? place.featured : false;
+
+    if (featured) {
+      place.featured = false;
+    } else {
+      place.featured = true;
+    }
+
+    // Save the changes to the place and user documents
+    await place.save();
+    // await user.save();
+
+    return res.json({ place });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Admin Feature/Unfeature Blog
+app.post('/feature-blog/:blogId', async (req, res) => {
+  const blogId = req.params.blogId;
+  const user = await User.findById(req.params.userId);
+
+  try {
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(404).send('Blog not found');
+    }
+
+    const featured = blog.featured == true ? blog.featured : false;
+
+    if (featured) {
+      blog.featured = false;
+    } else {
+      blog.featured = true;
+    }
+
+    // Save the changes to the blog and user documents
+    await blog.save();
+    // await user.save();
+
+    return res.json({ blog });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
   }
 });
 
