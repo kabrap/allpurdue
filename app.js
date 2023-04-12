@@ -1038,31 +1038,38 @@ app.delete('/admin/blogs/:id', async (req, res) => {
   }
 });
 
+// Getting a featured place/blog
+app.get('/featured', async (req, res) => {
+  try {
+    const places = await Place.find({ featured: true });
+    const blogs = await Blog.find({ featured: true });
+
+    res.status(200).json({ places, blogs });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Server error');
+  }
+});
+
+
 // Admin Feature/Unfeature Place
 app.post('/feature-place/:placeId', async (req, res) => {
   const placeId = req.params.placeId;
-  const user = await User.findById(req.params.userId);
 
   try {
+    await Place.updateMany({ _id: { $ne: placeId } }, { $set: { featured: false } });
+    await Blog.updateMany({ _id: { $ne: placeId } }, { $set: { featured: false } });
+
     const place = await Place.findById(placeId);
 
     if (!place) {
       return res.status(404).send('Place not found');
     }
 
-    const featured = place.featured == true ? place.featured : false;
-
-    if (featured) {
-      place.featured = false;
-    } else {
-      place.featured = true;
-    }
-
-    // Save the changes to the place and user documents
+    place.featured = true;
     await place.save();
-    // await user.save();
 
-    return res.json({ place });
+    res.status(201).send(place)
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
@@ -1072,33 +1079,28 @@ app.post('/feature-place/:placeId', async (req, res) => {
 // Admin Feature/Unfeature Blog
 app.post('/feature-blog/:blogId', async (req, res) => {
   const blogId = req.params.blogId;
-  const user = await User.findById(req.params.userId);
 
   try {
+    await Place.updateMany({ _id: { $ne: blogId } }, { $set: { featured: false } });
+    await Blog.updateMany({ _id: { $ne: blogId } }, { $set: { featured: false } });
+
     const blog = await Blog.findById(blogId);
 
     if (!blog) {
       return res.status(404).send('Blog not found');
     }
 
-    const featured = blog.featured == true ? blog.featured : false;
+    blog.featured = true;
 
-    if (featured) {
-      blog.featured = false;
-    } else {
-      blog.featured = true;
-    }
-
-    // Save the changes to the blog and user documents
     await blog.save();
-    // await user.save();
 
-    return res.json({ blog });
+    res.status(201).send(blog);
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
   }
 });
+
 
 /* ---------- [End] Admin Modification Routes ---------- */
 
