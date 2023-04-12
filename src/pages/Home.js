@@ -12,6 +12,8 @@ function Home() {
   const [recentBlogs, setRecentBlogs] = useState([])
   const [recentReviews, setRecentReviews] = useState([])
   const [users, setUsers] = useState([]);
+  const [featuredBlog, setFeaturedBlog] = useState(null)
+  const [featuredPlace, setFeaturedPlace] = useState(null)
 
   useEffect(() => {
     axios.get('http://localhost:3000/users/')
@@ -61,6 +63,17 @@ function Home() {
     axios.get('http://localhost:3000/recent-blogs')
       .then(response => {
         setRecentBlogs(response.data)
+      })
+      .catch(error => console.log(error));
+
+      axios.get('http://localhost:3000/featured')
+      .then(response => {
+        if (response.data.blogs.length > 0) {
+          setFeaturedBlog(response.data.blogs[0])
+        } else {
+          setFeaturedPlace(response.data.places[0])
+        }
+        console.log(response.data)
       })
       .catch(error => console.log(error));
   }, []);
@@ -118,6 +131,11 @@ function Home() {
             </Link>
           ))}
         </div>
+      </div>
+      <hr />
+      <div className='featured'>
+            {featuredBlog && <p>Featured Blog</p>}
+            {featuredPlace && <p>Featured Place</p>}
       </div>
       <hr />
       <div className='recent-blogs'>

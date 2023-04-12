@@ -85,10 +85,24 @@
 }
 
 .delete-button {
+    display: flex;
+    justify-content: center;
     margin: 5px;
     margin-left: 15px;
     border: #f20216 1px solid;
     background-color: #f20216;
+    color: black;
+    font-size: 18px;
+    width: 85px;
+}
+
+.feature-button {
+    display: flex;
+    justify-content: center;
+    margin: 5px;
+    margin-left: 15px;
+    border: #3b97ff 1px solid;
+    background-color: #3b97ff;
     color: black;
     font-size: 18px;
     width: 85px;

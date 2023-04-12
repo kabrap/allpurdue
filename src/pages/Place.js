@@ -169,6 +169,15 @@ function Place() {
     }
   }
 
+  const handleFeaturePlace = async () => {
+    try {
+      const response = await axios.post(`http://localhost:3000/feature-place/${id}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleDelete = async (reviewId) => {
     setShowConfirmationDialog(false);
     console.log(reviewId)
@@ -260,6 +269,9 @@ function Place() {
                       }
                       {isAdmin &&
                         <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
+                      }
+                      {isAdmin &&
+                        <button className="feature-button" onClick={handleFeaturePlace}>Feature</button>
                       }
                     </div>
                     <div className='icons-container'>
