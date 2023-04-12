@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './Place.css'
+import Share from '../images/shareicon.png'
 import Pinpoint from '../images/pinpoint.png'
 import Delete from '../images/delete.png'
 import { useParams } from 'react-router-dom';
@@ -34,6 +35,8 @@ function Place() {
   const [sortOption, setSortOption] = useState('');
   const [purdueUsers, setPurdueUsers] = useState([]);
   const [filterOption, setFilterOption] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     axios.get(`http://localhost:3000/users/${author}`)
@@ -277,6 +280,26 @@ function Place() {
       setPlacesReviews(filteredReviews)
     }
   }
+  const handleShareClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleShareSubmit = () => {
+    console.log("Submitted share with " + email)
+    const currentUrl = window.location.href;
+    axios.post(`http://localhost:3000/share`, { email, url: currentUrl })
+      .then(response => {
+        console.log('Share success:', response.data);
+        setEmail('');
+        setIsModalOpen(false);
+      })
+      .catch(error => {
+        console.error('Share error:', error);
+      });
+  };
 
   return (
     <div className='place-container'>
@@ -309,19 +332,29 @@ function Place() {
             <div className='info-container'>
                 <div className='info-first-row'>
                   <div className="name-edit-row">
-                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
-                      {isAdmin &&
-                        <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
-                      }
-                      {isAdmin &&
-                        <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
-                      }
+                    <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                    {isAdmin &&
+                      <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                    }
+                    {isAdmin &&
+                      <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
+                    }
+                  </div>
+                  <div className='icons-container'>
+                    <img className="share-icon" src={Share} alt="share icon" onClick={handleShareClick} />
+                    <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
+                    {user && (<span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
+                  </div>
+                  {isModalOpen && (
+                    <div className='modal-container'>
+                      <div className='modal-content'>
+                        <h2>Share via Email</h2>
+                        <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter email" />
+                        <button onClick={handleShareSubmit}>Share</button>
+                        <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                      </div>
                     </div>
-                    <div className='icons-container'>
-                        {/* <img className="share-icon" src={Share} alt="share icon"/> */}
-                        <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        {user && (<span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
-                    </div>
+                  )}
                 </div>
                 <div className="rating">
                   <span className="stars">
