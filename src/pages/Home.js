@@ -135,37 +135,51 @@ function Home() {
       <hr />
       <div className='featured'>
         <div id="hero-image"  className='col'>
+          {console.log(featuredPlace)}
           {featuredPlace && 
-            <div className='featured-place-card'>
-              <div className='featured-card-content'>
-                <div className='featured-heading'>
+            <Link key={featuredPlace._id} to={`/places/${featuredPlace._id}`}>
+              <div className='featured-place-card'>
+                <div className='featured-card-content'>
+                  <p className='featured-stars-container'>
+                    <p className='featured-stars'>
+                      <span className="stars">&#9733;</span>
+                      <span className="rating-number-recent-review">&#40;{featuredPlace.averageRating}&#41;</span>
+                    </p>
+                  </p>
                   <h1>{featuredPlace.name}</h1>
-                  <p><span className="stars">&#9733;</span><span className="rating-number-recent-review">&#40;{featuredPlace.averageRating}&#41;</span></p>
+                  <div className='featured-tags-container'>
+                    {featuredPlace.tags.slice(0, 3).map(tag => (
+                      <span id='tag-recent'>{tag}</span>
+                    ))}
+                  </div>
+                  <p className='featured-address'>{featuredPlace.address}</p>
+                  <p className='featured-body'>{featuredPlace.description}</p>
+                  <div className='featured-image'>
+                    <img src={featuredPlace.images[0]}></img>
+                  </div>
                 </div>
-                <div className='tags-container'>
-                  {featuredPlace.tags.slice(0, 3).map(tag => (
-                    <span id='tag-recent'>{tag}</span>
-                  ))}
-                </div>
-                <p>{featuredPlace.address}</p>
-                <p>{featuredPlace.description}</p>
-                <img src={featuredPlace.images[0]}></img>
               </div>
-            </div>
+            </Link>
           }
           {featuredBlog && 
-            <div className='featured-place-card'>
-              <div className='featured-card-content'>
-                <h1>{featuredBlog.title}</h1>
-                <div className='tags-container'>
-                  {featuredBlog.tags.map(tag => (
-                    <span id='tag-recent'>{tag}</span>
-                  ))}
+            <Link key={featuredBlog._id} to={`/blogs/${featuredBlog._id}`}>
+              <div className='featured-place-card'>
+                <div className='featured-card-content'>
+                  <h1>{featuredBlog.title}</h1>
+                  <div className='featured-tags-container'>
+                    {featuredBlog.tags.map(tag => (
+                      <span id='tag-recent'>{tag}</span>
+                    ))}
+                  </div>
+                  <p className='featured-body'>{featuredBlog.text}</p>
+                  {featuredBlog.images[0] && 
+                    <div className='featured-image'>
+                      <img src={featuredBlog.images[0]}></img>
+                    </div>
+                  }
                 </div>
-                <p>{featuredBlog.text}</p>
-                {featuredBlog.images[0] && <img src={featuredBlog.images[0]}></img>}
               </div>
-            </div>
+            </Link>
           }
         </div>
         <div id="hero-col-right" className='col'>

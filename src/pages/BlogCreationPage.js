@@ -90,6 +90,15 @@ function BlogCreationPage() {
           progress: undefined,
         }
       );
+      setTitle("")
+      setContent("")
+      setPictures([])
+      setTags([
+        { name: "Cafes", selected: false },
+        { name: "Restaurants", selected: false },
+        { name: "Residence Halls", selected: false },
+        { name: "Study Spots", selected: false },
+      ]);
       setTimeout(() => {
         setShowConfetti(false);
       }, 8000);

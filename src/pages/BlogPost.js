@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Delete from '../images/delete.png'
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BlogPost() {
   const { id } = useParams();
@@ -164,6 +166,22 @@ function BlogPost() {
   const handleFeatureBlog = async () => {
     try {
       const response = await axios.post(`http://localhost:3000/feature-blog/${blogId}`);
+
+      toast.success(
+        <div className="toast-container">
+          Blog post is now featured!
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -229,6 +247,7 @@ function BlogPost() {
             ))
           }
         </div>
+        <ToastContainer />
     </div>
   )
 }

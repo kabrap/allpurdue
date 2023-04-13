@@ -172,6 +172,20 @@ function Place() {
   const handleFeaturePlace = async () => {
     try {
       const response = await axios.post(`http://localhost:3000/feature-place/${id}`);
+      toast.success(
+        <div className="toast-container">
+          Place is now featured!
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
       console.log(response.data);
     } catch (error) {
       console.error(error);
