@@ -68,10 +68,10 @@ function Home() {
 
       axios.get('http://localhost:3000/featured')
       .then(response => {
-        if (response.data.blogs.length > 0) {
-          setFeaturedBlog(response.data.blogs[0])
+        if (response.data.blog) {
+          setFeaturedBlog(response.data.blog)
         } else {
-          setFeaturedPlace(response.data.places[0])
+          setFeaturedPlace(response.data.place)
         }
         console.log(response.data)
       })
@@ -134,8 +134,50 @@ function Home() {
       </div>
       <hr />
       <div className='featured'>
-            {featuredBlog && <p>Featured Blog</p>}
-            {featuredPlace && <p>Featured Place</p>}
+        <div id="hero-image"  className='col'>
+          {featuredPlace && 
+            <div className='featured-place-card'>
+              <div className='featured-card-content'>
+                <div className='featured-heading'>
+                  <h1>{featuredPlace.name}</h1>
+                  <p><span className="stars">&#9733;</span><span className="rating-number-recent-review">&#40;{featuredPlace.averageRating}&#41;</span></p>
+                </div>
+                <div className='tags-container'>
+                  {featuredPlace.tags.slice(0, 3).map(tag => (
+                    <span id='tag-recent'>{tag}</span>
+                  ))}
+                </div>
+                <p>{featuredPlace.address}</p>
+                <p>{featuredPlace.description}</p>
+                <img src={featuredPlace.images[0]}></img>
+              </div>
+            </div>
+          }
+          {featuredBlog && 
+            <div className='featured-place-card'>
+              <div className='featured-card-content'>
+                <h1>{featuredBlog.title}</h1>
+                <div className='tags-container'>
+                  {featuredBlog.tags.map(tag => (
+                    <span id='tag-recent'>{tag}</span>
+                  ))}
+                </div>
+                <p>{featuredBlog.text}</p>
+                {featuredBlog.images[0] && <img src={featuredBlog.images[0]}></img>}
+              </div>
+            </div>
+          }
+        </div>
+        <div id="hero-col-right" className='col'>
+          <p id="hero-heading">Check out the</p>
+          <p id="hero-heading-2">featured <span id="featured-sub">{featuredPlace ? 'Place' : 'Blog'}</span></p>
+          <p id="hero-heading-3">of the week!</p>
+          <p id="hero-desc">
+            Each week, our team at AllPurdue carefully selects one outstanding place or blog to showcase on our homepage.
+            We highlight the best of the best, curating a collection of the most impressive places and insightful blog posts that our site has to offer.
+            Whether you're looking for hidden gems or different perspectives, our weekly features are guaranteed to spur your imagination.
+          </p>
+        </div>
       </div>
       <hr />
       <div className='recent-blogs'>

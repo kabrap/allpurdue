@@ -14,6 +14,14 @@ h1 {
   padding-top: 3%;
 }
 
+#hero-col-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
 #hero-heading {
   color: white;
   font-weight: bold;
@@ -138,4 +146,70 @@ hr {
 
 #subheading {
   font-size: 56px;
+}
+
+.featured {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.featured-place-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 4%;
+  color: black;
+}
+
+.featured-place-card h1 {
+  color: black;
+  margin: 0;
+}
+
+.featured-card-content {
+  padding: 5%;
+}
+
+.featured-place-card img {
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.featured-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.featured-heading .stars {
+  font-size: 30px;
+}
+
+.featured-heading .rating-number-recent-review {
+  font-size: 20px;
+}
+
+#hero-heading-2 {
+  color: white;
+  font-weight: bold;
+  font-size: 80px;
+  margin: 0;
+}
+
+#featured-sub {
+  color: #ffca44;
+  font-weight: bolder;
+  font-size: 80px;
+  margin: 0;
+}
+
+#hero-heading-3 {
+  color: white;
+  font-weight: bold;
+  font-size: 70px;
+  margin: 0;
 }
