@@ -1041,15 +1041,24 @@ app.delete('/admin/blogs/:id', async (req, res) => {
 // Getting a featured place/blog
 app.get('/featured', async (req, res) => {
   try {
-    const places = await Place.find({ featured: true });
-    const blogs = await Blog.find({ featured: true });
+    var place = await Place.findOne({ featured: true }).populate('reviews');
 
-    res.status(200).json({ places, blogs });
+    if (place) {
+      const reviewRatings = place.reviews.map(review => review.rating);
+      const averageRating = roundToNearestHalf(reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviewRatings.length);
+      place = { ...place.toObject(), averageRating };
+      console.log(place)
+    }
+
+    const blog = await Blog.findOne({ featured: true });
+
+    res.status(200).json({ place, blog });
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
   }
 });
+
 
 
 // Admin Feature/Unfeature Place
