@@ -311,6 +311,7 @@
 
 .individual-review-container-info img {
     width: 20px;
+    height: 20px;
     margin-left: 4px;
 }
 
@@ -410,4 +411,86 @@
 
 .selected-review-sort {
     border: 1px solid #ffc107;
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: black;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 28px;
+    max-width: 600px;
+    border-radius: 4px;
+    min-width: 400px;
+  }
+  .modal-content span {
+    font-weight: bold;
+    font-size: 24px;
+  }
+  
+  .modal-content input {
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 95%;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+
+  .modal-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .modal-buttons button {
+    margin-left: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .cancel-button {
+    background-color: transparent;
+    border: 1px solid rgb(170, 170, 170);
+    color: black;
+  }
+
+  .share-button {
+    background-color: #ffc107;
+    color: #626262;
+  }
+
+  .share-button:hover {
+    background-color: #d4a002;
+    color: black;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+  
+.flag-icon {
+    color: #626262;
+    margin-left: 4px;
+    font-size: 18px;
+}
+
+.flag-icon:hover {
+    color: red;
+    cursor: pointer;
 }

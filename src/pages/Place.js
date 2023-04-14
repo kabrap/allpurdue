@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import ConfirmationReport from '../components/ConfirmationReport';
 
 function Place() {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -32,6 +33,7 @@ function Place() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showConfirmationReport, setShowConfirmationReport] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [purdueUsers, setPurdueUsers] = useState([]);
   const [filterOption, setFilterOption] = useState(false);
@@ -216,6 +218,25 @@ function Place() {
     setShowConfirmationDialog(false);
   }
 
+  const handleConfirmReport = () => {
+    setShowConfirmationReport(true);
+  }
+
+  const handleCancelReport = () => {
+    setShowConfirmationReport(false);
+  }
+
+  const handleReport = async (reviewId) => {
+    let userId = author;
+    try {
+      const response = await axios.post('http://localhost:3000/reviews/report', { reviewId, userId });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+    setShowConfirmationReport(false);
+  };
+
   const handlePrevClick = () => {
     setCurrentImageIndex(
       currentImageIndex === 0 ? placesImages.length - 1 : currentImageIndex - 1
@@ -286,7 +307,6 @@ function Place() {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
-
   const handleShareSubmit = () => {
     console.log("Submitted share with " + email)
     const currentUrl = window.location.href;
@@ -348,10 +368,12 @@ function Place() {
                   {isModalOpen && (
                     <div className='modal-container'>
                       <div className='modal-content'>
-                        <h2>Share via Email</h2>
+                        <span>Share via Email</span>
                         <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter email" />
-                        <button onClick={handleShareSubmit}>Share</button>
-                        <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                        <div className='modal-buttons'>
+                          <button className="cancel-button" onClick={() => setIsModalOpen(false)}>CANCEL</button>
+                          <button className="share-button" onClick={handleShareSubmit}>SHARE</button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -516,12 +538,19 @@ function Place() {
                                 </button>
                                 <div className='individual-review-container-info'>
                                   {purdueUsers.includes(user?._id) ? (
-                                    <p id='review-name'>{user?.name} <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/></p>
+                                    <p id='review-name'>{user?.name} <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/>{sessionStorage.getItem("currentUser") !== undefined && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}</p>
                                   ) : (
-                                    <p id='review-name'>{user?.name}</p>
+                                    <p id='review-name'>{user?.name}{sessionStorage.getItem("currentUser") !== undefined  && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}
+                                    </p>
                                   )}
                                   <p id='review-stars'>{stars}</p>
                                   <p id='review-text'>{review.text}</p>
+                                  <ConfirmationReport
+                                    open={showConfirmationReport}
+                                    onClose={handleCancelReport}
+                                    onConfirm={() => handleReport(review._id)}
+                                    message="Are you sure you want to report this review?"
+                                  />
                                 </div>
                                 <ConfirmationDialog
                                   open={showConfirmationDialog}
