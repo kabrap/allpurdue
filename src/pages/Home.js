@@ -12,6 +12,8 @@ function Home() {
   const [recentBlogs, setRecentBlogs] = useState([])
   const [recentReviews, setRecentReviews] = useState([])
   const [users, setUsers] = useState([]);
+  const [featuredBlog, setFeaturedBlog] = useState(null)
+  const [featuredPlace, setFeaturedPlace] = useState(null)
 
   useEffect(() => {
     axios.get('http://localhost:3000/users/')
@@ -61,6 +63,17 @@ function Home() {
     axios.get('http://localhost:3000/recent-blogs')
       .then(response => {
         setRecentBlogs(response.data)
+      })
+      .catch(error => console.log(error));
+
+      axios.get('http://localhost:3000/featured')
+      .then(response => {
+        if (response.data.blog) {
+          setFeaturedBlog(response.data.blog)
+        } else {
+          setFeaturedPlace(response.data.place)
+        }
+        console.log(response.data)
       })
       .catch(error => console.log(error));
   }, []);
@@ -117,6 +130,67 @@ function Home() {
               />
             </Link>
           ))}
+        </div>
+      </div>
+      <hr />
+      <div className='featured'>
+        <div id="hero-image"  className='col'>
+          {console.log(featuredPlace)}
+          {featuredPlace && 
+            <Link key={featuredPlace._id} to={`/places/${featuredPlace._id}`}>
+              <div className='featured-place-card'>
+                <div className='featured-card-content'>
+                  <p className='featured-stars-container'>
+                    <p className='featured-stars'>
+                      <span className="stars">&#9733;</span>
+                      <span className="rating-number-recent-review">&#40;{featuredPlace.averageRating}&#41;</span>
+                    </p>
+                  </p>
+                  <h1>{featuredPlace.name}</h1>
+                  <div className='featured-tags-container'>
+                    {featuredPlace.tags.slice(0, 3).map(tag => (
+                      <span id='tag-recent'>{tag}</span>
+                    ))}
+                  </div>
+                  <p className='featured-address'>{featuredPlace.address}</p>
+                  <p className='featured-body'>{featuredPlace.description}</p>
+                  <div className='featured-image'>
+                    <img src={featuredPlace.images[0]}></img>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          }
+          {featuredBlog && 
+            <Link key={featuredBlog._id} to={`/blogs/${featuredBlog._id}`}>
+              <div className='featured-place-card'>
+                <div className='featured-card-content'>
+                  <h1>{featuredBlog.title}</h1>
+                  <div className='featured-tags-container'>
+                    {featuredBlog.tags.map(tag => (
+                      <span id='tag-recent'>{tag}</span>
+                    ))}
+                  </div>
+                  <p className='featured-body'>{featuredBlog.text}</p>
+                  {featuredBlog.images[0] && 
+                    <div className='featured-image'>
+                      <img src={featuredBlog.images[0]}></img>
+                    </div>
+                  }
+                </div>
+              </div>
+            </Link>
+          }
+        </div>
+        <div id="hero-col-right" className='col'>
+          <p id="hero-heading">Check out the</p>
+          <p id="hero-heading-2">featured <span id="featured-sub">{featuredPlace ? 'Place' : 'Blog'}</span></p>
+          <p id="hero-heading-3">of the week!</p>
+          <p id="hero-desc">
+            Each week, our team at AllPurdue carefully selects one outstanding place or blog to showcase on our homepage.
+            We highlight the best of the best, curating a collection of the most impressive places and insightful blog posts that our site has to offer.
+            Whether you're looking for hidden gems or different perspectives, our weekly features are guaranteed to spur your imagination.
+          </p>
         </div>
       </div>
       <hr />

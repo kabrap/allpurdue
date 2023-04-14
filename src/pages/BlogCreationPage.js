@@ -3,6 +3,9 @@ import "./BlogCreationPage.css"
 import { Link } from 'react-router-dom';
 import AddImage from '../images/addimgicon.png'
 import axios from 'axios'
+import Confetti from "react-confetti";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BlogCreationPage() {
   const [title, setTitle] = useState("");
@@ -14,6 +17,7 @@ function BlogCreationPage() {
     { name: "Residence Halls", selected: false },
     { name: "Study Spots", selected: false },
   ]);
+  const [showConfetti, setShowConfetti] = useState(false);
   const author = localStorage.getItem("currentUser");
 
 
@@ -57,22 +61,47 @@ function BlogCreationPage() {
   
     try {
       const formData = new FormData();
-      formData.append('title', newBlog.title);
-      formData.append('text', newBlog.text);
-      formData.append('author', newBlog.author);
+      formData.append("title", newBlog.title);
+      formData.append("text", newBlog.text);
+      formData.append("author", newBlog.author);
       newBlog.tags.forEach((tag) => {
         formData.append("tags[]", tag);
       });
-      pictures.forEach(picture => {
-        formData.append('blog-images', picture);
+      pictures.forEach((picture) => {
+        formData.append("blog-images", picture);
       });
-  
-      await axios.post('http://localhost:3000/blogs', formData)
-        .then(function (res) {
-          console.log("blog created")
-          console.log(res.data)
-          window.location.href = `/blogs/${res.data._id}`
-        });
+
+      const response = await axios.post("http://localhost:3000/blogs", formData);
+      console.log("blog created");
+      console.log(response.data);
+
+      setShowConfetti(true);
+      toast.success(
+        <div className="toast-container">
+          Blog created! <button onClick={() => window.location.href = `/blogs/${response.data._id}`}>View</button>
+        </div>,
+        {
+          position: "top-center",
+          // autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      setTitle("")
+      setContent("")
+      setPictures([])
+      setTags([
+        { name: "Cafes", selected: false },
+        { name: "Restaurants", selected: false },
+        { name: "Residence Halls", selected: false },
+        { name: "Study Spots", selected: false },
+      ]);
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 8000);
     } catch (error) {
       console.log(error);
     }
@@ -111,6 +140,8 @@ function BlogCreationPage() {
           <button onClick={handleSubmit} disabled={localStorage.getItem("currentUser") === "undefined"} className={`create-button ${localStorage.getItem("currentUser") === "undefined" ? "disabled" : ""}`}>Create</button>
         </div>
       </div>
+      {showConfetti && <Confetti />}
+      <ToastContainer />
     </div>
   );
 }

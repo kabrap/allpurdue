@@ -7,6 +7,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import Confetti from "react-confetti";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ConfirmationReport from '../components/ConfirmationReport';
 
 function Place() {
@@ -33,6 +36,7 @@ function Place() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [showConfirmationReport, setShowConfirmationReport] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [purdueUsers, setPurdueUsers] = useState([]);
@@ -108,6 +112,19 @@ function Place() {
       setPlacesReviews([...placesReviews, response.data])
       setErrorMsg('')
       setReview("");
+      setShowConfetti(true);
+      toast.success("Review created!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 8000);
     } catch (error) {
       console.log(error.response.data)
       setErrorMsg(error.response.data)
@@ -172,6 +189,29 @@ function Place() {
       window.location.href = `/categories/`
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  const handleFeaturePlace = async () => {
+    try {
+      const response = await axios.post(`http://localhost:3000/feature-place/${id}`);
+      toast.success(
+        <div className="toast-container">
+          Place is now featured!
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -352,14 +392,29 @@ function Place() {
             <div className='info-container'>
                 <div className='info-first-row'>
                   <div className="name-edit-row">
-                    <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
-                    {isAdmin &&
-                      <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
-                    }
-                    {isAdmin &&
-                      <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
-                    }
-                  </div>
+                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                      {isAdmin &&
+                        <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                      }
+                      {isAdmin &&
+                        <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
+                      }
+                      {isAdmin &&
+                        <button className="feature-button" onClick={handleFeaturePlace}>Feature</button>
+                      }
+                    </div>
+                    <div className='icons-container'>
+                        {/* <img className="share-icon" src={Share} alt="share icon"/> */}
+                        <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
+                        {user && (<span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
+                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
+                      {isAdmin &&
+                        <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
+                      }
+                      {isAdmin &&
+                        <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
+                      }
+                    </div>
                   <div className='icons-container'>
                     <img className="share-icon" src={Share} alt="share icon" onClick={handleShareClick} />
                     <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
@@ -584,6 +639,8 @@ function Place() {
                 </div>
             </div>
         </div>
+        {showConfetti && <Confetti />}
+        <ToastContainer />
     </div>
   )
 }
