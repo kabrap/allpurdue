@@ -855,17 +855,18 @@ app.post("/reviews/report", async (req, res) => {
     const adminEmail = "allpurdue2023@gmail.com";
     const msg1 = {
       from: '"Team AllPurdue" allpurdue2023@gmail.com',
-      to: authorEmail,
+      to: adminEmail,
       subject: 'A review on AllPurdue has been reported',
-      text: 'A review: ' + reviewText + ', \n for' + placeName + 'by' + authorName +'on AllPurdue has been reported.'
+      text: 'A review: ' + reviewText + ', \n for ' + placeName + ' by ' + authorName + ' on AllPurdue has been reported.'
     }
+
     transporter.sendMail(msg1, function(err){
       if (err) {
         console.log(err);
-        res.status(500).send("error emailing deletion confirmation email")
+        res.status(500).send("error emailing reporting confirmation email");
       } else {
-        console.log("successful deletion email sent");
-        res.status(200).send("success")
+        console.log("successful reporting email sent");
+        res.status(200).send("success");
       }
     });
 
@@ -875,15 +876,15 @@ app.post("/reviews/report", async (req, res) => {
       from: '"Team AllPurdue" allpurdue2023@gmail.com',
       to: authorEmail,
       subject: 'Your review on AllPurdue has been reported',
-      text: 'Your review ' + reviewText + ', \n for' + placeName + ' on AllPurdue has been reported'
+      text: 'Your review: ' + reviewText + ',\nfor ' + placeName + ' on AllPurdue has been reported'
     }
     transporter.sendMail(msg2, function(err){
       if (err) {
         console.log(err);
-        res.status(500).send("error emailing deletion confirmation email")
+        res.status(500).send("error emailing reporting confirmation email");
       } else {
-        console.log("successful deletion email sent");
-        res.status(200).send("success")
+        console.log("successful reporting email sent");
+        res.status(200).send("success");
       }
     });
     
