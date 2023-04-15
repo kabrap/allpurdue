@@ -1,0 +1,12 @@
+<h1>Reviews for <%= place.name %>:</h1>
+
+<% if (reviews.length === 0) { %>
+  <p>No reviews yet. Be the first to leave a review!</p>
+<% } else { %>
+  <% reviews.forEach(function(review) { %>
+    <div>
+      <p>Rating: <%= review.rating %></p>
+      <p><%= review.text %></p>
+    </div>
+  <% }); %>
+<% } %>
