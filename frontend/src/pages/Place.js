@@ -403,18 +403,6 @@ function Place() {
                         <button className="feature-button" onClick={handleFeaturePlace}>Feature</button>
                       }
                     </div>
-                    <div className='icons-container'>
-                        {/* <img className="share-icon" src={Share} alt="share icon"/> */}
-                        <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
-                        {user && (<span onClick={handleFavorite} className={user.savedPlaces && user.savedPlaces.includes(place._id) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
-                      <p onClick={handleWebsiteClick} className="place-name">{place.name}</p>
-                      {isAdmin &&
-                        <button className="edit-button" onClick={() => window.location.href = `../edit-place/${id}`}>Edit</button>
-                      }
-                      {isAdmin &&
-                        <button className="delete-button" onClick={handleDeletePlace}>Delete</button>
-                      }
-                    </div>
                   <div className='icons-container'>
                     <img className="share-icon" src={Share} alt="share icon" onClick={handleShareClick} />
                     <img onClick={handlePinpointClick} className="pinpoint-icon" src={Pinpoint} alt="pinpoint icon"/>
