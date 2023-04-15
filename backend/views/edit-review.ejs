@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Edit Review</title>
+  </head>
+  <body>
+    <h1>Edit Review</h1>
+    <form action="/places/<%= place._id %>/reviews/<%= review._id %>?_method=PUT" method="POST">
+      <div>
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" value="<%= review.rating %>">
+          <option value="1" <% if (review.rating === 1) { %>selected<% } %>>1 star</option>
+          <option value="2" <% if (review.rating === 2) { %>selected<% } %>>2 stars</option>
+          <option value="3" <% if (review.rating === 3) { %>selected<% } %>>3 stars</option>
+          <option value="4" <% if (review.rating === 4) { %>selected<% } %>>4 stars</option>
+          <option value="5" <% if (review.rating === 5) { %>selected<% } %>>5 stars</option>
+        </select>
+      </div>
+      <div>
+        <label for="text">Review:</label>
+        <textarea id="text" name="text"><%= review.text %></textarea>
+      </div>
+      <button type="submit">Save Changes</button>
+    </form>
+    <form action="/places/<%= place._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+      <button type="submit">Delete Review</button>
+    </form>
+  </body>
+</html>
