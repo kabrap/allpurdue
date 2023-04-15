@@ -1,0 +1,158 @@
+.card {
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: row;
+  max-height: 175px;
+  width: 100%;
+  max-width: 750px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.card-placeholder {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: #000000;
+}
+  
+.card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 20px;
+}
+  
+.place-header-card {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10px;
+}
+  
+.place-name-card {
+  display: inline-block;
+  vertical-align: top;
+  padding-right: 10px;
+  margin: 0;
+  font-size: 24px;
+  flex-grow: 1;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+  
+.rating-recent-review {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #686868;
+}
+  
+.stars {
+  color: #ffc107;
+  margin-right: 5px;
+}
+
+.rating-number-recent-review {
+  margin: 0;
+  margin-top: 3px;
+  font-weight: bold;
+  font-size: 12px;
+}
+  
+.tags-container {
+  display: flex;
+  margin-top: -1%;
+  width: 250px;
+}
+
+#tag-recent {
+  display: flex;
+  background-color: #DEDEDE;
+  color: #6C6C6C;
+  border-radius: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+}
+
+#review-word {
+  font-weight: bold;
+  font-size: 14px;
+  padding-top: 10px;
+  padding-bottom: 8px;
+  color: black;
+}
+
+.review-placeholder {
+  font-size: 12px;
+  font-weight: medium;
+  color: #4F4F4F;
+  width: 250px;
+}
+  
+.card-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto;
+}
+  
+.card-button button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #FF3333;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 150px;
+  height: 25px;
+}
+  
+.card-button button:hover {
+  background-color: #ff0000;
+}
+  
+.card-image {
+  width: 26%;
+  max-height: 250px;
+  border-radius: 5px 0 0 5px;
+  overflow: hidden;
+  margin: 18px 4px 14px 20px;
+}
+  
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+  
+.place-header-card {
+  width: 66.66%;
+}
+  
+.rating {
+  width: 66.66%;
+}
+  
+.card-button {
+  width: 33.33%;
+}

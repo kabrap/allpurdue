@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+body {
+  background-color: black;
+  font-family: 'Inter', sans-serif;
+}
+
+h1 {
+  color: white;
+}
+
+#hero-col-left {
+  padding-right: 10%;
+  padding-top: 3%;
+}
+
+#hero-col-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+#hero-heading {
+  color: white;
+  font-weight: bold;
+  font-size: 50px;
+  margin: 0;
+}
+
+#hero-purdue {
+  color: #FFC632;
+  font-weight: bolder;
+  font-size: 120px;
+  margin: 0;
+}
+
+#hero-desc {
+  color: white;
+  font-weight: normal;
+  font-size: 20px;
+}
+
+#hero-image {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.hero {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#bellTower {
+
+  width: 90%;
+  border-radius: 10px;
+}
+
+.col {
+  flex: 1;
+}
+
+hr {
+  margin-bottom: 3%;
+  margin-top: 3%;
+}
+
+.reviews {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.reviews h1 {
+  font-size: 45px;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  margin-top: 0;
+}
+
+.reviews-container {
+  display: flex;
+  flex: auto;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  justify-content: space-between;
+}
+
+.recent-blogs-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#recent-blog-card {
+  color: black;
+  background-color: white;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+#recent-blog-card .blog-card-title {
+    color: black;
+}
+
+#recent-blog-card .blog-card-content {
+    color: black;
+}
+
+#recent-blog-card .blog-card-tag {
+  color: #ffb30e;
+  font-weight: 500;
+}
+
+#recent-blog-card::before {
+  background: none;
+}
+
+#recent-blog-card-info {
+  color: black;
+}
+
+.recent-blogs h1 {
+  font-size: 45px;
+  line-height: 25px;
+}
+
+.recent-blogs h1 span {
+  color: #ffb30e;
+}
+
+.recent-blog-heading {
+  margin-bottom: 40px;
+}
+
+#explore-blog-arrow {
+  color: white;
+}
+
+#explore-blog-arrow:hover {
+  cursor: pointer;
+  color: #ffb30e;
+}
+
+#subheading {
+  font-size: 56px;
+}
+
+.featured {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.featured-place-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  min-width: 100%;
+  height: 100%;
+  color: black;
+  transition: transform 0.3s ease-out;
+  border: 3px solid transparent;
+  border-image: linear-gradient(to right, #ffca44, #f63c63) 1;
+  border-image-slice: 1;
+  animation: border-animation 3s infinite;
+}
+
+@keyframes border-animation {
+  0% {
+    border-image-slice: 10%;
+  }
+  50% {
+    border-image-slice: 40%;
+  }
+  100% {
+    border-image-slice: 10%;
+  }
+}
+
+.featured-tags-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.featured-place-card:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.featured-place-card h1 {
+  color: black;
+  font-size: 50px;
+  margin: 0;
+  margin-bottom: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.featured-stars-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0;
+  width: 100%;
+  margin-top: -3%;
+  margin-right: -15%;
+}
+
+.featured-stars {
+  margin: 0;
+}
+
+.featured-stars .stars {
+  font-size: 25px;
+}
+
+.featured-stars .rating-number-recent-review {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.featured-address {
+  margin-bottom: 0;
+  color: rgb(105, 105, 105);
+}
+
+.featured-card-content {
+  padding: 5%;
+  padding-right: 10%;
+  padding-left: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.featured-place-card img {
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.featured-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#hero-heading-2 {
+  color: white;
+  font-weight: bold;
+  font-size: 80px;
+  margin: 0;
+}
+
+#featured-sub {
+  color: #ffca44;
+  font-weight: bolder;
+  font-size: 80px;
+  margin: 0;
+}
+
+#hero-heading-3 {
+  color: white;
+  font-weight: bold;
+  font-size: 70px;
+  margin: 0;
+}
+
+.featured-body {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  max-width: 100%;
+  text-align: center;
+  font-size: 18px;
+}
+
+.featured-image {
+  display: flex;
+  justify-content: center;
+}
