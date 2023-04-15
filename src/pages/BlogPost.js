@@ -5,8 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Delete from '../images/delete.png'
 import ConfirmationDialog from '../components/ConfirmationDialog';
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ConfirmationReport from '../components/ConfirmationReport';
 
 function BlogPost() {
   const { id } = useParams();
@@ -25,6 +24,8 @@ function BlogPost() {
   const [user, setUser] = useState({})
   const [isAdmin, setIsAdmin] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showBlogConfirmationDialog, setShowBlogConfirmationDialog] = useState(false);
+  const [showConfirmationReport, setShowConfirmationReport] = useState(false);
 
   useEffect( () => {
     axios.get('http://localhost:3000/verify-admin')
@@ -163,30 +164,27 @@ function BlogPost() {
     setShowConfirmationDialog(false);
   }
 
-  const handleFeatureBlog = async () => {
-    try {
-      const response = await axios.post(`http://localhost:3000/feature-blog/${blogId}`);
-
-      toast.success(
-        <div className="toast-container">
-          Blog post is now featured!
-        </div>,
-        {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleConfirmReport = () => {
+    setShowConfirmationReport(true);
   }
+
+  const handleCancelReport = () => {
+    setShowConfirmationReport(false);
+  }
+
+  const handleReport = async (blogId) => {
+    let userId = authorId;
+    console.log(blogId)
+    console.log(userId)
+
+    try {
+      const response = await axios.post('http://localhost:3000/blog/report', { blogId, userId });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+    setShowConfirmationReport(false);
+  };
 
   return (
     <div className='blog-post'>
@@ -207,10 +205,17 @@ function BlogPost() {
           </button>
           <div className='more-blog-options'>
             {user && (<span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
+            {sessionStorage.getItem("currentUser") !== undefined  && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
               <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleConfirmDelete}/>
             ) : null}
           </div>
+          <ConfirmationReport
+            open={showConfirmationReport}
+            onClose={handleCancelReport}
+            onConfirm={() => handleReport(blogId)}
+            message="Are you sure you want to report this blog?"
+          />
           <ConfirmationDialog
             open={showConfirmationDialog}
             onClose={handleCancelDelete}
@@ -223,9 +228,6 @@ function BlogPost() {
             {tags.map(tag => <p id='category-blog'>{tag}</p>)}
             <p id='date-blog'>{date}</p>
             <p id='date-blog'>{author}</p>
-            {isAdmin &&
-              <button className="feature-button" onClick={handleFeatureBlog}>Feature</button>
-            }
           </div>
         </div>
         <h1>{title}</h1>
@@ -247,7 +249,6 @@ function BlogPost() {
             ))
           }
         </div>
-        <ToastContainer />
     </div>
   )
 }
