@@ -11,12 +11,17 @@ function Categories() {
   const [priceFilter, setPriceFilter] = useState([])
   const [priceFilterTrending, setPriceFilterTrending] = useState([])
   const [displayTrending, setDisplayTrending] = useState(false)
+<<<<<<< HEAD:frontend/src/pages/categories/Categories.js
   const [lowFilterValue, setLowFilterValue] = useState('')
   const [highFilterValue, setHighFilterValue] = useState('')
 
   const handleFilterButton = () => {
     setFilterButton(!filterButton)
   }
+=======
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [showTags, setShowTags] = useState(false);
+>>>>>>> blog:src/pages/categories/Categories.js
 
   const handleTrendingClick = () => {
     setDisplayTrending(!displayTrending)
@@ -61,14 +66,37 @@ function Categories() {
         console.log(response.data)
         console.log("Trending here")
         console.log(trendingData.data)
+<<<<<<< HEAD:frontend/src/pages/categories/Categories.js
         setPlaces(response.data);
         setTrending(trendingData.data);
+=======
+        let sortedData = response.data;
+        if (selectedTags.length > 0) {
+          sortedData = sortedData.filter(place => {
+            return selectedTags.every(tag => place.tags.includes(tag));
+          });
+        }
+        setPlaces(sortedData);
+        setTrending(trendingData.data)
+>>>>>>> blog:src/pages/categories/Categories.js
       } catch (error) {
         console.error(error);
       }
     }
     fetchData();
-  }, []);
+  }, [selectedTags]);
+
+  const handleTagSelection = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(t => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const isTagSelected = tag => {
+    return selectedTags.includes(tag);
+  };
 
   return (
     <div>
@@ -82,6 +110,7 @@ function Categories() {
         <Link to='/categories/residence-halls'><button className='filter-button'>Residence Halls</button></Link>
         <Link to='/categories/study-spots'><button id='right-filter' className='filter-button'>Study Spots</button></Link>
       </div>
+<<<<<<< HEAD:frontend/src/pages/categories/Categories.js
       {filterButton &&
         <div className='filter-form'>
           <form className="filter-form-inputs">
@@ -93,6 +122,14 @@ function Categories() {
           </form>
         </div>
       }
+=======
+      <button className={showTags === true ? 'showtags' : ''} onClick={() => { setShowTags(!showTags); setSelectedTags([]) }}>Filter by tags</button>
+        {showTags && (
+          <div className="tag-selector">
+            <button className={isTagSelected('Wi-Fi') ? 'selected' : ''} onClick={() => handleTagSelection('Wi-Fi')}>Wi-Fi</button>
+          </div>
+        )}
+>>>>>>> blog:src/pages/categories/Categories.js
       <div className='sorting-container'>
         <span id='all-places'>All Places {displayTrending ? '>' : ''} {displayTrending ? 'Trending' : ''}</span>
         <div className='filter-button-container'>

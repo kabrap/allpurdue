@@ -59,6 +59,7 @@ function Contact() {
                   <span>Request Type</span>
                   <select value={requestType} onChange={handleTypeChange} required>
                     <option value="Add Place">Add Place</option>
+                    <option value="Claim Business">Claim Business</option>
                     <option value="Report Issue">Report Issue</option>
                   </select>
                 </label>
@@ -83,6 +84,20 @@ function Contact() {
                   <label className='field-container'>
                     <span>Message</span>
                     <input type="message" value={message} onChange={handleMessageChange} placeholder="I would like to add this place..." />
+                  </label>
+                </>
+                }
+
+                {/* Display claim business form */}
+                {requestType === 'Claim Business' && 
+                <>
+                  <label className='field-container'>
+                    <span>Name of Business</span>
+                    <input type="name" value={name} onChange={handleNameChange} placeholder="Your business name..." />
+                  </label>
+                  <label className='field-container'>
+                    <span>Message</span>
+                    <input type="message" value={message} onChange={handleMessageChange} placeholder="Verify existing business details..." />
                   </label>
                 </>
                 }
