@@ -1696,11 +1696,12 @@ function roundToNearestHalf(num) {
 // contact page submission
 app.post("/submit-request", function (req, res) {
   console.log("getting here")
+  const requestType = req.body.requestType === 'Claim Business' ? 'Add Place' : req.body.requestType;
   const msg = {
     from: '"Team AllPurdue" allpurdue2023@gmail.com',
     to: '"Team AllPurdue" allpurdue2023@gmail.com',
-    subject: req.body.requestType + ' request from ' + req.body.email,
-    text: req.body.requestType === 'Add Place' ? req.body.name + '\n' + req.body.message : 'Report Issue' + '\n' + req.body.message
+    subject: requestType + ' request from ' + req.body.email,
+    text: requestType === 'Add Place' ? req.body.name + '\n' + req.body.message : 'Report Issue' + '\n' + req.body.message
   }
   transporter.sendMail(msg, function(err){
     if (err) {
@@ -1712,6 +1713,7 @@ app.post("/submit-request", function (req, res) {
     }
   });
 });
+
 
 // sharing post request
 app.post("/share", function (req, res) {
