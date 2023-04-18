@@ -37,11 +37,8 @@ const LoginSignup = () => {
         console.log(res.data)
   
         localStorage.setItem("currentUser", res.data._id);
-        if (email === 'allpurdue2023@gmail.com') {
-          window.location.href = '/dashboard';
-        } else {
-          window.location.href = '/';
-        }      } catch (err) {
+        window.location.href = '/';
+        } catch (err) {
         setErrorMsg(err.response.data)
         setShowLoginError(true);
       }
