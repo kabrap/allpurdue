@@ -165,6 +165,12 @@ const placeSchema = new Schema(
       type: String,
       required: true,
     }],
+    price: {
+      type: Number,
+      minimum: 1,
+      maximum: 5,
+      default: 3,
+    },
     phone: {
       type: String,
       required: true,
