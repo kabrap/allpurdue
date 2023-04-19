@@ -106,3 +106,17 @@ td {
     cursor: pointer;
     background-color: rgba(255, 0, 0, 0.199);
 }
+
+.dashboard-feature-icon {
+    display: flex;
+    height: 18px;
+    width: 18px;
+    padding: 6px;
+    border-radius: 20px;
+    margin-top: 4px;
+}
+
+.dashboard-feature-icon:hover {
+    cursor: pointer;
+    background-color: rgba(218, 178, 0, 0.199);
+}

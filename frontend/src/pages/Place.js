@@ -268,8 +268,18 @@ function Place() {
 
   const handleReport = async (reviewId) => {
     let userId = author;
+    toast.success("Review reported", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       const response = await axios.post('http://localhost:3000/reviews/report', { reviewId, userId });
+
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -349,12 +359,26 @@ function Place() {
   };
   const handleShareSubmit = () => {
     console.log("Submitted share with " + email)
+
     const currentUrl = window.location.href;
     axios.post(`http://localhost:3000/share`, { email, url: currentUrl })
       .then(response => {
         console.log('Share success:', response.data);
         setEmail('');
         setIsModalOpen(false);
+        setShowConfetti(true);
+        toast.success("Successfully shared!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setTimeout(() => {
+          setShowConfetti(false);
+        }, 5000);
       })
       .catch(error => {
         console.error('Share error:', error);
@@ -567,11 +591,10 @@ function Place() {
                                     display: "flex",
                                     flexDirection: "column",
                                   }}
-                                  onClick={() => handleLike(review._id)}
                                   disabled={!author}
                                   title={!author ? "Please log in to like" : ""}
                                 >
-                                  <span>&#8679;</span>
+                                  <span onClick={() => handleLike(review._id)}>&#8679;</span>
                                   <span id="review-likes">{review.likes}</span>
                                   <span className="delete-icon-container">
                                     {review.author === author &&

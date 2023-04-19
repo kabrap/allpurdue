@@ -4,7 +4,10 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import Delete from '../images/delete.png'
 import Edit from '../images/edit.png'
+import Badge from '../images/badge.png'
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -287,6 +290,52 @@ function Dashboard() {
     setShowReviewConfirmationDialog(false);
   }
 
+  const handleFeaturePlace = async (placeId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/feature-place/${placeId}`);
+      toast.success(
+        <div className="toast-container">
+          Place is now featured!
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleFeatureBlog = async (blogId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/feature-blog/${blogId}`);
+      toast.success(
+        <div className="toast-container">
+          Blog is now featured!
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {/* Change Password */}
@@ -376,6 +425,7 @@ function Dashboard() {
                       <td>{getAuthorName(blog)}</td>
                       <td>{formatDate(blog.createdAt)}</td>
                       <td><img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleBlogConfirmDelete}/></td>
+                      <img className="dashboard-feature-icon" src={Badge} alt="feature icon" onClick={() => handleFeatureBlog(blog._id)}/>
                       <ConfirmationDialog
                         open={showBlogConfirmationDialog}
                         onClose={handleBlogCancelDelete}
@@ -447,6 +497,7 @@ function Dashboard() {
                     <td>
                       <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={() => handleDeletePlace(place._id)}/>
                     </td>
+                    <img className="dashboard-feature-icon" src={Badge} alt="feature icon" onClick={() => handleFeaturePlace(place._id)}/>
                   </tr>
                 ))}
               </tbody>
@@ -575,6 +626,8 @@ function Dashboard() {
             </table>
           )}
         </div>
+        <ToastContainer />
+
       </div>      
   )
 }
