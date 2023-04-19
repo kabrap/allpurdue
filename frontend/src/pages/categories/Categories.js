@@ -11,8 +11,8 @@ function Categories() {
   const [priceFilter, setPriceFilter] = useState([])
   const [priceFilterTrending, setPriceFilterTrending] = useState([])
   const [displayTrending, setDisplayTrending] = useState(false)
-  const [lowFilterValue, setLowFilterValue] = useState('')
-  const [highFilterValue, setHighFilterValue] = useState('')
+  const [lowFilterValue, setLowFilterValue] = useState(1)
+  const [highFilterValue, setHighFilterValue] = useState(5)
 
   const handleFilterButton = () => {
     setFilterButton(!filterButton)
@@ -21,38 +21,69 @@ function Categories() {
   const [showTags, setShowTags] = useState(false);
 
   const handleTrendingClick = () => {
+    handlePriceFilter(1,5,places,trending)
     setDisplayTrending(!displayTrending)
   };
 
   const clearFields = () => {
-    setLowFilterValue('');
-    setHighFilterValue('');
+    setLowFilterValue(1);
+    setHighFilterValue(5);
     setFilterButton(false)
+    handlePriceFilter(1,5, places, trending)
   }
   
   const handleLowFilterValue = (e) => {
+    let tempLowValue = e.target.value
+    let tempHighValue = highFilterValue
     setLowFilterValue(e.target.value)
     if (e.target.value < 0) {
       setLowFilterValue(0);
+      tempLowValue = 0
     }
-    if (highFilterValue == '' || parseInt(e.target.value) > parseInt(highFilterValue)) {
-      setHighFilterValue(e.target.value);
+    if (e.target.value > 5) {
+      setLowFilterValue(5)
+      tempLowValue = 0
     }
+    if (parseInt(e.target.value) > parseInt(highFilterValue)) {
+      setHighFilterValue(Math.min(5,e.target.value));
+      tempHighValue = Math.min(5,e.target.value)
+    }
+    if (highFilterValue == '') {
+      tempHighValue = 5
+    }
+    handlePriceFilter(tempLowValue, tempHighValue, places, trending)
   }
 
   const handleHighFilterValue = (e) => {
-    console.log(e.target.value)
+    let tempLowValue = lowFilterValue
+    let tempHighValue = e.target.value
     setHighFilterValue(e.target.value)
+    if (e.target.value > 5) {
+      setHighFilterValue(5);
+      tempHighValue = 5
+    }
     if (parseInt(e.target.value) < 0) {
       setHighFilterValue(0)
+      tempHighValue = 5
     }
     if (parseInt(e.target.value) < parseInt(lowFilterValue)) {
       if (parseInt(e.target.value) >= 0) {
         setLowFilterValue(e.target.value);
+        tempLowValue = e.target.value
       } else {
         setLowFilterValue(0)
+        tempLowValue = 0
       }
     }
+    if (e.target.value == '') {
+      tempHighValue = 5
+    }
+    handlePriceFilter(tempLowValue, tempHighValue, places, trending)
+  }
+
+  const handlePriceFilter = (low, high, currentPlaces, currentTrending) => {
+    setPriceFilter(currentPlaces.filter(item => (item.price <= high && item.price >= low)));
+    setPriceFilterTrending(currentTrending.filter(item => (item.price <= high && item.price >= low)));
   }
 
   useEffect(() => {
@@ -65,6 +96,7 @@ function Categories() {
         console.log(trendingData.data)
         setPlaces(response.data);
         setTrending(trendingData.data);
+        handlePriceFilter(1,5,response.data,trendingData.data)
         let sortedData = response.data;
         if (selectedTags.length > 0) {
           sortedData = sortedData.filter(place => {
@@ -73,6 +105,7 @@ function Categories() {
         }
         setPlaces(sortedData);
         setTrending(trendingData.data)
+        handlePriceFilter(1,5,response.data,trendingData.data)
       } catch (error) {
         console.error(error);
       }
@@ -118,7 +151,7 @@ function Categories() {
       <div className='sorting-container'>
         <span id='all-places'>All Places {displayTrending ? '>' : ''} {displayTrending ? 'Trending' : ''}</span>
         <div className='filter-button-container'>
-          {lowFilterValue + highFilterValue != '' &&
+          {(lowFilterValue != 1 || highFilterValue != 5) &&
             <div>
               <button className='price-filter-button' onClick={clearFields}>Clear Filter</button>
             </div>
@@ -157,7 +190,7 @@ function Categories() {
         </div>
       )}
       <div className='categories-cards'>
-        {!displayTrending && places.map(place => (
+        {!displayTrending && priceFilter.map(place => (
           <CategoryCard 
             key={place._id}
             title={place.name}
@@ -169,7 +202,7 @@ function Categories() {
             _id={place._id}
           />
         ))}
-        {displayTrending && trending.map(place => (
+        {displayTrending && priceFilterTrending.map(place => (
           <CategoryCard 
             key={place._id}
             title={place.name}
