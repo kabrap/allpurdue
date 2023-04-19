@@ -178,7 +178,15 @@ function BlogPost() {
     let userId = authorId;
     console.log(blogId)
     console.log(userId)
-
+    toast.success("Blog reported", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       const response = await axios.post('http://localhost:3000/blog/report', { blogId, userId });
       console.log(response);
@@ -230,7 +238,7 @@ function BlogPost() {
           </button>
           <div className='more-blog-options'>
             {user && (<span onClick={handleBookmark} className={user.savedBlogs && user.savedBlogs.includes(blogId) ? 'favorite-icon red' : 'favorite-icon'}>&#x2764;</span>)}
-            {sessionStorage.getItem("currentUser") !== undefined  && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}
+            {localStorage.getItem("currentUser") !== "undefined"  && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}
             {localStorage.getItem("currentUser") === authorId || isAdmin ? (
               <img className="dashboard-delete-icon" src={Delete} alt="delete icon" onClick={handleConfirmDelete}/>
             ) : null}
