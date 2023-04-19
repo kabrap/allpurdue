@@ -115,12 +115,6 @@ function Categories() {
           </form>
         </div>
       }
-      <button className={showTags === true ? 'showtags' : ''} onClick={() => { setShowTags(!showTags); setSelectedTags([]) }}>Filter by tags</button>
-        {showTags && (
-          <div className="tag-selector">
-            <button className={isTagSelected('Wi-Fi') ? 'selected' : ''} onClick={() => handleTagSelection('Wi-Fi')}>Wi-Fi</button>
-          </div>
-        )}
       <div className='sorting-container'>
         <span id='all-places'>All Places {displayTrending ? '>' : ''} {displayTrending ? 'Trending' : ''}</span>
         <div className='filter-button-container'>
@@ -129,6 +123,7 @@ function Categories() {
               <button className='price-filter-button' onClick={clearFields}>Clear Filter</button>
             </div>
           }
+          <button className='price-filter-button' onClick={() => { setShowTags(!showTags); setSelectedTags([]) }}>Filter by tags</button>
           <button className='price-filter-button' onClick={handleFilterButton}>
             Price Filter
           </button>
@@ -137,6 +132,30 @@ function Categories() {
           </button>
         </div>
       </div>
+      {showTags && (
+        <div className="tag-selector">
+          <button className={isTagSelected('Wi-Fi') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Wi-Fi')}>Wi-Fi</button>
+          <button className={isTagSelected('Fast Food') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Fast Food')}>Fast Food</button>
+          <button className={isTagSelected('Pizza') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Pizza')}>Pizza</button>
+          <button className={isTagSelected('American') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('American')}>American</button>
+          <button className={isTagSelected('Asian') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Asian')}>Asian</button>
+          <button className={isTagSelected('Italian') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Italian')}>Italian</button>
+          <button className={isTagSelected('Sushi') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Sushi')}>Sushi</button>
+          <button className={isTagSelected('Japanese') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Japanese')}>Japanese</button>
+          <button className={isTagSelected('Desserts') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Desserts')}>Desserts</button>
+          <button className={isTagSelected('Burgers') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Burgers')}>Burgers</button>
+          <button className={isTagSelected('Cookies') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Cookies')}>Cookies</button>
+          <button className={isTagSelected('German') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('German')}>German</button>
+          <button className={isTagSelected('Indian') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Indian')}>Indian</button>
+          <button className={isTagSelected('Local') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Local')}>Local</button>
+          <button className={isTagSelected('Tea') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Tea')}>Tea</button>
+          <button className={isTagSelected('Coffee') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Coffee')}>Coffee</button>
+          <button className={isTagSelected('Boba') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Boba')}>Boba</button>
+          <button className={isTagSelected('Library') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Library')}>Library</button>
+          <button className={isTagSelected('Printers') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Printers')}>Printers</button>
+          <button className={isTagSelected('Study Spaces') ? 'tag-selected' : 'tag-not-selected'} onClick={() => handleTagSelection('Study Spaces')}>Study Spaces</button>
+        </div>
+      )}
       <div className='categories-cards'>
         {!displayTrending && places.map(place => (
           <CategoryCard 

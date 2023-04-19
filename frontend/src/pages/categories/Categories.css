@@ -149,3 +149,34 @@ body {
       opacity: 0;
     }
   }
+
+.tag-not-selected {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.tag-not-selected:hover {
+  border: 1px solid #FFC632;
+  background-color: transparent;
+  border-radius: 20px;
+  margin-bottom: 12px;
+
+}
+
+.tag-selected {
+  background-color: transparent;
+  border: 1px solid #FFC632;
+  border-radius: 20px;
+  margin-bottom: 12px;
+
+}
+
+.tag-selected:hover {
+  background-color: transparent;
+  border: 1px solid #FFC632;
+  border-radius: 20px;
+  margin-bottom: 12px;
+
+}

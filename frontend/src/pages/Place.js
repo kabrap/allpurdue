@@ -604,9 +604,12 @@ function Place() {
                                 </button>
                                 <div className='individual-review-container-info'>
                                   {purdueUsers.includes(user?._id) ? (
-                                    <p id='review-name'>{user?.name} <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/>{sessionStorage.getItem("currentUser") !== undefined && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}</p>
+                                    <p id='review-name'>{user?.name} <img alt='Verified Purdue User' src="https://img.icons8.com/color/96/null/verified-account--v1.png"/>{localStorage.getItem("currentUser") !== "undefined" && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}</p>
                                   ) : (
-                                    <p id='review-name'>{user?.name}{sessionStorage.getItem("currentUser") !== undefined  && <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>}
+                                    <p id='review-name'>{user?.name}
+                                      {localStorage.getItem("currentUser") !== "undefined" && 
+                                        <span className='flag-icon' onClick={handleConfirmReport}>&#9873;</span>
+                                      }
                                     </p>
                                   )}
                                   <p id='review-stars'>{stars}</p>
