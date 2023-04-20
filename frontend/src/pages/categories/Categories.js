@@ -22,7 +22,6 @@ function Categories() {
   const [showTags, setShowTags] = useState(false);
 
   const handleTrendingClick = () => {
-    handlePriceFilter(1,5,places,trending)
     setDisplayTrending(!displayTrending)
   };
 
@@ -30,7 +29,7 @@ function Categories() {
     setLowFilterValue(1);
     setHighFilterValue(5);
     setFilterButton(false)
-    handlePriceFilter(1,5, places, trending)
+    handlePriceFilter(0,5, places, trending)
     setPlaces(allPlaces)
   }
   
