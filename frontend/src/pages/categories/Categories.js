@@ -13,6 +13,7 @@ function Categories() {
   const [displayTrending, setDisplayTrending] = useState(false)
   const [lowFilterValue, setLowFilterValue] = useState('')
   const [highFilterValue, setHighFilterValue] = useState('')
+  const [allPlaces, setAllPlaces] = useState([])
 
   const handleFilterButton = () => {
     setFilterButton(!filterButton)
@@ -30,6 +31,7 @@ function Categories() {
     setHighFilterValue(5);
     setFilterButton(false)
     handlePriceFilter(1,5, places, trending)
+    setPlaces(allPlaces)
   }
   
   const handleLowFilterValue = (e) => {
@@ -78,13 +80,17 @@ function Categories() {
     if (e.target.value == '') {
       tempHighValue = 5
     }
-    handlePriceFilter(tempLowValue, tempHighValue, places, trending)
+    handlePriceFilter(tempLowValue, tempHighValue, allPlaces, trending)
   }
 
   const handlePriceFilter = (low, high, currentPlaces, currentTrending) => {
-    setPriceFilter(currentPlaces.filter(item => (item.price <= high && item.price >= low)));
-    setPriceFilterTrending(currentTrending.filter(item => (item.price <= high && item.price >= low)));
+    console.log(currentPlaces)
+    console.log(low)
+    console.log(high)
+    setPlaces(currentPlaces.filter(item => item.price >= low && item.price <= high));
+    setPriceFilterTrending(currentTrending.filter(item => item.price >= low && item.price <= high));
   }
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -96,6 +102,7 @@ function Categories() {
         console.log(trendingData.data)
         setPlaces(response.data);
         setTrending(trendingData.data);
+        setAllPlaces(response.data)
         handlePriceFilter(1,5,response.data,trendingData.data)
         let sortedData = response.data;
         if (selectedTags.length > 0) {
@@ -126,7 +133,6 @@ function Categories() {
 
   return (
     <div>
-      {console.log(places)}
       <div className='browse'>
         <h1>Browse All Categories</h1>
       </div>
@@ -140,10 +146,10 @@ function Categories() {
         <div className='filter-form'>
           <form className="filter-form-inputs">
             <label>From </label>
-            <input type="number" placeholder="8" value={lowFilterValue} onChange={handleLowFilterValue}></input>
+            <input type="number" placeholder="0" value={lowFilterValue} onChange={handleLowFilterValue}></input>
             <br/>
             <label>To &nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="number" placeholder="25" value={highFilterValue} onChange={handleHighFilterValue}></input>
+            <input type="number" placeholder="5" value={highFilterValue} onChange={handleHighFilterValue}></input>
           </form>
         </div>
       }
