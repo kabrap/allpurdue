@@ -55,7 +55,7 @@ mongoose.set('strictQuery', false);
 // mongoose.connect("mongodb://localhost:27017/allPurdueDB");
 
 // for windows
- mongoose.connect("mongodb://127.0.0.1:27017/allPurdueDB");
+ mongoose.connect("mongodb+srv://allpurdue:APaampry23@allpurdue.9d663wq.mongodb.net/?retryWrites=true&w=majority");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
