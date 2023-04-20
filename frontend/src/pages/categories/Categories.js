@@ -11,8 +11,8 @@ function Categories() {
   const [priceFilter, setPriceFilter] = useState([])
   const [priceFilterTrending, setPriceFilterTrending] = useState([])
   const [displayTrending, setDisplayTrending] = useState(false)
-  const [lowFilterValue, setLowFilterValue] = useState(1)
-  const [highFilterValue, setHighFilterValue] = useState(5)
+  const [lowFilterValue, setLowFilterValue] = useState('')
+  const [highFilterValue, setHighFilterValue] = useState('')
 
   const handleFilterButton = () => {
     setFilterButton(!filterButton)
@@ -105,7 +105,6 @@ function Categories() {
         }
         setPlaces(sortedData);
         setTrending(trendingData.data)
-        handlePriceFilter(1,5,response.data,trendingData.data)
       } catch (error) {
         console.error(error);
       }
@@ -151,7 +150,7 @@ function Categories() {
       <div className='sorting-container'>
         <span id='all-places'>All Places {displayTrending ? '>' : ''} {displayTrending ? 'Trending' : ''}</span>
         <div className='filter-button-container'>
-          {(lowFilterValue != 1 || highFilterValue != 5) &&
+          {lowFilterValue + highFilterValue != '' &&
             <div>
               <button className='price-filter-button' onClick={clearFields}>Clear Filter</button>
             </div>
@@ -190,7 +189,7 @@ function Categories() {
         </div>
       )}
       <div className='categories-cards'>
-        {!displayTrending && priceFilter.map(place => (
+        {!displayTrending && places.map(place => (
           <CategoryCard 
             key={place._id}
             title={place.name}
@@ -202,7 +201,7 @@ function Categories() {
             _id={place._id}
           />
         ))}
-        {displayTrending && priceFilterTrending.map(place => (
+        {displayTrending && trending.map(place => (
           <CategoryCard 
             key={place._id}
             title={place.name}

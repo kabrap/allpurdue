@@ -40,7 +40,7 @@ function Place() {
   const [showConfirmationReport, setShowConfirmationReport] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [purdueUsers, setPurdueUsers] = useState([]);
-  const [filterOption, setFilterOption] = useState(false);
+  const [filterOption, setFilterOption] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -332,24 +332,28 @@ function Place() {
   
   const handleFilter = (filterOption) => {
     setFilterOption(filterOption)
-    console.log(filterOption)
+
+    setPlacesReviews(originalPlacesReviews)
 
     let filteredReviews = [];
 
-    if (filterOption) {
-      filteredReviews = placesReviews.filter(review => purdueUsers.includes(review.author));
-      setPlacesReviews(filteredReviews)
+    if (filterOption === 'verified') {
+      filteredReviews = originalPlacesReviews.filter(review => purdueUsers.includes(review.author));
+    } else if (filterOption === 'not verified') {
+      filteredReviews = originalPlacesReviews.filter(review => !purdueUsers.includes(review.author));
     } else {
       filteredReviews = originalPlacesReviews;
-      if (sortOption === 'rating') {
-        filteredReviews.sort((a, b) => b.rating - a.rating);
-      } else if (sortOption === 'likes') {
-        filteredReviews.sort((a, b) => b.likes - a.likes);
-      } else if (sortOption === 'createdAt') {
-        filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      }
-      setPlacesReviews(filteredReviews)
     }
+
+    if (sortOption === 'rating') {
+      filteredReviews.sort((a, b) => b.rating - a.rating);
+    } else if (sortOption === 'likes') {
+      filteredReviews.sort((a, b) => b.likes - a.likes);
+    } else if (sortOption === 'createdAt') {
+      filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    setPlacesReviews(filteredReviews)
   }
   const handleShareClick = () => {
     setIsModalOpen(true);
@@ -555,10 +559,22 @@ function Place() {
                       Likes
                     </button>
                     <button
-                      onClick={() => handleFilter(!filterOption)}
-                      className={filterOption ? 'selected-review-sort' : ''}
+                      onClick={() => handleFilter('')}
+                      className={filterOption === '' ? 'selected-review-sort' : ''}
+                    >
+                      All Users
+                    </button>
+                    <button
+                      onClick={() => handleFilter('verified')}
+                      className={filterOption === 'verified' ? 'selected-review-sort' : ''}
                     >
                       Purdue Verified
+                    </button>
+                    <button
+                      onClick={() => handleFilter('not verified')}
+                      className={filterOption === 'not verified' ? 'selected-review-sort' : ''}
+                    >
+                      Not Purdue Verified
                     </button>
                   </span>                
                   <div className='review-container'>
