@@ -167,9 +167,9 @@ const placeSchema = new Schema(
     }],
     price: {
       type: Number,
-      minimum: 1,
+      minimum: 0,
       maximum: 5,
-      default: 3,
+      default: 0,
     },
     phone: {
       type: String,
