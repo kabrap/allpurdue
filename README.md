@@ -24,9 +24,25 @@ The front end of the application was developed using ReactJS. We sent requests t
 
 The application's backend was developed using NodeJS, Express, and MongoDB. NodeJS and Express will be utilized to create a RESTful API, and MongoDB was used to create a scalable database containing all of the data.
 
-### Backend Team: Pramey Kabra, Yash Narain Agrawal, Rasesh Ramadesikan
-### Frontend Team: Antony Ni, Andrew Ni, Matthew Stroup
+**Backend Team:** Pramey Kabra, Yash Agrawal, Rasesh Ramadesikan  
+
+**Frontend Team:** Antony Ni, Andrew Ni, Matthew Stroup
 
 ---
 
 You can preview the application here [https://allpurdue.netlify.app/](https://allpurdue.netlify.app/). The database connection has been terminated due to deployment costs; thus, the site has no content as of now.
+
+---
+
+## UI Mockups (with Data)
+
+### Categories Page
+
+<img width="824" alt="Screenshot 2023-08-10 at 10 24 16 PM" src="https://github.com/kabrap/allpurdue/assets/70179584/544cdaa4-0906-4ea3-a654-3c8152fd4557">
+
+### Blogs Page 
+
+<img width="824" alt="Screenshot 2023-08-10 at 10 23 32 PM" src="https://github.com/kabrap/allpurdue/assets/70179584/3d5cb834-95fe-4d58-a0e6-63a8602a1ccf">
+
+---
+
