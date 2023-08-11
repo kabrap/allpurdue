@@ -15,3 +15,5 @@ Individual review services like Yelp and Google exist where you can look up plac
 While ratings and reviews of the places are the central features for services like this, AllPurdue does not only allow users to do that but a lot more, including creating blog posts. Through blog posts, users can write about their experiences in more detail, talk about their favorite places, etc., which also helps the other users make their decisions, as they get to know more than just quantitative information about the different places.
 
 ---
+
+You can preview the application here [https://allpurdue.netlify.app/](https://allpurdue.netlify.app/). The database connection has been terminated due to deployment costs; thus, the site has no content as of now.
